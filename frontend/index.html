@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cricket Zone — Know Your Legends</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #07090a;
+  --bg2: #0c1012;
+  --surface: #151c1f;
+  --surface2: #1a2327;
+  --accent: #c8f230;
+  --accent2: #a8d018;
+  --accent-dim: rgba(200,242,48,0.1);
+  --accent-glow: rgba(200,242,48,0.22);
+  --text: #eef2f0;
+  --text2: #7a9088;
+  --text3: #3d5048;
+  --border: rgba(200,242,48,0.18);
+  --border2: rgba(255,255,255,0.06);
+  --red: #ff4f4f;
+  --gold: #ffd166;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.025) 2px,rgba(0,0,0,0.025) 4px);pointer-events:none;z-index:0;}
+
+/* ── HEADER ── */
+header{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:1rem 2rem;border-bottom:1px solid var(--border2);background:rgba(7,9,10,0.93);backdrop-filter:blur(16px);}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:1.45rem;letter-spacing:0.12em;color:var(--text);display:flex;align-items:center;gap:0.55rem;}
+.logo-mark{width:26px;height:26px;background:var(--accent);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:0.8rem;}
+.logo em{color:var(--accent);font-style:normal;}
+.hstats{display:flex;gap:1.5rem;}
+.hst{text-align:right;}
+.hst-v{font-family:'Bebas Neue',sans-serif;font-size:1.05rem;color:var(--accent);letter-spacing:0.05em;display:block;line-height:1;}
+.hst-l{font-family:'DM Mono',monospace;font-size:0.58rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em;}
+
+/* ── SCREENS ── */
+.screen{display:none;}
+.screen.active{display:block;animation:fadeUp 0.35s ease;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+main{position:relative;z-index:1;}
+
+/* ── LANDING ── */
+#landingScreen{max-width:1100px;margin:0 auto;padding:0 1.5rem 5rem;}
+
+.hero{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center;padding:4.5rem 0 4rem;border-bottom:1px solid var(--border2);margin-bottom:4rem;}
+@media(max-width:680px){.hero{grid-template-columns:1fr;padding:3rem 0 2.5rem;gap:2rem;}}
+
+.hero-eyebrow{font-family:'DM Mono',monospace;font-size:0.66rem;letter-spacing:0.25em;text-transform:uppercase;color:var(--accent);margin-bottom:1.1rem;display:flex;align-items:center;gap:0.65rem;opacity:0;animation:fadeUp 0.5s ease 0.1s forwards;}
+.hero-eyebrow::before{content:'';width:22px;height:1px;background:var(--accent);display:inline-block;}
+.hero-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(4rem,9vw,7.5rem);line-height:0.88;letter-spacing:0.02em;margin-bottom:1.4rem;opacity:0;animation:fadeUp 0.5s ease 0.2s forwards;}
+.hero-title .hl{color:var(--accent);display:block;}
+.hero-desc{font-size:0.97rem;color:var(--text2);line-height:1.75;max-width:380px;margin-bottom:2rem;font-weight:300;opacity:0;animation:fadeUp 0.5s ease 0.3s forwards;}
+.hero-cta{display:inline-flex;align-items:center;gap:0.55rem;background:var(--accent);color:var(--bg);border:none;border-radius:10px;padding:0.82rem 1.7rem;font-size:0.88rem;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all 0.2s;opacity:0;animation:fadeUp 0.5s ease 0.4s forwards;}
+.hero-cta:hover{background:#d8ff45;transform:translateY(-2px);box-shadow:0 12px 32px var(--accent-glow);}
+
+.hero-right{opacity:0;animation:fadeUp 0.5s ease 0.3s forwards;}
+.hero-visual{background:var(--surface);border:1px solid var(--border2);border-radius:20px;aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
+.hero-visual-glow{position:absolute;inset:0;background:radial-gradient(ellipse at 60% 40%,rgba(200,242,48,0.08) 0%,transparent 65%);}
+.sil-wrap{position:relative;z-index:1;text-align:center;}
+.sil-icon{font-size:4.5rem;display:block;filter:brightness(0) invert(0.1);animation:silSway 4s ease-in-out infinite;}
+@keyframes silSway{0%,100%{transform:rotate(-2deg);}50%{transform:rotate(2deg) scaleX(-1);}}
+.sil-q{font-family:'Bebas Neue',sans-serif;font-size:0.95rem;letter-spacing:0.22em;color:var(--accent);margin-top:0.9rem;opacity:0.65;}
+.hero-pill{position:absolute;bottom:1.1rem;left:1.1rem;background:rgba(7,9,10,0.88);border:1px solid var(--border);border-radius:7px;padding:0.3rem 0.7rem;font-family:'DM Mono',monospace;font-size:0.68rem;color:var(--accent);backdrop-filter:blur(8px);}
+
+/* section head */
+.sec-head{margin-bottom:2rem;opacity:0;animation:fadeUp 0.5s ease 0.5s forwards;}
+.sec-lbl{font-family:'DM Mono',monospace;font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--text3);margin-bottom:0.4rem;}
+.sec-title{font-family:'Bebas Neue',sans-serif;font-size:2.2rem;letter-spacing:0.04em;}
+
+/* category grid */
+.cat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem;margin-bottom:3.5rem;}
+@media(max-width:680px){.cat-grid{grid-template-columns:1fr;}}
+
+.cat-card{border-radius:20px;overflow:hidden;border:1px solid var(--border2);background:var(--surface);transition:all 0.3s ease;opacity:0;animation:fadeUp 0.5s ease forwards;position:relative;}
+.cat-card:nth-child(1){animation-delay:0.55s;}
+.cat-card:nth-child(2){animation-delay:0.65s;}
+.cat-card:nth-child(3){animation-delay:0.75s;}
+.cat-card.live{cursor:pointer;}
+.cat-card.live:hover{border-color:var(--border);transform:translateY(-4px);box-shadow:0 20px 50px rgba(0,0,0,0.5),0 0 0 1px var(--border);}
+.cat-card.soon{opacity:0.4;filter:saturate(0.2);cursor:not-allowed;}
+
+.cat-banner{height:155px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
+.cb-bowl{background:linear-gradient(135deg,#0a1a0d,#0f2a14);}
+.cb-bat{background:linear-gradient(135deg,#0a0f1a,#101828);}
+.cb-cel{background:linear-gradient(135deg,#1a0a0a,#2a1010);}
+.cb-glow{position:absolute;inset:0;opacity:0.55;}
+.cb-bowl .cb-glow{background:radial-gradient(ellipse at center,rgba(200,242,48,0.15) 0%,transparent 70%);}
+.cb-bat .cb-glow{background:radial-gradient(ellipse at center,rgba(77,184,255,0.12) 0%,transparent 70%);}
+.cb-cel .cb-glow{background:radial-gradient(ellipse at center,rgba(255,209,102,0.12) 0%,transparent 70%);}
+.cb-icon{position:relative;z-index:1;font-size:3.5rem;animation:iconFloat 3s ease-in-out infinite;}
+@keyframes iconFloat{0%,100%{transform:translateY(0);}50%{transform:translateY(-6px);}}
+
+.cat-body{padding:1.25rem 1.4rem 1.4rem;}
+.cat-tag{font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.14em;text-transform:uppercase;border-radius:100px;display:inline-block;margin-bottom:0.7rem;padding:0.18rem 0.6rem;}
+.ct-live{background:var(--accent-dim);border:1px solid var(--border);color:var(--accent);}
+.ct-soon{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:var(--text3);}
+.cat-name{font-family:'Bebas Neue',sans-serif;font-size:1.55rem;letter-spacing:0.05em;display:block;margin-bottom:0.4rem;}
+.cat-desc{font-size:0.79rem;color:var(--text2);line-height:1.6;margin-bottom:1.1rem;font-weight:300;}
+.cat-foot{display:flex;align-items:center;justify-content:space-between;}
+.cat-meta{font-family:'DM Mono',monospace;font-size:0.67rem;color:var(--text3);}
+.cat-arr{width:30px;height:30px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:0.8rem;color:var(--bg);font-weight:700;transition:transform 0.2s;}
+.cat-card.live:hover .cat-arr{transform:translateX(3px);}
+
+/* landing stats */
+.ls-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border2);border:1px solid var(--border2);border-radius:16px;overflow:hidden;opacity:0;animation:fadeUp 0.5s ease 0.85s forwards;}
+@media(max-width:560px){.ls-grid{grid-template-columns:repeat(2,1fr);}}
+.ls-item{background:var(--surface);padding:1.4rem;text-align:center;}
+.ls-v{font-family:'Bebas Neue',sans-serif;font-size:1.9rem;color:var(--accent);letter-spacing:0.05em;display:block;line-height:1;margin-bottom:0.3rem;}
+.ls-l{font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.12em;}
+
+/* ── CATEGORY DETAIL ── */
+#categoryScreen{max-width:900px;margin:0 auto;padding:2rem 1.5rem 5rem;}
+.back-btn{display:inline-flex;align-items:center;gap:0.45rem;font-size:0.78rem;color:var(--text3);cursor:pointer;transition:color 0.2s;margin-bottom:2.5rem;font-family:'DM Mono',monospace;letter-spacing:0.05em;background:none;border:none;padding:0;text-transform:uppercase;}
+.back-btn:hover{color:var(--text2);}
+.cd-eyebrow{font-family:'DM Mono',monospace;font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--accent);margin-bottom:0.7rem;display:flex;align-items:center;gap:0.55rem;}
+.cd-eyebrow::before{content:'';width:16px;height:1px;background:var(--accent);}
+.cd-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(3rem,8vw,5.5rem);line-height:0.9;letter-spacing:0.02em;margin-bottom:0.9rem;}
+.cd-title span{color:var(--accent);}
+.cd-desc{font-size:0.97rem;color:var(--text2);line-height:1.7;max-width:500px;font-weight:300;margin-bottom:2.5rem;}
+
+.modes-lbl{font-family:'DM Mono',monospace;font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--text3);margin-bottom:1.1rem;}
+.modes-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:2.5rem;}
+@media(max-width:580px){.modes-grid{grid-template-columns:1fr;}}
+
+.mode-card{background:var(--surface);border:1px solid var(--border2);border-radius:16px;padding:1.4rem;cursor:pointer;transition:all 0.25s ease;position:relative;overflow:hidden;}
+.mode-card::after{content:'';position:absolute;inset:0;background:var(--accent-dim);opacity:0;transition:opacity 0.25s;pointer-events:none;}
+.mode-card:hover{border-color:var(--border);transform:translateY(-3px);box-shadow:0 16px 40px rgba(0,0,0,0.4);}
+.mode-card:hover::after{opacity:1;}
+.mode-card.star{border-color:rgba(200,242,48,0.28);box-shadow:0 0 28px rgba(200,242,48,0.07);}
+.mc-icon{font-size:1.65rem;display:block;margin-bottom:0.9rem;}
+.mc-badge{font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.14em;text-transform:uppercase;background:var(--accent-dim);border:1px solid var(--border);color:var(--accent);border-radius:100px;padding:0.16rem 0.55rem;display:inline-block;margin-bottom:0.65rem;}
+.mc-name{font-family:'Bebas Neue',sans-serif;font-size:1.45rem;letter-spacing:0.05em;display:block;margin-bottom:0.35rem;}
+.mc-desc{font-size:0.78rem;color:var(--text2);line-height:1.55;font-weight:300;}
+.mc-detail{margin-top:0.9rem;padding-top:0.9rem;border-top:1px solid var(--border2);display:flex;justify-content:space-between;}
+.mc-dv{font-family:'DM Mono',monospace;font-size:0.68rem;color:var(--text3);}
+.mc-dv span{color:var(--accent);}
+
+/* Roster */
+.roster{background:var(--surface);border:1px solid var(--border2);border-radius:16px;overflow:hidden;}
+.roster-h{padding:1rem 1.4rem;border-bottom:1px solid var(--border2);display:flex;align-items:center;justify-content:space-between;}
+.roster-ht{font-family:'Bebas Neue',sans-serif;font-size:0.95rem;letter-spacing:0.08em;}
+.roster-hc{font-family:'DM Mono',monospace;font-size:0.68rem;color:var(--text3);}
+.roster-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));}
+.ri{padding:0.8rem 1.2rem;border-right:1px solid var(--border2);border-bottom:1px solid var(--border2);transition:background 0.15s;}
+.ri:hover{background:var(--surface2);}
+.ri-name{font-size:0.8rem;display:block;margin-bottom:0.18rem;}
+.ri-nat{font-family:'DM Mono',monospace;font-size:0.62rem;color:var(--text3);}
+
+/* ── GAME ── */
+#gameScreen{max-width:860px;margin:0 auto;padding:1.75rem 1.5rem 4rem;}
+.gtop{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.4rem;padding-bottom:1.1rem;border-bottom:1px solid var(--border2);}
+.gbread{display:flex;align-items:center;gap:0.45rem;font-family:'DM Mono',monospace;font-size:0.68rem;color:var(--text3);letter-spacing:0.07em;text-transform:uppercase;}
+.gbread .sep{color:var(--border2);}
+.gbread .cur{color:var(--accent);}
+.gbread span[onclick]{cursor:pointer;transition:color 0.15s;}
+.gbread span[onclick]:hover{color:var(--text2);}
+.glive{display:flex;align-items:center;gap:0.9rem;}
+.gpts{font-family:'Bebas Neue',sans-serif;font-size:1.25rem;color:var(--accent);letter-spacing:0.05em;}
+.btn-skip{background:transparent;border:1px solid var(--border2);color:var(--text3);padding:0.32rem 0.85rem;border-radius:8px;font-size:0.72rem;font-family:'DM Mono',monospace;letter-spacing:0.05em;cursor:pointer;transition:all 0.2s;text-transform:uppercase;}
+.btn-skip:hover{border-color:var(--red);color:var(--red);}
+
+.rprog{display:flex;align-items:center;gap:0.7rem;margin-bottom:1.1rem;}
+.rlbl{font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--text3);letter-spacing:0.07em;white-space:nowrap;}
+.rpips{display:flex;gap:3px;flex:1;}
+.rpip{height:3px;flex:1;background:var(--surface2);border-radius:100px;transition:background 0.3s;}
+.rpip.done{background:var(--accent2);}
+.rpip.cur{background:var(--accent);}
+
+.twrap{display:none;margin-bottom:1.1rem;}
+.twrap.on{display:block;}
+.ttrack{height:2px;background:var(--surface2);border-radius:100px;overflow:hidden;margin-bottom:0.3rem;}
+.tfill{height:100%;background:var(--accent);border-radius:100px;transition:width 0.1s linear,background 0.4s;}
+.tfill.urg{background:var(--red);}
+.tnum{font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--text3);text-align:right;}
+
+.vid-wrap{position:relative;background:var(--bg2);border:1px solid var(--border2);border-radius:18px;overflow:hidden;aspect-ratio:16/9;margin-bottom:1.1rem;display:flex;align-items:center;justify-content:center;}
+.vid-ph{display:flex;flex-direction:column;align-items:center;gap:0.8rem;color:var(--text3);text-align:center;padding:2rem;}
+.vid-ph-icon{width:60px;height:60px;border-radius:50%;background:var(--surface);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:1.3rem;animation:phPulse 2.5s ease-in-out infinite;}
+@keyframes phPulse{0%,100%{box-shadow:0 0 0 0 var(--accent-dim);}50%{box-shadow:0 0 0 14px transparent;}}
+.vid-ph p{font-size:0.79rem;line-height:1.6;max-width:220px;}
+.vid-ph .vhint{font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--accent);}
+video{width:100%;height:100%;object-fit:cover;filter:contrast(40) brightness(0.4) grayscale(1);}
+.nbadge{position:absolute;top:0.8rem;right:0.8rem;background:rgba(7,9,10,0.88);border:1px solid var(--border);border-radius:7px;padding:0.28rem 0.62rem;font-size:0.69rem;color:var(--accent);font-family:'DM Mono',monospace;backdrop-filter:blur(8px);opacity:0;transition:opacity 0.4s;}
+.nbadge.on{opacity:1;}
+
+.clues-strip{display:flex;gap:0.4rem;flex-wrap:wrap;margin-bottom:0.9rem;}
+.clue-chip{display:inline-flex;align-items:center;gap:0.32rem;padding:0.28rem 0.75rem;border-radius:100px;border:1px solid var(--border2);background:var(--surface);font-size:0.73rem;color:var(--text3);transition:all 0.35s ease;}
+.clue-chip.lit{background:var(--surface2);border-color:var(--border);color:var(--text2);}
+.ck{font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);}
+
+.atts{display:flex;gap:0.42rem;align-items:center;margin-bottom:0.9rem;}
+.adot{width:9px;height:9px;border-radius:50%;border:1.5px solid var(--border2);transition:all 0.25s;}
+.adot.wrong{background:var(--red);border-color:var(--red);box-shadow:0 0 5px rgba(255,79,79,0.35);}
+.adot.active{border-color:var(--accent);box-shadow:0 0 5px var(--accent-glow);}
+
+.sarea{position:relative;margin-bottom:0.7rem;}
+.sfield{width:100%;background:var(--surface);border:1px solid var(--border2);border-radius:12px;padding:0.82rem 1rem 0.82rem 2.65rem;font-size:0.9rem;font-family:'DM Sans',sans-serif;color:var(--text);outline:none;transition:all 0.2s;}
+.sfield:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-dim);background:var(--surface2);}
+.sfield::placeholder{color:var(--text3);}
+.sico{position:absolute;left:0.85rem;top:50%;transform:translateY(-50%);color:var(--text3);pointer-events:none;font-size:0.88rem;}
+.ddrop{position:absolute;top:calc(100% + 5px);left:0;right:0;background:var(--bg2);border:1px solid var(--border);border-radius:12px;overflow:hidden;z-index:200;box-shadow:0 20px 60px rgba(0,0,0,0.7);display:none;}
+.ddrop.open{display:block;animation:fadeUp 0.12s ease;}
+.ddi{display:flex;align-items:center;justify-content:space-between;padding:0.68rem 1rem;cursor:pointer;font-size:0.86rem;transition:background 0.12s;}
+.ddi:hover,.ddi.hi{background:var(--surface2);}
+.ddi-nat{font-family:'DM Mono',monospace;font-size:0.68rem;color:var(--text3);}
+
+.btn-guess{width:100%;background:var(--accent);color:var(--bg);border:none;border-radius:12px;padding:0.88rem;font-size:0.9rem;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all 0.2s;letter-spacing:0.01em;}
+.btn-guess:hover:not(:disabled){background:#d8ff45;transform:translateY(-1px);box-shadow:0 8px 24px var(--accent-glow);}
+.btn-guess:disabled{opacity:0.28;cursor:not-allowed;}
+
+.glog{margin-top:0.8rem;display:flex;flex-direction:column;gap:0.32rem;}
+.ge{display:flex;align-items:center;justify-content:space-between;padding:0.52rem 0.85rem;border-radius:8px;background:var(--surface);border:1px solid var(--border2);font-size:0.81rem;animation:fadeUp 0.25s ease;}
+.ge.wrong{border-color:rgba(255,79,79,0.22);}
+.ge.right{border-color:rgba(200,242,48,0.28);background:rgba(200,242,48,0.04);}
+.ge-n{color:var(--text2);}
+.ge-x{color:var(--red);}
+.ge-ok{color:var(--accent);}
+
+/* ── RESULT ── */
+#resultScreen{max-width:860px;margin:0 auto;padding:2rem 1.5rem 4rem;}
+.res-hero{text-align:center;padding:2rem 1.5rem 1.5rem;margin-bottom:1.4rem;background:var(--surface);border:1px solid var(--border2);border-radius:20px;}
+.res-word{font-family:'Bebas Neue',sans-serif;font-size:4rem;letter-spacing:0.06em;line-height:1;margin-bottom:0.45rem;}
+.res-word.win{color:var(--accent);}
+.res-word.lose{color:var(--red);}
+.res-who{font-size:0.97rem;color:var(--text2);margin-bottom:1.4rem;font-weight:300;}
+.res-who strong{color:var(--text);font-weight:500;}
+.res-pts{font-family:'Bebas Neue',sans-serif;font-size:5rem;color:var(--accent);letter-spacing:0.04em;line-height:1;}
+.res-ptsl{font-family:'DM Mono',monospace;font-size:0.62rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.14em;margin-top:0.2rem;}
+.res-btns{display:flex;gap:0.7rem;justify-content:center;padding:1.4rem 0 0;flex-wrap:wrap;}
+
+/* ── FINAL ── */
+#finalScreen{max-width:860px;margin:0 auto;padding:3rem 1.5rem 5rem;text-align:center;}
+.fin-eyebrow{font-family:'DM Mono',monospace;font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--accent);margin-bottom:0.7rem;}
+.fin-score{font-family:'Bebas Neue',sans-serif;font-size:7rem;color:var(--accent);letter-spacing:0.04em;line-height:0.9;margin-bottom:2rem;}
+.fin-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border2);border:1px solid var(--border2);border-radius:16px;overflow:hidden;margin-bottom:1.4rem;}
+.fin-st{background:var(--surface);padding:1.2rem;}
+.fin-sv{font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--accent);letter-spacing:0.05em;display:block;line-height:1;margin-bottom:0.28rem;}
+.fin-sl{font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em;}
+.share-box{background:var(--surface);border:1px solid var(--border2);border-radius:14px;padding:1.2rem;font-family:'DM Mono',monospace;font-size:0.78rem;color:var(--text2);line-height:1.9;text-align:left;white-space:pre-wrap;margin-bottom:1.2rem;}
+.fin-btns{display:flex;gap:0.7rem;justify-content:center;flex-wrap:wrap;}
+
+/* shared buttons */
+.btn-p{background:var(--accent);color:var(--bg);border:none;border-radius:10px;padding:0.72rem 1.55rem;font-size:0.86rem;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all 0.2s;}
+.btn-p:hover{background:#d8ff45;transform:translateY(-2px);box-shadow:0 8px 24px var(--accent-glow);}
+.btn-s{background:transparent;color:var(--text2);border:1px solid var(--border2);border-radius:10px;padding:0.72rem 1.55rem;font-size:0.86rem;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all 0.2s;}
+.btn-s:hover{border-color:var(--text3);color:var(--text);}
+
+/* toast */
+.tdock{position:fixed;top:5rem;left:50%;transform:translateX(-50%);z-index:999;display:flex;flex-direction:column;gap:0.38rem;pointer-events:none;}
+.toast{background:var(--bg2);border:1px solid var(--border);border-radius:9px;padding:0.62rem 1.15rem;font-size:0.81rem;color:var(--text);backdrop-filter:blur(12px);animation:toastIn 0.25s ease,toastOut 0.25s ease 2.75s forwards;white-space:nowrap;box-shadow:0 8px 30px rgba(0,0,0,0.5);}
+.toast.ok{border-color:var(--accent);color:var(--accent);}
+.toast.err{border-color:var(--red);color:var(--red);}
+@keyframes toastIn{from{opacity:0;transform:translateY(-8px);}to{opacity:1;transform:translateY(0);}}
+@keyframes toastOut{from{opacity:1;}to{opacity:0;}}
+
+/* confetti */
+.cf{position:fixed;width:7px;height:7px;border-radius:1px;pointer-events:none;z-index:998;animation:cfFall linear forwards;}
+@keyframes cfFall{0%{opacity:1;transform:translateY(-20px) rotate(0deg);}100%{opacity:0;transform:translateY(100vh) rotate(540deg);}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-mark">🏏</div>
+    CRICKET <em>ZONE</em>
+  </div>
+  <div class="hstats">
+    <div class="hst"><span class="hst-v" id="hStreak">0</span><span class="hst-l">Streak</span></div>
+    <div class="hst"><span class="hst-v" id="hBest">—</span><span class="hst-l">Best</span></div>
+  </div>
+</header>
+
+<div class="tdock" id="tdock"></div>
+
+<main>
+
+<!-- ══ LANDING ══ -->
+<div class="screen active" id="landingScreen">
+<div style="max-width:1100px;margin:0 auto;padding:0 1.5rem 5rem;">
+
+  <div class="hero">
+    <div>
+      <p class="hero-eyebrow">The Ultimate Cricket Challenge</p>
+      <h1 class="hero-title">KNOW YOUR<span class="hl">LEGENDS</span></h1>
+      <p class="hero-desc">Identify cricket's greatest players from their silhouette alone. Three categories. Iconic moments. How well do you know the game?</p>
+      <button class="hero-cta" onclick="document.getElementById('catsAnchor').scrollIntoView({behavior:'smooth'})">Choose Your Challenge ↓</button>
+    </div>
+    <div class="hero-right">
+      <div class="hero-visual">
+        <div class="hero-visual-glow"></div>
+        <div class="sil-wrap">
+          <span class="sil-icon">🏏</span>
+          <p class="sil-q">WHO AM I?</p>
+        </div>
+        <div class="hero-pill">15 Bowlers · 3 Modes</div>
+      </div>
+    </div>
+  </div>
+
+  <div id="catsAnchor">
+    <div class="sec-head">
+      <p class="sec-lbl">Choose Your Challenge</p>
+      <h2 class="sec-title">PICK A CATEGORY</h2>
+    </div>
+
+    <div class="cat-grid">
+
+      <div class="cat-card live" onclick="showCategory()">
+        <div class="cat-banner cb-bowl"><div class="cb-glow"></div><span class="cb-icon">🎯</span></div>
+        <div class="cat-body">
+          <span class="cat-tag ct-live">Live Now</span>
+          <span class="cat-name">GUESS THE<br>BOWLER</span>
+          <p class="cat-desc">Identify 15 legendary bowlers from their silhouette action. Malinga's sling, Warne's loop, Bumrah's pause — can you tell them apart?</p>
+          <div class="cat-foot">
+            <span class="cat-meta">15 legends · 3 game modes</span>
+            <div class="cat-arr">→</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="cat-card soon">
+        <div class="cat-banner cb-bat"><div class="cb-glow"></div><span class="cb-icon">🏏</span></div>
+        <div class="cat-body">
+          <span class="cat-tag ct-soon">Coming Soon</span>
+          <span class="cat-name">GUESS THE<br>BATTER</span>
+          <p class="cat-desc">Full stance to follow-through. Spot Tendulkar's straight drive or Lara's sweep from a silhouette.</p>
+          <div class="cat-foot"><span class="cat-meta">V2 · In Development</span></div>
+        </div>
+      </div>
+
+      <div class="cat-card soon">
+        <div class="cat-banner cb-cel"><div class="cb-glow"></div><span class="cb-icon">🎉</span></div>
+        <div class="cat-body">
+          <span class="cat-tag ct-soon">Coming Soon</span>
+          <span class="cat-name">GUESS THE<br>CELEBRATION</span>
+          <p class="cat-desc">Iconic wicket celebrations, century dances, and team moments. The most joyful cricket challenge.</p>
+          <div class="cat-foot"><span class="cat-meta">V3 · In Development</span></div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="ls-grid">
+      <div class="ls-item"><span class="ls-v" id="lsG">0</span><span class="ls-l">Games Played</span></div>
+      <div class="ls-item"><span class="ls-v" id="lsB">—</span><span class="ls-l">Best Score</span></div>
+      <div class="ls-item"><span class="ls-v" id="lsS">0</span><span class="ls-l">Win Streak</span></div>
+      <div class="ls-item"><span class="ls-v" id="lsW">—</span><span class="ls-l">Win Rate</span></div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- ══ CATEGORY DETAIL ══ -->
+<div class="screen" id="categoryScreen">
+<div style="max-width:900px;margin:0 auto;padding:2rem 1.5rem 5rem;">
+
+  <button class="back-btn" onclick="showLanding()">← Back to Categories</button>
+
+  <p class="cd-eyebrow">V1 · Bowling</p>
+  <h2 class="cd-title">GUESS THE<br><span>BOWLER</span></h2>
+  <p class="cd-desc">Watch the silhouette action and identify the legend. A new clue unlocks with each wrong guess. Can you spot all 15?</p>
+
+  <p class="modes-lbl">Choose a Game Mode</p>
+  <div class="modes-grid">
+    <div class="mode-card star" onclick="startGame('classic')">
+      <span class="mc-icon">🏏</span>
+      <span class="mc-badge">Recommended</span>
+      <span class="mc-name">Classic</span>
+      <p class="mc-desc">10 bowlers, 4 guesses each. A new clue unlocks with every wrong answer.</p>
+      <div class="mc-detail">
+        <span class="mc-dv">Bowlers: <span>10</span></span>
+        <span class="mc-dv">Guesses: <span>4</span></span>
+      </div>
+    </div>
+    <div class="mode-card" onclick="startGame('blitz')">
+      <span class="mc-icon">⚡</span>
+      <span class="mc-badge">Timed</span>
+      <span class="mc-name">Blitz</span>
+      <p class="mc-desc">All 15 bowlers, 15 seconds each. Pure instinct and cricket knowledge.</p>
+      <div class="mc-detail">
+        <span class="mc-dv">Bowlers: <span>15</span></span>
+        <span class="mc-dv">Time: <span>15s</span></span>
+      </div>
+    </div>
+    <div class="mode-card" onclick="startGame('daily')">
+      <span class="mc-icon">📅</span>
+      <span class="mc-badge">Daily</span>
+      <span class="mc-name">Daily</span>
+      <p class="mc-desc">One bowler per day, the same worldwide. Share your result.</p>
+      <div class="mc-detail">
+        <span class="mc-dv">Bowlers: <span>1</span></span>
+        <span class="mc-dv">Resets: <span>Daily</span></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="roster">
+    <div class="roster-h">
+      <span class="roster-ht">THE LEGENDS</span>
+      <span class="roster-hc">15 Bowlers</span>
+    </div>
+    <div class="roster-grid" id="rosterGrid"></div>
+  </div>
+
+</div>
+</div>
+
+<!-- ══ GAME ══ -->
+<div class="screen" id="gameScreen">
+<div style="max-width:860px;margin:0 auto;padding:1.75rem 1.5rem 4rem;">
+
+  <div class="gtop">
+    <div class="gbread">
+      <span onclick="showLanding()">Home</span>
+      <span class="sep">/</span>
+      <span onclick="showCategory()">Bowling</span>
+      <span class="sep">/</span>
+      <span class="cur" id="modeCrumb">Classic</span>
+    </div>
+    <div class="glive">
+      <span class="gpts" id="livePts">0 pts</span>
+      <button class="btn-skip" onclick="skipBowler()">Skip →</button>
+    </div>
+  </div>
+
+  <div class="rprog">
+    <span class="rlbl" id="rlbl">1 / 10</span>
+    <div class="rpips" id="rpips"></div>
+  </div>
+
+  <div class="twrap" id="twrap">
+    <div class="ttrack"><div class="tfill" id="tfill"></div></div>
+    <div class="tnum" id="tnum">15s</div>
+  </div>
+
+  <div class="vid-wrap">
+    <div class="vid-ph" id="vidPH">
+      <div class="vid-ph-icon">🏏</div>
+      <p>Silhouette video loads once MP4 clips are added to content/bowling/</p>
+      <span class="vhint">See setup guide below ↓</span>
+    </div>
+    <video id="bvid" loop muted autoplay playsinline style="display:none;"></video>
+    <div class="nbadge" id="nbadge"></div>
+  </div>
+
+  <div class="clues-strip" id="cluesStrip"></div>
+  <div class="atts" id="atts"></div>
+
+  <div class="sarea">
+    <span class="sico">🔍</span>
+    <input class="sfield" id="sfield" type="text" placeholder="Type a bowler's name..." autocomplete="off" oninput="onSearch()" onkeydown="onKey(event)"/>
+    <div class="ddrop" id="ddrop"></div>
+  </div>
+
+  <button class="btn-guess" id="gbtn" onclick="submitGuess()" disabled>Submit Guess</button>
+  <div class="glog" id="glog"></div>
+
+  <details style="margin-top:2rem;">
+    <summary style="cursor:pointer;font-size:0.72rem;color:var(--text3);font-family:'DM Mono',monospace;letter-spacing:0.08em;padding:0.7rem 0;border-top:1px solid var(--border2);text-transform:uppercase;">📂 How to add video clips</summary>
+    <div style="padding:0.9rem;background:var(--surface);border-radius:12px;margin-top:0.4rem;font-size:0.78rem;color:var(--text2);line-height:1.9;">
+      <p style="color:var(--text);font-weight:500;margin-bottom:0.45rem;">Add MP4 clips to see real silhouette actions:</p>
+      <p><code style="color:var(--accent);background:var(--accent-dim);padding:1px 5px;border-radius:4px;">pip install yt-dlp</code></p>
+      <p style="margin-top:0.45rem;"><code style="color:var(--accent);background:var(--accent-dim);padding:1px 5px;border-radius:4px;">yt-dlp -f mp4 YOUTUBE_URL -o content/bowling/malinga.mp4</code></p>
+      <p style="margin-top:0.65rem;color:var(--text3);">Files go in <code style="color:var(--accent);">content/bowling/</code> named by player ID</p>
+    </div>
+  </details>
+
+</div>
+</div>
+
+<!-- ══ RESULT ══ -->
+<div class="screen" id="resultScreen">
+<div style="max-width:860px;margin:0 auto;padding:2rem 1.5rem 4rem;">
+  <div class="res-hero">
+    <div class="res-word" id="resWord">CORRECT!</div>
+    <div class="res-who" id="resWho"></div>
+    <div class="res-pts" id="resPts">0</div>
+    <div class="res-ptsl">Points Earned</div>
+    <div class="res-btns">
+      <button class="btn-p" id="nextBtn" onclick="nextBowler()">Next Bowler →</button>
+      <button class="btn-s" onclick="showLanding()">← Home</button>
+    </div>
+  </div>
+  <div id="dshare" style="display:none;">
+    <div class="share-box" id="dsharebox"></div>
+    <button class="btn-s" style="width:100%;" onclick="copyShare('d')">📋 Copy Result</button>
+  </div>
+</div>
+</div>
+
+<!-- ══ FINAL ══ -->
+<div class="screen" id="finalScreen">
+<div style="max-width:860px;margin:0 auto;padding:3rem 1.5rem 5rem;text-align:center;">
+  <p class="fin-eyebrow">Game Complete</p>
+  <div class="fin-score" id="finScore">0</div>
+  <div class="fin-grid" id="finGrid"></div>
+  <div class="share-box" id="finShare"></div>
+  <div class="fin-btns">
+    <button class="btn-p" onclick="startGame(G.mode)">Play Again</button>
+    <button class="btn-s" onclick="copyShare('f')">📋 Share</button>
+    <button class="btn-s" onclick="showCategory()">← Modes</button>
+    <button class="btn-s" onclick="showLanding()">Home</button>
+  </div>
+</div>
+</div>
+
+</main>
+
+<script>
+const BOWLERS=[
+  {id:'malinga',name:'Lasith Malinga',nation:'Sri Lanka',era:'2004–2019',style:'Right-arm fast',clues:['Slingy round-arm action','Sri Lanka','2004–2019','Right-arm fast']},
+  {id:'bumrah',name:'Jasprit Bumrah',nation:'India',era:'2016–present',style:'Right-arm fast',clues:['Unique loading action','India','2016–present','Right-arm fast']},
+  {id:'warne',name:'Shane Warne',nation:'Australia',era:'1992–2007',style:'Right-arm leg spin',clues:['Classical leg spin loop','Australia','1992–2007','Right-arm leg spin']},
+  {id:'murali',name:'Muttiah Muralitharan',nation:'Sri Lanka',era:'1992–2011',style:'Right-arm off spin',clues:['Doosra inventor','Sri Lanka','1992–2011','Right-arm off spin']},
+  {id:'shoaib',name:'Shoaib Akhtar',nation:'Pakistan',era:'1997–2011',style:'Right-arm fast',clues:['Rawalpindi Express','Pakistan','1997–2011','Right-arm fast']},
+  {id:'wasim',name:'Wasim Akram',nation:'Pakistan',era:'1984–2003',style:'Left-arm fast',clues:['King of swing','Pakistan','1984–2003','Left-arm fast']},
+  {id:'mcgrath',name:'Glenn McGrath',nation:'Australia',era:'1993–2007',style:'Right-arm fast-medium',clues:['Nagging line and length','Australia','1993–2007','Right-arm fast-medium']},
+  {id:'kumble',name:'Anil Kumble',nation:'India',era:'1990–2008',style:'Right-arm leg spin',clues:['10 wickets in innings','India','1990–2008','Right-arm leg spin']},
+  {id:'starc',name:'Mitchell Starc',nation:'Australia',era:'2010–present',style:'Left-arm fast',clues:['Toe-crushing yorkers','Australia','2010–present','Left-arm fast']},
+  {id:'steyn',name:'Dale Steyn',nation:'South Africa',era:'2004–2019',style:'Right-arm fast',clues:['Fierce outswing','South Africa','2004–2019','Right-arm fast']},
+  {id:'rabada',name:'Kagiso Rabada',nation:'South Africa',era:'2014–present',style:'Right-arm fast',clues:['Explosive short ball','South Africa','2014–present','Right-arm fast']},
+  {id:'boult',name:'Trent Boult',nation:'New Zealand',era:'2011–present',style:'Left-arm fast-medium',clues:['New ball swing master','New Zealand','2011–present','Left-arm fast-medium']},
+  {id:'anderson',name:'James Anderson',nation:'England',era:'2002–present',style:'Right-arm fast-medium',clues:['Master of swing','England','2002–present','Right-arm fast-medium']},
+  {id:'harbhajan',name:'Harbhajan Singh',nation:'India',era:'1998–2016',style:'Right-arm off spin',clues:['The Turbinator','India','1998–2016','Right-arm off spin']},
+  {id:'waqar',name:'Waqar Younis',nation:'Pakistan',era:'1989–2003',style:'Right-arm fast',clues:['Reverse swing pioneer','Pakistan','1989–2003','Right-arm fast']},
+];
+
+const MAX_G=4,BLITZ_T=15,PTS=[1000,750,500,250];
+const G={mode:'classic',queue:[],idx:0,bowler:null,guesses:[],cluesLit:1,score:0,correct:0,results:[],timer:null,tLeft:BLITZ_T,pick:''};
+let stats=JSON.parse(localStorage.getItem('cz3')||'{"games":0,"wins":0,"best":0,"streak":0}');
+
+function boot(){
+  refreshH();refreshLS();
+  document.getElementById('rosterGrid').innerHTML=BOWLERS.map(b=>`<div class="ri"><span class="ri-name">${b.name}</span><span class="ri-nat">${b.nation}</span></div>`).join('');
+}
+
+function refreshH(){document.getElementById('hStreak').textContent=stats.streak;document.getElementById('hBest').textContent=stats.best||'—';}
+function refreshLS(){
+  document.getElementById('lsG').textContent=stats.games;
+  document.getElementById('lsB').textContent=stats.best||'—';
+  document.getElementById('lsS').textContent=stats.streak;
+  document.getElementById('lsW').textContent=stats.games?Math.round(stats.wins/stats.games*100)+'%':'—';
+}
+
+function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo({top:0,behavior:'smooth'});}
+function showLanding(){stopTimer();refreshLS();showScreen('landingScreen');}
+function showCategory(){showScreen('categoryScreen');}
+
+function startGame(mode){
+  G.mode=mode;G.score=0;G.correct=0;G.idx=0;G.results=[];
+  const sh=[...BOWLERS].sort(()=>Math.random()-0.5);
+  G.queue=mode==='daily'?[BOWLERS[Math.floor(Date.now()/86400000)%BOWLERS.length]]:mode==='blitz'?sh.slice(0,15):sh.slice(0,10);
+  document.getElementById('modeCrumb').textContent=mode==='classic'?'Classic':mode==='blitz'?'Blitz':'Daily';
+  showScreen('gameScreen');loadBowler();
+}
+
+function loadBowler(){
+  G.bowler=G.queue[G.idx];G.guesses=[];G.cluesLit=1;G.pick='';
+  document.getElementById('livePts').textContent=G.score+' pts';
+  document.getElementById('sfield').value='';
+  document.getElementById('gbtn').disabled=true;
+  document.getElementById('glog').innerHTML='';
+  document.getElementById('ddrop').classList.remove('open');
+  document.getElementById('nbadge').classList.remove('on');
+  renderPips();renderClues();renderAtts();tryVid();
+  if(G.mode==='blitz')startTimer();else stopTimer();
+}
+
+function tryVid(){
+  const v=document.getElementById('bvid'),ph=document.getElementById('vidPH'),src=`content/bowling/${G.bowler.id}.mp4`;
+  v.style.display='none';ph.style.display='flex';
+  const t=document.createElement('video');t.src=src;
+  t.oncanplay=()=>{v.src=src;v.style.display='block';ph.style.display='none';v.play();};
+}
+
+function renderPips(){
+  document.getElementById('rlbl').textContent=`${G.idx+1} / ${G.queue.length}`;
+  document.getElementById('rpips').innerHTML=G.queue.map((_,i)=>`<div class="rpip ${i<G.idx?'done':i===G.idx?'cur':''}"></div>`).join('');
+}
+
+function startTimer(){
+  stopTimer();G.tLeft=BLITZ_T;
+  document.getElementById('twrap').classList.add('on');tickT();
+  G.timer=setInterval(()=>{G.tLeft-=0.1;tickT();if(G.tLeft<=0){stopTimer();logR(false,0);showResult(false,0);}},100);
+}
+function stopTimer(){clearInterval(G.timer);document.getElementById('twrap').classList.remove('on');}
+function tickT(){const p=G.tLeft/BLITZ_T*100,f=document.getElementById('tfill');f.style.width=p+'%';f.className='tfill'+(G.tLeft<5?' urg':'');document.getElementById('tnum').textContent=Math.ceil(G.tLeft)+'s';}
+
+const CK=['Action','Nation','Era','Style'];
+function renderClues(){
+  document.getElementById('cluesStrip').innerHTML=G.bowler.clues.map((c,i)=>{const on=i<G.cluesLit;return`<div class="clue-chip ${on?'lit':''}">${on?`<span class="ck">${CK[i]}</span><span>${c}</span>`:`<span class="ck">${CK[i]}</span><span>???</span>`}</div>`;}).join('');
+  const nb=document.getElementById('nbadge');
+  if(G.cluesLit>=2){nb.textContent=G.bowler.nation;nb.classList.add('on');}
+}
+function renderAtts(){
+  const max=G.mode==='blitz'?1:MAX_G;
+  document.getElementById('atts').innerHTML=Array.from({length:max},(_,i)=>{let c='';if(i<G.guesses.length)c='wrong';else if(i===G.guesses.length)c='active';return`<div class="adot ${c}"></div>`;}).join('');
+}
+
+function onSearch(){
+  const v=document.getElementById('sfield').value.toLowerCase().trim();
+  G.pick='';document.getElementById('gbtn').disabled=true;
+  if(!v){document.getElementById('ddrop').classList.remove('open');return;}
+  const hits=BOWLERS.filter(b=>b.name.toLowerCase().includes(v)&&!G.guesses.includes(b.id)).slice(0,6);
+  if(!hits.length){document.getElementById('ddrop').classList.remove('open');return;}
+  document.getElementById('ddrop').innerHTML=hits.map(b=>`<div class="ddi" onclick="pick('${b.id}','${b.name.replace(/'/g,"\\'")}')"><span>${b.name}</span><span class="ddi-nat">${b.nation}</span></div>`).join('');
+  document.getElementById('ddrop').classList.add('open');
+}
+function pick(id,name){G.pick=id;document.getElementById('sfield').value=name;document.getElementById('ddrop').classList.remove('open');document.getElementById('gbtn').disabled=false;}
+function onKey(e){if(e.key==='Enter'&&G.pick)submitGuess();if(e.key==='Escape')document.getElementById('ddrop').classList.remove('open');}
+
+function submitGuess(){
+  if(!G.pick)return;
+  const id=G.pick,ok=id===G.bowler.id,p=BOWLERS.find(b=>b.id===id);
+  G.guesses.push(id);G.pick='';
+  document.getElementById('sfield').value='';document.getElementById('gbtn').disabled=true;document.getElementById('ddrop').classList.remove('open');
+  const el=document.createElement('div');el.className=`ge ${ok?'right':'wrong'}`;
+  el.innerHTML=`<span class="ge-n">${p.name}</span><span class="${ok?'ge-ok':'ge-x'}">${ok?'✓':'✗'}</span>`;
+  document.getElementById('glog').prepend(el);
+  if(ok){const pts=PTS[G.guesses.length-1]||100;G.score+=pts;G.correct++;stopTimer();logR(true,pts);setTimeout(()=>showResult(true,pts),350);}
+  else{if(G.cluesLit<G.bowler.clues.length){G.cluesLit++;renderClues();}renderAtts();if(G.guesses.length>=(G.mode==='blitz'?1:MAX_G)){stopTimer();logR(false,0);setTimeout(()=>showResult(false,0),350);}}
+}
+
+function skipBowler(){stopTimer();logR(false,0);showResult(false,0);}
+function logR(won,pts){G.results.push({bowler:G.bowler,won,pts,attempts:G.guesses.length});}
+
+function showResult(won,pts){
+  showScreen('resultScreen');
+  document.getElementById('resWord').textContent=won?'CORRECT!':'WRONG!';
+  document.getElementById('resWord').className='res-word '+(won?'win':'lose');
+  document.getElementById('resWho').innerHTML=`That was <strong>${G.bowler.name}</strong> — ${G.bowler.nation}`;
+  document.getElementById('resPts').textContent=pts;
+  if(won)confetti();
+  const last=G.idx>=G.queue.length-1,nb=document.getElementById('nextBtn');
+  if(last){nb.textContent='See Final Score →';nb.onclick=showFinal;if(G.mode==='daily'){document.getElementById('dshare').style.display='block';document.getElementById('dsharebox').textContent=buildShare();}}
+  else{nb.textContent='Next Bowler →';nb.onclick=nextBowler;document.getElementById('dshare').style.display='none';}
+}
+function nextBowler(){G.idx++;showScreen('gameScreen');loadBowler();}
+
+function showFinal(){
+  showScreen('finalScreen');
+  document.getElementById('finScore').textContent=G.score;
+  const tot=G.queue.length,avg=tot?Math.round(G.score/tot):0;
+  document.getElementById('finGrid').innerHTML=`<div class="fin-st"><span class="fin-sv">${G.correct}/${tot}</span><span class="fin-sl">Correct</span></div><div class="fin-st"><span class="fin-sv">${avg}</span><span class="fin-sl">Avg pts</span></div><div class="fin-st"><span class="fin-sv">${stats.streak+1}</span><span class="fin-sl">Streak</span></div>`;
+  document.getElementById('finShare').textContent=buildFinalShare();
+  stats.games++;if(G.correct>0){stats.wins++;stats.streak++;}else stats.streak=0;
+  if(G.score>stats.best)stats.best=G.score;
+  localStorage.setItem('cz3',JSON.stringify(stats));refreshH();
+  if(G.correct===G.queue.length)confetti();
+}
+
+function buildShare(){const r=G.results[0];const dots=r?.won?'🟥'.repeat(Math.max(0,(r.attempts||1)-1))+'🟩':'🟥🟥🟥🟥';return`Cricket Zone — Daily Bowler\n${new Date().toLocaleDateString()}\n\n${dots}\n\n${r?.won?`Got it in ${r.attempts}!`:`Missed — ${G.bowler.name}`}\n\ncricketzone.app`;}
+function buildFinalShare(){const rows=G.results.map(r=>r.won?'🟥'.repeat(Math.max(0,r.attempts-1))+'🟩':'🟥🟥🟥🟥').join('\n');return`Cricket Zone — ${G.mode.toUpperCase()}\n${G.correct}/${G.queue.length} · ${G.score} pts\n\n${rows}\n\ncricketzone.app`;}
+function copyShare(t){navigator.clipboard.writeText(t==='d'?buildShare():buildFinalShare()).then(()=>toast('Copied!','ok'));}
+
+function toast(msg,type=''){const el=document.createElement('div');el.className=`toast ${type}`;el.textContent=msg;document.getElementById('tdock').appendChild(el);setTimeout(()=>el.remove(),3200);}
+function confetti(){const cols=['#c8f230','#fff','#ffd166','#ff6b6b','#4db8ff'];for(let i=0;i<55;i++)setTimeout(()=>{const el=document.createElement('div');el.className='cf';el.style.cssText=`left:${Math.random()*100}vw;top:-10px;background:${cols[i%cols.length]};animation-duration:${1.4+Math.random()*1.4}s;border-radius:${Math.random()>.5?'50%':'2px'};`;document.body.appendChild(el);setTimeout(()=>el.remove(),3000);},i*28);}
+
+document.addEventListener('click',e=>{if(!e.target.closest('.sarea'))document.getElementById('ddrop').classList.remove('open');});
+boot();
+</script>
+</body>
+</html>
