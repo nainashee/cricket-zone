@@ -656,8 +656,8 @@ function showFinal(){
   if(G.correct===G.queue.length)confetti();
 }
 
-function buildShare(){const r=G.results[0];const dots=r?.won?'🟥'.repeat(Math.max(0,(r.attempts||1)-1))+'🟩':'🟥🟥🟥🟥';return`Cricket Zone — Daily Bowler\n${new Date().toLocaleDateString()}\n\n${dots}\n\n${r?.won?`Got it in ${r.attempts}!`:`Missed — ${G.bowler.name}`}\n\ncricketzone.app`;}
-function buildFinalShare(){const rows=G.results.map(r=>r.won?'🟥'.repeat(Math.max(0,r.attempts-1))+'🟩':'🟥🟥🟥🟥').join('\n');return`Cricket Zone — ${G.mode.toUpperCase()}\n${G.correct}/${G.queue.length} · ${G.score} pts\n\n${rows}\n\ncricketzone.app`;}
+function buildShare(){const r=G.results[0];const dots=r?.won?'🟥'.repeat(Math.max(0,(r.attempts||1)-1))+'🟩':'🟥🟥🟥🟥';return`Cricket Zone — Daily Bowler\n${new Date().toLocaleDateString()}\n\n${dots}\n\n${r?.won?`Got it in ${r.attempts}!`:`Missed — ${G.bowler.name}`}\n\nplayhowzat.com`;}
+function buildFinalShare(){const rows=G.results.map(r=>r.won?'🟥'.repeat(Math.max(0,r.attempts-1))+'🟩':'🟥🟥🟥🟥').join('\n');return`Cricket Zone — ${G.mode.toUpperCase()}\n${G.correct}/${G.queue.length} · ${G.score} pts\n\n${rows}\n\nplayhowzat.com`;}
 function copyShare(t){navigator.clipboard.writeText(t==='d'?buildShare():buildFinalShare()).then(()=>toast('Copied!','ok'));}
 
 function toast(msg,type=''){const el=document.createElement('div');el.className=`toast ${type}`;el.textContent=msg;document.getElementById('tdock').appendChild(el);setTimeout(()=>el.remove(),3200);}
