@@ -674,8 +674,9 @@ async function saveScore(){
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({
         userId,
+        playerName:userId,
         score:G.score,
-        mode:G.mode,
+        gameMode:G.mode,
         category:'bowling',
         date:new Date().toISOString().slice(0,10)
       })

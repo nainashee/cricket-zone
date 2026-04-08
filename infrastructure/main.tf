@@ -39,6 +39,8 @@ resource "aws_cloudfront_origin_access_control" "frontend" {
 resource "aws_cloudfront_distribution" "frontend" {
   enabled             = true
   default_root_object = "index.html"
+  aliases             = ["playhowzat.com", "www.playhowzat.com"]
+  comment             = "Cricket Zone"
 
   origin {
     domain_name              = aws_s3_bucket.frontend.bucket_regional_domain_name
@@ -67,7 +69,9 @@ resource "aws_cloudfront_distribution" "frontend" {
   }
 
   viewer_certificate {
-    cloudfront_default_certificate = true
+    acm_certificate_arn      = "arn:aws:acm:us-east-1:989126024881:certificate/0941e31d-10f1-477e-970c-08dabed577ab"
+    ssl_support_method       = "sni-only"
+    minimum_protocol_version = "TLSv1.2_2021"
   }
 }
 
@@ -79,8 +83,8 @@ resource "aws_s3_bucket_policy" "frontend" {
     Version = "2012-10-17"
     Statement = [
       {
-        Sid       = "AllowCloudFrontRead"
-        Effect    = "Allow"
+        Sid    = "AllowCloudFrontRead"
+        Effect = "Allow"
         Principal = {
           Service = "cloudfront.amazonaws.com"
         }
@@ -99,4 +103,283 @@ resource "aws_s3_bucket_policy" "frontend" {
 # Output the CloudFront URL when apply completes
 output "cloudfront_url" {
   value = "https://${aws_cloudfront_distribution.frontend.domain_name}"
+}
+
+# ─────────────────────────────────────────
+# DynamoDB Tables
+# ─────────────────────────────────────────
+
+resource "aws_dynamodb_table" "scores" {
+  name         = "cricket-zone-scores"
+  billing_mode = "PAY_PER_REQUEST"
+  hash_key     = "userId"
+  range_key    = "scoreId"
+
+  attribute {
+    name = "userId"
+    type = "S"
+  }
+
+  attribute {
+    name = "scoreId"
+    type = "S"
+  }
+
+  attribute {
+    name = "category"
+    type = "S"
+  }
+
+  attribute {
+    name = "date"
+    type = "S"
+  }
+
+  global_secondary_index {
+    name            = "category-date-index"
+    hash_key        = "category"
+    range_key       = "date"
+    projection_type = "ALL"
+  }
+
+  ttl {
+    attribute_name = "ttl"
+    enabled        = true
+  }
+
+  tags = {
+    Project = "cricket-zone"
+  }
+}
+
+resource "aws_dynamodb_table" "content" {
+  name         = "cricket-zone-content"
+  billing_mode = "PAY_PER_REQUEST"
+  hash_key     = "category"
+  range_key    = "itemId"
+
+  attribute {
+    name = "category"
+    type = "S"
+  }
+
+  attribute {
+    name = "itemId"
+    type = "S"
+  }
+
+  tags = {
+    Project = "cricket-zone"
+  }
+}
+
+
+
+
+# ─────────────────────────────────────────
+# IAM Role for Lambda Functions
+# ─────────────────────────────────────────
+
+resource "aws_iam_role" "lambda_exec" {
+  name = "cricket-zone-lambda-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect    = "Allow"
+        Principal = { Service = "lambda.amazonaws.com" }
+        Action    = "sts:AssumeRole"
+      }
+    ]
+  })
+
+  tags = {
+    Project = "cricket-zone"
+  }
+}
+
+resource "aws_iam_role_policy" "lambda_dynamodb" {
+  name = "cricket-zone-lambda-dynamodb"
+  role = aws_iam_role.lambda_exec.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "dynamodb:PutItem",
+          "dynamodb:Query",
+          "dynamodb:GetItem"
+        ]
+        Resource = [
+          aws_dynamodb_table.scores.arn,
+          "${aws_dynamodb_table.scores.arn}/index/*",
+          aws_dynamodb_table.content.arn
+        ]
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "lambda_logs" {
+  role       = aws_iam_role.lambda_exec.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+}
+
+
+
+# ─────────────────────────────────────────
+# Lambda Functions
+# ─────────────────────────────────────────
+
+data "archive_file" "daily_challenge" {
+  type        = "zip"
+  source_dir  = "../backend/functions/daily-challenge"
+  output_path = "../backend/functions/daily-challenge.zip"
+  excludes    = ["node_modules/.cache"]
+}
+
+data "archive_file" "save_score" {
+  type        = "zip"
+  source_dir  = "../backend/functions/save-score"
+  output_path = "../backend/functions/save-score.zip"
+  excludes    = ["node_modules/.cache"]
+}
+
+data "archive_file" "leaderboard" {
+  type        = "zip"
+  source_dir  = "../backend/functions/leaderboard"
+  output_path = "../backend/functions/leaderboard.zip"
+  excludes    = ["node_modules/.cache"]
+}
+
+resource "aws_lambda_function" "daily_challenge" {
+  filename         = data.archive_file.daily_challenge.output_path
+  function_name    = "cricket-zone-daily-challenge"
+  role             = aws_iam_role.lambda_exec.arn
+  handler          = "index.handler"
+  runtime          = "nodejs20.x"
+  source_code_hash = data.archive_file.daily_challenge.output_base64sha256
+
+  tags = {
+    Project = "cricket-zone"
+  }
+}
+
+resource "aws_lambda_function" "save_score" {
+  filename         = data.archive_file.save_score.output_path
+  function_name    = "cricket-zone-save-score"
+  role             = aws_iam_role.lambda_exec.arn
+  handler          = "index.handler"
+  runtime          = "nodejs20.x"
+  source_code_hash = data.archive_file.save_score.output_base64sha256
+
+  tags = {
+    Project = "cricket-zone"
+  }
+}
+
+resource "aws_lambda_function" "leaderboard" {
+  filename         = data.archive_file.leaderboard.output_path
+  function_name    = "cricket-zone-leaderboard"
+  role             = aws_iam_role.lambda_exec.arn
+  handler          = "index.handler"
+  runtime          = "nodejs20.x"
+  source_code_hash = data.archive_file.leaderboard.output_base64sha256
+
+  tags = {
+    Project = "cricket-zone"
+  }
+}
+
+
+
+# ─────────────────────────────────────────
+# API Gateway
+# ─────────────────────────────────────────
+
+resource "aws_apigatewayv2_api" "main" {
+  name          = "cricket-zone-api"
+  protocol_type = "HTTP"
+
+  cors_configuration {
+    allow_origins = ["https://playhowzat.com"]
+    allow_methods = ["GET", "POST", "OPTIONS"]
+    allow_headers = ["Content-Type"]
+  }
+}
+
+resource "aws_apigatewayv2_integration" "daily_challenge" {
+  api_id                 = aws_apigatewayv2_api.main.id
+  integration_type       = "AWS_PROXY"
+  integration_uri        = aws_lambda_function.daily_challenge.invoke_arn
+  payload_format_version = "2.0"
+}
+
+resource "aws_apigatewayv2_integration" "save_score" {
+  api_id                 = aws_apigatewayv2_api.main.id
+  integration_type       = "AWS_PROXY"
+  integration_uri        = aws_lambda_function.save_score.invoke_arn
+  payload_format_version = "2.0"
+}
+
+resource "aws_apigatewayv2_integration" "leaderboard" {
+  api_id                 = aws_apigatewayv2_api.main.id
+  integration_type       = "AWS_PROXY"
+  integration_uri        = aws_lambda_function.leaderboard.invoke_arn
+  payload_format_version = "2.0"
+}
+
+resource "aws_apigatewayv2_route" "daily_challenge" {
+  api_id    = aws_apigatewayv2_api.main.id
+  route_key = "GET /daily"
+  target    = "integrations/${aws_apigatewayv2_integration.daily_challenge.id}"
+}
+
+resource "aws_apigatewayv2_route" "save_score" {
+  api_id    = aws_apigatewayv2_api.main.id
+  route_key = "POST /score"
+  target    = "integrations/${aws_apigatewayv2_integration.save_score.id}"
+}
+
+resource "aws_apigatewayv2_route" "leaderboard" {
+  api_id    = aws_apigatewayv2_api.main.id
+  route_key = "GET /leaderboard"
+  target    = "integrations/${aws_apigatewayv2_integration.leaderboard.id}"
+}
+
+resource "aws_apigatewayv2_stage" "default" {
+  api_id      = aws_apigatewayv2_api.main.id
+  name        = "$default"
+  auto_deploy = true
+}
+
+resource "aws_lambda_permission" "daily_challenge" {
+  statement_id  = "AllowAPIGatewayInvoke"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.daily_challenge.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_apigatewayv2_api.main.execution_arn}/*/*"
+}
+
+resource "aws_lambda_permission" "save_score" {
+  statement_id  = "AllowAPIGatewayInvoke"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.save_score.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_apigatewayv2_api.main.execution_arn}/*/*"
+}
+
+resource "aws_lambda_permission" "leaderboard" {
+  statement_id  = "AllowAPIGatewayInvoke"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.leaderboard.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_apigatewayv2_api.main.execution_arn}/*/*"
+}
+
+output "api_url" {
+  value = aws_apigatewayv2_stage.default.invoke_url
 }
