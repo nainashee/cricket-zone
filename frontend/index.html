@@ -789,18 +789,46 @@ async function loadLeaderboard(){
       el.innerHTML='<p style="color:var(--text3);font-size:0.78rem;font-family:\'DM Mono\',monospace;padding:0.9rem;">No scores yet today. You might be #1!</p>';
       return;
     }
-    el.innerHTML=data.leaderboard.map((s,i)=>`
-      <div style="display:flex;align-items:center;justify-content:space-between;padding:0.6rem 0.9rem;border-bottom:1px solid var(--border2);">
-        <div style="display:flex;align-items:center;gap:0.7rem;">
-          <span style="font-family:'Bebas Neue',sans-serif;font-size:1.1rem;color:${i===0?'var(--gold)':'var(--text3)'};width:1.2rem;">${i+1}</span>
-          <span style="font-size:0.82rem;color:var(--text2);">${s.playerName||s.userId}</span>
+
+    const currentUserId=localStorage.getItem('cz_uid');
+    const allScores=data.leaderboard;
+    const top5=allScores.slice(0,5);
+    const myIdx=allScores.findIndex(s=>s.userId===currentUserId);
+    const myEntry=myIdx>=0?allScores[myIdx]:null;
+    const inTop5=myIdx>=0&&myIdx<5;
+
+    function rankColor(i){
+      if(i===0)return'var(--gold)';
+      if(i===1)return'#c0c0c0';
+      if(i===2)return'#cd7f32';
+      return'var(--text3)';
+    }
+
+    function renderRow(s,i,isMe){
+      const name=s.playerName||s.userId;
+      const youBadge=isMe?`<span style="font-family:'DM Mono',monospace;font-size:0.58rem;color:var(--accent);background:var(--accent-dim);border:1px solid var(--border);border-radius:100px;padding:0.1rem 0.45rem;margin-left:0.4rem;vertical-align:middle;">YOU</span>`:'';
+      return`<div style="display:flex;align-items:center;justify-content:space-between;padding:0.65rem 0.9rem;border-bottom:1px solid var(--border2);${isMe?'background:rgba(200,242,48,0.04);':''}">
+        <div style="display:flex;align-items:center;gap:0.75rem;">
+          <span style="font-family:'Bebas Neue',sans-serif;font-size:1.1rem;color:${isMe?'var(--accent)':rankColor(i)};width:1.4rem;text-align:center;">${i+1}</span>
+          <span style="font-size:0.82rem;color:${isMe?'var(--text)':'var(--text2)'};font-weight:${isMe?500:400};">${name}${youBadge}</span>
         </div>
         <div style="display:flex;align-items:center;gap:0.8rem;">
           <span style="font-family:'DM Mono',monospace;font-size:0.68rem;color:var(--text3);">${s.gameMode}</span>
           <span style="font-family:'Bebas Neue',sans-serif;font-size:1.1rem;color:var(--accent);">${s.score}</span>
         </div>
-      </div>
-    `).join('');
+      </div>`;
+    }
+
+    let html=top5.map((s,i)=>renderRow(s,i,s.userId===currentUserId)).join('');
+
+    if(!inTop5&&myEntry){
+      html+=`<div style="padding:0.38rem 0.9rem;border-bottom:1px solid var(--border2);">
+        <span style="font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--text3);letter-spacing:0.12em;">· · ·</span>
+      </div>`;
+      html+=renderRow(myEntry,myIdx,true);
+    }
+
+    el.innerHTML=html;
   }catch(err){
     console.error('Leaderboard fetch failed:',err);
   }
