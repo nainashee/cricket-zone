@@ -262,6 +262,25 @@ video{width:100%;height:100%;object-fit:cover;filter:contrast(40) brightness(0.4
 /* confetti */
 .cf{position:fixed;width:7px;height:7px;border-radius:1px;pointer-events:none;z-index:998;animation:cfFall linear forwards;}
 @keyframes cfFall{0%{opacity:1;transform:translateY(-20px) rotate(0deg);}100%{opacity:0;transform:translateY(100vh) rotate(540deg);}}
+
+/* ── NAME MODAL ── */
+.name-overlay{position:fixed;inset:0;z-index:990;background:rgba(7,9,10,0.88);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;opacity:0;animation:fadeIn 0.3s ease forwards;}
+@keyframes fadeIn{to{opacity:1;}}
+.name-modal{background:var(--surface);border:1px solid var(--border);border-radius:24px;padding:2.4rem 2rem 2rem;max-width:380px;width:90%;text-align:center;transform:translateY(20px);animation:modalUp 0.35s ease forwards;}
+@keyframes modalUp{to{transform:translateY(0);}}
+.nm-icon{font-size:2.6rem;margin-bottom:1rem;display:block;}
+.nm-title{font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:0.06em;margin-bottom:0.4rem;}
+.nm-sub{font-size:0.82rem;color:var(--text2);line-height:1.6;margin-bottom:1.6rem;font-weight:300;}
+.nm-sub span{color:var(--accent);font-weight:500;}
+.nm-input{width:100%;background:var(--surface2);border:1.5px solid var(--border2);border-radius:12px;padding:0.82rem 1rem;font-size:0.95rem;font-family:'DM Sans',sans-serif;color:var(--text);outline:none;transition:all 0.2s;text-align:center;letter-spacing:0.02em;}
+.nm-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-dim);}
+.nm-input.shake{animation:nmShake 0.35s ease;border-color:var(--red);box-shadow:0 0 0 3px rgba(255,79,79,0.15);}
+@keyframes nmShake{0%,100%{transform:translateX(0);}20%{transform:translateX(-7px);}40%{transform:translateX(7px);}60%{transform:translateX(-5px);}80%{transform:translateX(5px);}}
+.nm-error{font-size:0.75rem;color:var(--red);margin-top:0.5rem;height:1rem;font-family:'DM Mono',monospace;letter-spacing:0.04em;}
+.nm-btn{width:100%;margin-top:1.1rem;background:var(--accent);color:var(--bg);border:none;border-radius:12px;padding:0.88rem;font-size:0.9rem;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all 0.2s;letter-spacing:0.01em;}
+.nm-btn:hover{background:#d8ff45;transform:translateY(-1px);box-shadow:0 8px 24px var(--accent-glow);}
+.nm-overlay-out{animation:fadeOut 0.25s ease forwards;}
+@keyframes fadeOut{to{opacity:0;}}
 </style>
 </head>
 <body>
@@ -742,12 +761,13 @@ async function saveScore(){
       localStorage.setItem('cz_uid',id);
       return id;
     })();
+    const playerName=localStorage.getItem('cz_name')||userId;
     await fetch(`${API}/score`,{
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({
         userId,
-        playerName:userId,
+        playerName,
         score:G.score,
         gameMode:G.mode,
         category:'bowling',
@@ -786,7 +806,54 @@ async function loadLeaderboard(){
   }
 }
 
-async function showFinal(){
+function showFinal(){
+  const savedName=localStorage.getItem('cz_name');
+  if(!savedName){
+    showNameModal(()=>revealFinal());
+  } else {
+    revealFinal();
+  }
+}
+
+function showNameModal(onConfirm){
+  const overlay=document.createElement('div');
+  overlay.className='name-overlay';
+  overlay.innerHTML=`
+    <div class="name-modal">
+      <span class="nm-icon">🏆</span>
+      <div class="nm-title">NICE GAME!</div>
+      <p class="nm-sub">Enter your name to appear on the<br><span>Howzat Leaderboard</span></p>
+      <input class="nm-input" id="nmInput" type="text" placeholder="Your name" maxlength="20" autocomplete="off" spellcheck="false"/>
+      <div class="nm-error" id="nmError"></div>
+      <button class="nm-btn" id="nmBtn">Save & See My Score →</button>
+    </div>`;
+  document.body.appendChild(overlay);
+  const input=overlay.querySelector('#nmInput');
+  const btn=overlay.querySelector('#nmBtn');
+  const err=overlay.querySelector('#nmError');
+  setTimeout(()=>input.focus(),350);
+
+  function confirm(){
+    const val=input.value.trim();
+    if(!val){
+      input.classList.remove('shake');
+      void input.offsetWidth; // reflow to restart animation
+      input.classList.add('shake');
+      err.textContent='Please enter your name to continue.';
+      input.focus();
+      return;
+    }
+    localStorage.setItem('cz_name',val);
+    overlay.classList.add('nm-overlay-out');
+    setTimeout(()=>{overlay.remove();onConfirm();},260);
+  }
+
+  btn.addEventListener('click',confirm);
+  input.addEventListener('keydown',e=>{if(e.key==='Enter')confirm();});
+  input.addEventListener('input',()=>{input.classList.remove('shake');err.textContent='';});
+}
+
+async function revealFinal(){
   showScreen('finalScreen');
   document.getElementById('finScore').textContent=G.score;
   const tot=G.queue.length,avg=tot?Math.round(G.score/tot):0;
