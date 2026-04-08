@@ -194,10 +194,10 @@ video{width:100%;height:100%;object-fit:cover;filter:contrast(40) brightness(0.4
 .clue-chip.lit{background:var(--surface2);border-color:var(--border);color:var(--text2);}
 .ck{font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);}
 
-.atts{display:flex;gap:0.42rem;align-items:center;margin-bottom:0.9rem;}
-.adot{width:9px;height:9px;border-radius:50%;border:1.5px solid var(--border2);transition:all 0.25s;}
-.adot.wrong{background:var(--red);border-color:var(--red);box-shadow:0 0 5px rgba(255,79,79,0.35);}
-.adot.active{border-color:var(--accent);box-shadow:0 0 5px var(--accent-glow);}
+.atts{display:flex;gap:0.5rem;align-items:center;margin-bottom:0.9rem;}
+.adot{width:14px;height:14px;border-radius:50%;border:2px solid var(--text3);background:transparent;transition:all 0.25s;position:relative;}
+.adot.wrong{background:var(--red);border-color:var(--red);box-shadow:0 0 8px rgba(255,79,79,0.45);}
+.adot.active{border-color:var(--accent);box-shadow:0 0 8px var(--accent-glow);background:var(--accent-dim);}
 
 .sarea{position:relative;margin-bottom:0.7rem;}
 .sfield{width:100%;background:var(--surface);border:1px solid var(--border2);border-radius:12px;padding:0.82rem 1rem 0.82rem 2.65rem;font-size:0.9rem;font-family:'DM Sans',sans-serif;color:var(--text);outline:none;transition:all 0.2s;}
@@ -334,7 +334,7 @@ video{width:100%;height:100%;object-fit:cover;filter:contrast(40) brightness(0.4
         <circle cx="18.8" cy="15.8" r="0.9" fill="rgba(255,255,255,0.22)"/>
       </svg>
     </div>
-    <em>HOWZAT</em>
+    <span style="color:#e8cc8a;">HOW</span><em>ZAT</em>
   </div>
   <div class="hstats">
     <div class="hst"><span class="hst-v" id="hStreak">0</span><span class="hst-l">Streak</span></div>
@@ -917,7 +917,7 @@ function buildDailyShareCardHTML(){
     :'<span class="sc-dot miss"></span>'.repeat(4);
   const outcome=r?.won?`Got it in ${r.attempts}!`:`Missed — ${G.bowler.name}`;
   return `<div class="sc-top">
-    <span class="sc-brand">HOW<em>ZAT</em></span>
+    <span class="sc-brand"><span style="color:#e8cc8a;">HOW</span><em>ZAT</em></span>
     <span class="sc-mode">Daily Bowler</span>
   </div>
   <div class="sc-stats">
@@ -937,7 +937,7 @@ function buildShareCardHTML(results,mode,score,correct,tot){
          :'<span class="sc-dot miss"></span>'.repeat(4)
   ).join('');
   return `<div class="sc-top">
-    <span class="sc-brand">HOW<em>ZAT</em></span>
+    <span class="sc-brand"><span style="color:#e8cc8a;">HOW</span><em>ZAT</em></span>
     <span class="sc-mode">${mode.toUpperCase()}</span>
   </div>
   <div class="sc-stats">
