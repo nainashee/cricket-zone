@@ -242,7 +242,22 @@ video{width:100%;height:100%;object-fit:cover;filter:contrast(40) brightness(0.4
 .fin-st{background:var(--surface);padding:1.2rem;}
 .fin-sv{font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--accent);letter-spacing:0.05em;display:block;line-height:1;margin-bottom:0.28rem;}
 .fin-sl{font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em;}
-.share-box{background:var(--surface);border:1px solid var(--border2);border-radius:14px;padding:1.2rem;font-family:'DM Mono',monospace;font-size:0.78rem;color:var(--text2);line-height:1.9;text-align:left;white-space:pre-wrap;margin-bottom:1.2rem;}
+.share-card{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:1.4rem 1.5rem;margin-bottom:1.2rem;text-align:left;position:relative;overflow:hidden;}
+.share-card::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at top right,rgba(200,242,48,0.06) 0%,transparent 65%);pointer-events:none;}
+.sc-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:0.9rem;}
+.sc-brand{font-family:'Bebas Neue',sans-serif;font-size:1.05rem;letter-spacing:0.1em;color:var(--text);}
+.sc-brand em{color:var(--accent);font-style:normal;}
+.sc-mode{font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--text3);letter-spacing:0.1em;text-transform:uppercase;background:var(--surface2);border:1px solid var(--border2);border-radius:100px;padding:0.18rem 0.55rem;}
+.sc-stats{display:flex;align-items:center;gap:1.2rem;margin-bottom:1rem;}
+.sc-st{text-align:center;}
+.sc-sv{font-family:'Bebas Neue',sans-serif;font-size:1.6rem;color:var(--accent);letter-spacing:0.04em;line-height:1;display:block;}
+.sc-sl{font-family:'DM Mono',monospace;font-size:0.58rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em;}
+.sc-divider{width:1px;height:2.2rem;background:var(--border2);}
+.sc-dots{display:flex;gap:5px;align-items:center;margin-bottom:1rem;flex-wrap:wrap;}
+.sc-dot{width:15px;height:15px;border-radius:4px;}
+.sc-dot.hit{background:var(--accent);}
+.sc-dot.miss{background:var(--red);}
+.sc-url{font-family:'DM Mono',monospace;font-size:0.62rem;color:var(--text3);letter-spacing:0.06em;}
 .fin-btns{display:flex;gap:0.7rem;justify-content:center;flex-wrap:wrap;}
 
 /* shared buttons */
@@ -575,7 +590,7 @@ video{width:100%;height:100%;object-fit:cover;filter:contrast(40) brightness(0.4
     </div>
   </div>
   <div id="dshare" style="display:none;">
-    <div class="share-box" id="dsharebox"></div>
+    <div class="share-card" id="dsharebox"></div>
     <button class="btn-s" style="width:100%;" onclick="copyShare('d')">📋 Copy Result</button>
   </div>
 </div>
@@ -587,7 +602,7 @@ video{width:100%;height:100%;object-fit:cover;filter:contrast(40) brightness(0.4
   <p class="fin-eyebrow">Game Complete</p>
   <div class="fin-score" id="finScore">0</div>
   <div class="fin-grid" id="finGrid"></div>
-  <div class="share-box" id="finShare"></div>
+  <div class="share-card" id="finShare"></div>
   <div style="text-align:left;margin-bottom:1.4rem;">
     <p style="font-family:'DM Mono',monospace;font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--text3);margin-bottom:0.7rem;">Today's Top Scores</p>
     <div style="background:var(--surface);border:1px solid var(--border2);border-radius:14px;overflow:hidden;" id="lbList">
@@ -749,7 +764,7 @@ function showResult(won,pts){
   document.getElementById('resPts').textContent=pts;
   if(won)confetti();
   const last=G.idx>=G.queue.length-1,nb=document.getElementById('nextBtn');
-  if(last){nb.textContent='See Final Score →';nb.onclick=showFinal;if(G.mode==='daily'){document.getElementById('dshare').style.display='block';document.getElementById('dsharebox').textContent=buildShare();}}
+  if(last){nb.textContent='See Final Score →';nb.onclick=showFinal;if(G.mode==='daily'){document.getElementById('dshare').style.display='block';document.getElementById('dsharebox').innerHTML=buildDailyShareCardHTML();}}
   else{nb.textContent='Next Bowler →';nb.onclick=nextBowler;document.getElementById('dshare').style.display='none';}
 }
 function nextBowler(){G.idx++;showScreen('gameScreen');loadBowler();}
@@ -886,7 +901,7 @@ async function revealFinal(){
   document.getElementById('finScore').textContent=G.score;
   const tot=G.queue.length,avg=tot?Math.round(G.score/tot):0;
   document.getElementById('finGrid').innerHTML=`<div class="fin-st"><span class="fin-sv">${G.correct}/${tot}</span><span class="fin-sl">Correct</span></div><div class="fin-st"><span class="fin-sv">${avg}</span><span class="fin-sl">Avg pts</span></div><div class="fin-st"><span class="fin-sv">${stats.streak+1}</span><span class="fin-sl">Streak</span></div>`;
-  document.getElementById('finShare').textContent=buildFinalShare();
+  document.getElementById('finShare').innerHTML=buildShareCardHTML(G.results,G.mode,G.score,G.correct,G.queue.length);
   stats.games++;if(G.correct>0){stats.wins++;stats.streak++;}else stats.streak=0;
   if(G.score>stats.best)stats.best=G.score;
   localStorage.setItem('cz3',JSON.stringify(stats));refreshH();
@@ -895,9 +910,53 @@ async function revealFinal(){
   if(G.correct===G.queue.length)confetti();
 }
 
-function buildShare(){const r=G.results[0];const dots=r?.won?'🟥'.repeat(Math.max(0,(r.attempts||1)-1))+'🟩':'🟥🟥🟥🟥';return`Howzat — Daily Bowler\n${new Date().toLocaleDateString()}\n\n${dots}\n\n${r?.won?`Got it in ${r.attempts}!`:`Missed — ${G.bowler.name}`}\n\nplayhowzat.com`;}
-function buildFinalShare(){const rows=G.results.map(r=>r.won?'🟥'.repeat(Math.max(0,r.attempts-1))+'🟩':'🟥🟥🟥🟥').join('\n');return`Howzat — ${G.mode.toUpperCase()}\n${G.correct}/${G.queue.length} · ${G.score} pts\n\n${rows}\n\nplayhowzat.com`;}
-function copyShare(t){navigator.clipboard.writeText(t==='d'?buildShare():buildFinalShare()).then(()=>toast('Copied!','ok'));}
+function buildDailyShareCardHTML(){
+  const r=G.results[0];
+  const dots=r?.won
+    ?'<span class="sc-dot miss"></span>'.repeat(Math.max(0,(r.attempts||1)-1))+'<span class="sc-dot hit"></span>'
+    :'<span class="sc-dot miss"></span>'.repeat(4);
+  const outcome=r?.won?`Got it in ${r.attempts}!`:`Missed — ${G.bowler.name}`;
+  return `<div class="sc-top">
+    <span class="sc-brand">HOW<em>ZAT</em></span>
+    <span class="sc-mode">Daily Bowler</span>
+  </div>
+  <div class="sc-stats">
+    <div class="sc-st"><span class="sc-sv">${r?.won?r.attempts:'-'}</span><span class="sc-sl">${r?.won?'Guess':'Missed'}</span></div>
+    <div class="sc-divider"></div>
+    <div class="sc-st"><span class="sc-sv">${r?.pts||0}</span><span class="sc-sl">Points</span></div>
+    <div class="sc-divider"></div>
+    <div class="sc-st"><span class="sc-sv">${new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short'})}</span><span class="sc-sl">Today</span></div>
+  </div>
+  <div class="sc-dots">${dots}</div>
+  <div class="sc-url">playhowzat.com</div>`;
+}
+
+function buildShareCardHTML(results,mode,score,correct,tot){
+  const dots=results.map(r=>
+    r.won?'<span class="sc-dot miss"></span>'.repeat(Math.max(0,r.attempts-1))+'<span class="sc-dot hit"></span>'
+         :'<span class="sc-dot miss"></span>'.repeat(4)
+  ).join('');
+  return `<div class="sc-top">
+    <span class="sc-brand">HOW<em>ZAT</em></span>
+    <span class="sc-mode">${mode.toUpperCase()}</span>
+  </div>
+  <div class="sc-stats">
+    <div class="sc-st"><span class="sc-sv">${correct}/${tot}</span><span class="sc-sl">Correct</span></div>
+    <div class="sc-divider"></div>
+    <div class="sc-st"><span class="sc-sv">${score}</span><span class="sc-sl">Points</span></div>
+    <div class="sc-divider"></div>
+    <div class="sc-st"><span class="sc-sv">${new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short'})}</span><span class="sc-sl">Today</span></div>
+  </div>
+  <div class="sc-dots">${dots}</div>
+  <div class="sc-url">playhowzat.com</div>`;
+}
+
+function buildSharePlainText(isDaily){
+  if(isDaily){const r=G.results[0];const dots=r?.won?'🟥'.repeat(Math.max(0,(r.attempts||1)-1))+'🟩':'🟥🟥🟥🟥';return`Howzat — Daily Bowler\n${new Date().toLocaleDateString()}\n\n${dots}\n\n${r?.won?`Got it in ${r.attempts}!`:`Missed — ${G.bowler.name}`}\n\nplayhowzat.com`;}
+  const rows=G.results.map(r=>r.won?'🟥'.repeat(Math.max(0,r.attempts-1))+'🟩':'🟥🟥🟥🟥').join('\n');
+  return`Howzat — ${G.mode.toUpperCase()}\n${G.correct}/${G.queue.length} · ${G.score} pts\n\n${rows}\n\nplayhowzat.com`;
+}
+function copyShare(t){navigator.clipboard.writeText(buildSharePlainText(t==='d')).then(()=>toast('Copied!','ok'));}
 
 function toast(msg,type=''){const el=document.createElement('div');el.className=`toast ${type}`;el.textContent=msg;document.getElementById('tdock').appendChild(el);setTimeout(()=>el.remove(),3200);}
 function confetti(){const cols=['#c8f230','#fff','#ffd166','#ff6b6b','#4db8ff'];for(let i=0;i<55;i++)setTimeout(()=>{const el=document.createElement('div');el.className='cf';el.style.cssText=`left:${Math.random()*100}vw;top:-10px;background:${cols[i%cols.length]};animation-duration:${1.4+Math.random()*1.4}s;border-radius:${Math.random()>.5?'50%':'2px'};`;document.body.appendChild(el);setTimeout(()=>el.remove(),3000);},i*28);}
