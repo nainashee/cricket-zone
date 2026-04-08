@@ -334,7 +334,7 @@ video{width:100%;height:100%;object-fit:cover;filter:contrast(40) brightness(0.4
         <circle cx="18.8" cy="15.8" r="0.9" fill="rgba(255,255,255,0.22)"/>
       </svg>
     </div>
-    <span style="color:#e8cc8a;">HOW</span><em>ZAT</em>
+    <span style="display:inline-flex;letter-spacing:0.12em;"><span style="color:#c9a84c;">HOW</span><em style="font-style:normal;color:var(--accent);">ZAT</em></span>
   </div>
   <div class="hstats">
     <div class="hst"><span class="hst-v" id="hStreak">0</span><span class="hst-l">Streak</span></div>
@@ -544,8 +544,7 @@ video{width:100%;height:100%;object-fit:cover;filter:contrast(40) brightness(0.4
   <div class="vid-wrap">
     <div class="vid-ph" id="vidPH">
       <div class="vid-ph-icon">🏏</div>
-      <p>Silhouette video loads once MP4 clips are added to content/bowling/</p>
-      <span class="vhint">See setup guide below ↓</span>
+      <p>Watch the action and identify the bowler</p>
     </div>
     <video id="bvid" loop muted autoplay playsinline style="display:none;"></video>
     <div class="nbadge" id="nbadge"></div>
@@ -563,15 +562,7 @@ video{width:100%;height:100%;object-fit:cover;filter:contrast(40) brightness(0.4
   <button class="btn-guess" id="gbtn" onclick="submitGuess()" disabled>Submit Guess</button>
   <div class="glog" id="glog"></div>
 
-  <details style="margin-top:2rem;">
-    <summary style="cursor:pointer;font-size:0.72rem;color:var(--text3);font-family:'DM Mono',monospace;letter-spacing:0.08em;padding:0.7rem 0;border-top:1px solid var(--border2);text-transform:uppercase;">📂 How to add video clips</summary>
-    <div style="padding:0.9rem;background:var(--surface);border-radius:12px;margin-top:0.4rem;font-size:0.78rem;color:var(--text2);line-height:1.9;">
-      <p style="color:var(--text);font-weight:500;margin-bottom:0.45rem;">Add MP4 clips to see real silhouette actions:</p>
-      <p><code style="color:var(--accent);background:var(--accent-dim);padding:1px 5px;border-radius:4px;">pip install yt-dlp</code></p>
-      <p style="margin-top:0.45rem;"><code style="color:var(--accent);background:var(--accent-dim);padding:1px 5px;border-radius:4px;">yt-dlp -f mp4 YOUTUBE_URL -o content/bowling/malinga.mp4</code></p>
-      <p style="margin-top:0.65rem;color:var(--text3);">Files go in <code style="color:var(--accent);">content/bowling/</code> named by player ID</p>
-    </div>
-  </details>
+
 
 </div>
 </div>
@@ -591,7 +582,7 @@ video{width:100%;height:100%;object-fit:cover;filter:contrast(40) brightness(0.4
   </div>
   <div id="dshare" style="display:none;">
     <div class="share-card" id="dsharebox"></div>
-    <button class="btn-s" style="width:100%;" onclick="copyShare('d')">📋 Copy Result</button>
+    <button class="btn-p" style="width:100%;" onclick="copyShare('d')">Copy Result</button>
   </div>
 </div>
 </div>
@@ -611,7 +602,7 @@ video{width:100%;height:100%;object-fit:cover;filter:contrast(40) brightness(0.4
   </div>
   <div class="fin-btns">
     <button class="btn-p" onclick="startGame(G.mode)">Play Again</button>
-    <button class="btn-s" onclick="copyShare('f')">📋 Share</button>
+    <button class="btn-p" onclick="copyShare('f')">Share</button>
     <button class="btn-s" onclick="showCategory()">← Modes</button>
     <button class="btn-s" onclick="showLanding()">Home</button>
   </div>
@@ -917,7 +908,7 @@ function buildDailyShareCardHTML(){
     :'<span class="sc-dot miss"></span>'.repeat(4);
   const outcome=r?.won?`Got it in ${r.attempts}!`:`Missed — ${G.bowler.name}`;
   return `<div class="sc-top">
-    <span class="sc-brand"><span style="color:#e8cc8a;">HOW</span><em>ZAT</em></span>
+    <span class="sc-brand"><span style="color:#c9a84c;">HOW</span><em>ZAT</em></span>
     <span class="sc-mode">Daily Bowler</span>
   </div>
   <div class="sc-stats">
@@ -937,7 +928,7 @@ function buildShareCardHTML(results,mode,score,correct,tot){
          :'<span class="sc-dot miss"></span>'.repeat(4)
   ).join('');
   return `<div class="sc-top">
-    <span class="sc-brand"><span style="color:#e8cc8a;">HOW</span><em>ZAT</em></span>
+    <span class="sc-brand"><span style="color:#c9a84c;">HOW</span><em>ZAT</em></span>
     <span class="sc-mode">${mode.toUpperCase()}</span>
   </div>
   <div class="sc-stats">
