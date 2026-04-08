@@ -502,6 +502,12 @@ video{width:100%;height:100%;object-fit:cover;filter:contrast(40) brightness(0.4
   <div class="fin-score" id="finScore">0</div>
   <div class="fin-grid" id="finGrid"></div>
   <div class="share-box" id="finShare"></div>
+  <div style="text-align:left;margin-bottom:1.4rem;">
+    <p style="font-family:'DM Mono',monospace;font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--text3);margin-bottom:0.7rem;">Today's Top Scores</p>
+    <div style="background:var(--surface);border:1px solid var(--border2);border-radius:14px;overflow:hidden;" id="lbList">
+      <p style="color:var(--text3);font-size:0.78rem;font-family:'DM Mono',monospace;padding:0.9rem;">Loading leaderboard...</p>
+    </div>
+  </div>
   <div class="fin-btns">
     <button class="btn-p" onclick="startGame(G.mode)">Play Again</button>
     <button class="btn-s" onclick="copyShare('f')">📋 Share</button>
@@ -686,6 +692,33 @@ async function saveScore(){
   }
 }
 
+async function loadLeaderboard(){
+  try{
+    const res=await fetch(`${API}/leaderboard?category=bowling`);
+    const data=await res.json();
+    const el=document.getElementById('lbList');
+    if(!el)return;
+    if(!data.leaderboard||!data.leaderboard.length){
+      el.innerHTML='<p style="color:var(--text3);font-size:0.78rem;font-family:\'DM Mono\',monospace;padding:0.9rem;">No scores yet today. You might be #1!</p>';
+      return;
+    }
+    el.innerHTML=data.leaderboard.map((s,i)=>`
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:0.6rem 0.9rem;border-bottom:1px solid var(--border2);">
+        <div style="display:flex;align-items:center;gap:0.7rem;">
+          <span style="font-family:'Bebas Neue',sans-serif;font-size:1.1rem;color:${i===0?'var(--gold)':'var(--text3)'};width:1.2rem;">${i+1}</span>
+          <span style="font-size:0.82rem;color:var(--text2);">${s.playerName||s.userId}</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:0.8rem;">
+          <span style="font-family:'DM Mono',monospace;font-size:0.68rem;color:var(--text3);">${s.gameMode}</span>
+          <span style="font-family:'Bebas Neue',sans-serif;font-size:1.1rem;color:var(--accent);">${s.score}</span>
+        </div>
+      </div>
+    `).join('');
+  }catch(err){
+    console.error('Leaderboard fetch failed:',err);
+  }
+}
+
 async function showFinal(){
   showScreen('finalScreen');
   document.getElementById('finScore').textContent=G.score;
@@ -696,6 +729,7 @@ async function showFinal(){
   if(G.score>stats.best)stats.best=G.score;
   localStorage.setItem('cz3',JSON.stringify(stats));refreshH();
   saveScore();
+  loadLeaderboard();
   if(G.correct===G.queue.length)confetti();
 }
 
