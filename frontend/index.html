@@ -553,10 +553,28 @@ function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classL
 function showLanding(){stopTimer();refreshLS();showScreen('landingScreen');}
 function showCategory(){showScreen('categoryScreen');}
 
-function startGame(mode){
+const API = 'https://h3laal38ta.execute-api.us-east-1.amazonaws.com';
+
+async function startGame(mode){
   G.mode=mode;G.score=0;G.correct=0;G.idx=0;G.results=[];
   const sh=[...BOWLERS].sort(()=>Math.random()-0.5);
-  G.queue=mode==='daily'?[BOWLERS[Math.floor(Date.now()/86400000)%BOWLERS.length]]:mode==='blitz'?sh.slice(0,15):sh.slice(0,10);
+
+  if(mode==='daily'){
+    try{
+      const res=await fetch(`${API}/daily?category=bowling`);
+      const data=await res.json();
+      const bowler=BOWLERS.find(b=>b.id===data.bowler);
+      if(!bowler)throw new Error('Bowler not found');
+      G.queue=[bowler];
+    }catch(err){
+      console.error('Daily fetch failed:',err);
+      toast('Could not load daily bowler. Try again.','');
+      return;
+    }
+  } else {
+    G.queue=mode==='blitz'?sh.slice(0,15):sh.slice(0,10);
+  }
+
   document.getElementById('modeCrumb').textContent=mode==='classic'?'Classic':mode==='blitz'?'Blitz':'Daily';
   showScreen('gameScreen');loadBowler();
 }
