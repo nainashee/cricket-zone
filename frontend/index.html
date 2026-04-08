@@ -662,7 +662,30 @@ function showResult(won,pts){
 }
 function nextBowler(){G.idx++;showScreen('gameScreen');loadBowler();}
 
-function showFinal(){
+async function saveScore(){
+  try{
+    const userId=localStorage.getItem('cz_uid')||(()=>{
+      const id='guest_'+Math.random().toString(36).slice(2,9);
+      localStorage.setItem('cz_uid',id);
+      return id;
+    })();
+    await fetch(`${API}/score`,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        userId,
+        score:G.score,
+        mode:G.mode,
+        category:'bowling',
+        date:new Date().toISOString().slice(0,10)
+      })
+    });
+  }catch(err){
+    console.error('Score save failed:',err);
+  }
+}
+
+async function showFinal(){
   showScreen('finalScreen');
   document.getElementById('finScore').textContent=G.score;
   const tot=G.queue.length,avg=tot?Math.round(G.score/tot):0;
@@ -671,6 +694,7 @@ function showFinal(){
   stats.games++;if(G.correct>0){stats.wins++;stats.streak++;}else stats.streak=0;
   if(G.score>stats.best)stats.best=G.score;
   localStorage.setItem('cz3',JSON.stringify(stats));refreshH();
+  saveScore();
   if(G.correct===G.queue.length)confetti();
 }
 
