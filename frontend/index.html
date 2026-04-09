@@ -278,6 +278,31 @@ video{width:100%;height:100%;object-fit:cover;}
 .cf{position:fixed;width:7px;height:7px;border-radius:1px;pointer-events:none;z-index:998;animation:cfFall linear forwards;}
 @keyframes cfFall{0%{opacity:1;transform:translateY(-20px) rotate(0deg);}100%{opacity:0;transform:translateY(100vh) rotate(540deg);}}
 
+/* ── TOP 5 DAILY ── */
+.top5-section{margin-top:3rem;opacity:0;animation:fadeUp 0.5s ease 1s forwards;}
+.top5-card{background:var(--surface);border:1px solid var(--border2);border-radius:16px;overflow:hidden;}
+.top5-header{padding:1rem 1.4rem;border-bottom:1px solid var(--border2);display:flex;align-items:center;justify-content:space-between;}
+.top5-title{display:flex;align-items:center;gap:0.6rem;}
+.top5-title-text{font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:0.08em;}
+.top5-badge{font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;background:var(--accent-dim);border:1px solid var(--border);color:var(--accent);border-radius:100px;padding:0.16rem 0.55rem;}
+.top5-date{font-family:'DM Mono',monospace;font-size:0.62rem;color:var(--text3);}
+.top5-row{display:flex;align-items:center;justify-content:space-between;padding:0.75rem 1.4rem;border-bottom:1px solid var(--border2);transition:background 0.15s;}
+.top5-row:last-child{border-bottom:none;}
+.top5-row:hover{background:var(--surface2);}
+.top5-row.me{background:rgba(200,242,48,0.04);}
+.top5-left{display:flex;align-items:center;gap:0.85rem;}
+.top5-rank{font-family:'Bebas Neue',sans-serif;font-size:1.25rem;width:1.6rem;text-align:center;line-height:1;}
+.top5-name{font-size:0.83rem;color:var(--text2);}
+.top5-name.me{color:var(--text);font-weight:500;}
+.top5-you{font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--accent);background:var(--accent-dim);border:1px solid var(--border);border-radius:100px;padding:0.1rem 0.4rem;margin-left:0.4rem;vertical-align:middle;}
+.top5-right{display:flex;align-items:center;gap:1rem;}
+.top5-mode{font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--text3);text-transform:uppercase;}
+.top5-score{font-family:'Bebas Neue',sans-serif;font-size:1.25rem;color:var(--accent);letter-spacing:0.04em;}
+.top5-empty{padding:1.4rem;text-align:center;font-family:'DM Mono',monospace;font-size:0.72rem;color:var(--text3);letter-spacing:0.06em;}
+.top5-loading{padding:1.4rem;display:flex;align-items:center;justify-content:center;gap:0.6rem;font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--text3);}
+.top5-spinner{width:14px;height:14px;border:2px solid var(--border2);border-top-color:var(--accent);border-radius:50%;animation:spin 0.7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
 /* ── NAME MODAL ── */
 .name-overlay{position:fixed;inset:0;z-index:990;background:rgba(7,9,10,0.88);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;opacity:0;animation:fadeIn 0.3s ease forwards;}
 @keyframes fadeIn{to{opacity:1;}}
@@ -453,6 +478,31 @@ video{width:100%;height:100%;object-fit:cover;}
       <div class="ls-item"><span class="ls-v" id="lsS">0</span><span class="ls-l">Win Streak</span></div>
       <div class="ls-item"><span class="ls-v" id="lsW">—</span><span class="ls-l">Win Rate</span></div>
     </div>
+
+    <!-- ── TOP 5 DAILY LEADERS ── -->
+    <div class="top5-section">
+      <div class="sec-head" style="margin-bottom:1.2rem;">
+        <p class="sec-lbl">Daily Challenge</p>
+        <h2 class="sec-title">TODAY'S TOP 5</h2>
+      </div>
+      <div class="top5-card">
+        <div class="top5-header">
+          <div class="top5-title">
+            <span>🏆</span>
+            <span class="top5-title-text">LEADERBOARD</span>
+            <span class="top5-badge">Live</span>
+          </div>
+          <span class="top5-date" id="top5Date"></span>
+        </div>
+        <div id="top5List">
+          <div class="top5-loading">
+            <div class="top5-spinner"></div>
+            Loading today's leaders...
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
 
 </div>
@@ -637,6 +687,7 @@ let stats=JSON.parse(localStorage.getItem('cz3')||'{"games":0,"wins":0,"best":0,
 function boot(){
   refreshH();refreshLS();
   document.getElementById('rosterGrid').innerHTML=BOWLERS.map(b=>`<div class="ri"><span class="ri-name">${b.name}</span><span class="ri-nat">${b.nation}</span></div>`).join('');
+  loadTop5();
 }
 
 function refreshH(){document.getElementById('hStreak').textContent=stats.streak;document.getElementById('hBest').textContent=stats.best||'—';}
@@ -648,7 +699,7 @@ function refreshLS(){
 }
 
 function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo({top:0,behavior:'smooth'});}
-function showLanding(){stopTimer();refreshLS();showScreen('landingScreen');}
+function showLanding(){stopTimer();refreshLS();showScreen('landingScreen');loadTop5();}
 function showCategory(){showScreen('categoryScreen');}
 
 const API = 'https://h3laal38ta.execute-api.us-east-1.amazonaws.com';
@@ -951,6 +1002,57 @@ function copyShare(t){navigator.clipboard.writeText(buildSharePlainText(t==='d')
 
 function toast(msg,type=''){const el=document.createElement('div');el.className=`toast ${type}`;el.textContent=msg;document.getElementById('tdock').appendChild(el);setTimeout(()=>el.remove(),3200);}
 function confetti(){const cols=['#c8f230','#fff','#ffd166','#ff6b6b','#4db8ff'];for(let i=0;i<55;i++)setTimeout(()=>{const el=document.createElement('div');el.className='cf';el.style.cssText=`left:${Math.random()*100}vw;top:-10px;background:${cols[i%cols.length]};animation-duration:${1.4+Math.random()*1.4}s;border-radius:${Math.random()>.5?'50%':'2px'};`;document.body.appendChild(el);setTimeout(()=>el.remove(),3000);},i*28);}
+
+async function loadTop5(){
+  const el=document.getElementById('top5List');
+  const dateEl=document.getElementById('top5Date');
+  if(!el)return;
+
+  // Set today's date label
+  if(dateEl) dateEl.textContent=new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+
+  try{
+    const res=await fetch(`${API}/leaderboard?category=bowling`);
+    const data=await res.json();
+    const currentUserId=localStorage.getItem('cz_uid');
+
+    if(!data.leaderboard||!data.leaderboard.length){
+      el.innerHTML='<div class="top5-empty">No scores yet today — be the first! 🏏</div>';
+      return;
+    }
+
+    const top5=data.leaderboard.slice(0,5);
+
+    function rankColor(i){
+      if(i===0)return'var(--gold)';
+      if(i===1)return'#c0c0c0';
+      if(i===2)return'#cd7f32';
+      return'var(--text3)';
+    }
+
+    const html=top5.map((s,i)=>{
+      const isMe=s.userId===currentUserId;
+      const name=s.playerName||'Anonymous';
+      const youBadge=isMe?'<span class="top5-you">YOU</span>':'';
+      const medal=i===0?'🥇':i===1?'🥈':i===2?'🥉':'';
+      return`<div class="top5-row${isMe?' me':''}">
+        <div class="top5-left">
+          <span class="top5-rank" style="color:${isMe?'var(--accent)':rankColor(i)}">${medal||i+1}</span>
+          <span class="top5-name${isMe?' me':''}">${name}${youBadge}</span>
+        </div>
+        <div class="top5-right">
+          <span class="top5-mode">${s.gameMode||'classic'}</span>
+          <span class="top5-score">${s.score}</span>
+        </div>
+      </div>`;
+    }).join('');
+
+    el.innerHTML=html;
+  }catch(err){
+    console.error('Top5 fetch failed:',err);
+    el.innerHTML='<div class="top5-empty">Could not load leaderboard.</div>';
+  }
+}
 
 document.addEventListener('click',e=>{if(!e.target.closest('.sarea'))document.getElementById('ddrop').classList.remove('open');});
 boot();
