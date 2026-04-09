@@ -11,6 +11,7 @@ export const handler = async (event) => {
     const category = event.queryStringParameters?.category || "bowling";
     const date = new Date().toISOString().split("T")[0];
 
+    // Fetch all scores for today — no Limit so we get everything before sorting
     const result = await db.send(new QueryCommand({
       TableName: "cricket-zone-scores",
       IndexName: "category-date-index",
@@ -19,15 +20,29 @@ export const handler = async (event) => {
       ExpressionAttributeValues: {
         ":cat": category,
         ":date": date
-      },
-      ScanIndexForward: false,
-      Limit: 10
+      }
     }));
+
+    const items = result.Items || [];
+
+    // Deduplicate — keep only the highest score per userId
+    const best = {};
+    for (const item of items) {
+      const uid = item.userId;
+      if (!best[uid] || item.score > best[uid].score) {
+        best[uid] = item;
+      }
+    }
+
+    // Sort by score descending, take top 20
+    const leaderboard = Object.values(best)
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 20);
 
     return {
       statusCode: 200,
       headers,
-      body: JSON.stringify({ leaderboard: result.Items })
+      body: JSON.stringify({ leaderboard })
     };
 
   } catch (err) {
