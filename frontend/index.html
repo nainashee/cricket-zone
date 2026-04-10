@@ -725,11 +725,11 @@ function loadBowler(){
 }
 
 function tryVid(){
-  const v=document.getElementById('bvid'),ph=document.getElementById('vidPH'),src=`content/bowling/${G.bowler.id}.mp4`;
+  const v=document.getElementById('bvid'),ph=document.getElementById('vidPH');
   v.style.display='none';ph.style.display='flex';
-  const t=document.createElement('video');t.src=src;
-  t.oncanplay=()=>{v.src=src;v.style.display='block';ph.style.display='none';v.play();};
-  t.load();
+  v.src=`content/bowling/${G.bowler.id}.mp4`;
+  v.oncanplay=()=>{v.style.display='block';ph.style.display='none';v.play();};
+  v.load();
 }
 
 function renderPips(){
@@ -760,7 +760,7 @@ function onSearch(){
   const v=document.getElementById('sfield').value.toLowerCase().trim();
   G.pick='';document.getElementById('gbtn').disabled=true;
   if(!v){document.getElementById('ddrop').classList.remove('open');return;}
-  const hits=BOWLERS.filter(b=>b.name.toLowerCase().includes(v)&&!G.guesses.includes(b.id)).slice(0,6);
+  const hits=BOWLERS.filter(b=>b.name.toLowerCase().split(' ').some(w=>w.startsWith(v))&&!G.guesses.includes(b.id)).slice(0,6);
   if(!hits.length){document.getElementById('ddrop').classList.remove('open');return;}
   document.getElementById('ddrop').innerHTML=hits.map(b=>`<div class="ddi" onclick="pick('${b.id}','${b.name.replace(/'/g,"\\'")}')"><span>${b.name}</span><span class="ddi-nat">${b.nation}</span></div>`).join('');
   document.getElementById('ddrop').classList.add('open');
