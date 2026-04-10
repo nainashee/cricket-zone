@@ -869,6 +869,8 @@ async function loadLeaderboard(){
     el.innerHTML=html;
   }catch(err){
     console.error('Leaderboard fetch failed:',err);
+    const el=document.getElementById('lbList');
+    if(el)el.innerHTML='<p style="color:var(--text3);font-size:0.78rem;font-family:\'DM Mono\',monospace;padding:0.9rem;">Could not load leaderboard.</p>';
   }
 }
 
