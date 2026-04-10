@@ -92,23 +92,80 @@ Browser → API Gateway → Lambda → DynamoDB
 ```
 cricket-zone/
 ├── frontend/
-│   └── index.html                 # Single-file frontend (HTML/CSS/JS)
+│   ├── index.html                 # Single-file frontend (HTML/CSS/JS)
+│   └── content/
+│       └── bowling/               # Static assets for bowling category
 ├── infrastructure/
-│   └── main.tf                    # All AWS infrastructure (Terraform)
+│   ├── main.tf                    # All AWS infrastructure (Terraform)
+│   ├── terraform.tfstate          # Terraform state files
+│   └── terraform.tfstate.backup
 ├── backend/
 │   └── functions/
 │       ├── daily-challenge/       # GET /daily — returns today's bowler
+│       │   ├── index.mjs
+│       │   └── package.json
 │       ├── save-score/            # POST /score — saves game result to DynamoDB
+│       │   ├── index.mjs
+│       │   └── package.json
 │       └── leaderboard/           # GET /leaderboard — top 10 scores today
+│           ├── index.mjs
+│           └── package.json
+├── content/
+│   ├── batting/                   # Content for future batting category
+│   ├── bowling/                   # Silhouette images and data for bowlers
+│   └── celebrations/              # Content for future celebrations category
 ├── .github/
 │   └── workflows/
 │       └── deploy.yml             # CI/CD: S3 deploy + CloudFront invalidation
+├── Cricket_Zone_Project_Roadmap.pdf  # Project roadmap document
+├── .gitignore
 └── README.md
 ```
 
 ---
 
-## 🔌 API Reference
+## �️ Development
+
+### Prerequisites
+- Node.js 20.x (for Lambda functions)
+- Terraform CLI (for infrastructure)
+- AWS CLI configured with appropriate permissions
+
+### Local Development
+1. **Clone the repository**
+   ```bash
+   git clone <repository-url>
+   cd cricket-zone
+   ```
+
+2. **Install dependencies for backend functions**
+   ```bash
+   cd backend/functions/daily-challenge
+   npm install
+   cd ../save-score
+   npm install
+   cd ../leaderboard
+   npm install
+   ```
+
+3. **Deploy infrastructure**
+   ```bash
+   cd ../../../infrastructure
+   terraform init
+   terraform plan
+   terraform apply
+   ```
+
+4. **Deploy frontend**
+   - The CI/CD pipeline automatically deploys on push to `main`
+   - For manual deploy, sync `frontend/` to the S3 bucket
+
+### Testing Lambda Functions Locally
+Use AWS SAM CLI or invoke functions directly with test events.
+
+---
+
+## �🔌 API Reference
 
 Base URL: `https://h3laal38ta.execute-api.us-east-1.amazonaws.com`
 
