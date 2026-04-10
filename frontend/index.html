@@ -869,6 +869,8 @@ async function loadLeaderboard(){
     el.innerHTML=html;
   }catch(err){
     console.error('Leaderboard fetch failed:',err);
+    const el=document.getElementById('lbList');
+    if(el)el.innerHTML='<p style="color:var(--text3);font-size:0.78rem;font-family:\'DM Mono\',monospace;padding:0.9rem;">Could not load leaderboard.</p>';
   }
 }
 
@@ -928,7 +930,7 @@ async function revealFinal(){
   stats.games++;if(G.correct>0){stats.wins++;stats.streak++;}else stats.streak=0;
   if(G.score>stats.best)stats.best=G.score;
   localStorage.setItem('cz3',JSON.stringify(stats));refreshH();
-  saveScore();
+  await saveScore();
   loadLeaderboard();
   if(G.correct===G.queue.length)confetti();
 }
