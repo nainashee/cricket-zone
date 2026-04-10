@@ -928,7 +928,7 @@ async function revealFinal(){
   stats.games++;if(G.correct>0){stats.wins++;stats.streak++;}else stats.streak=0;
   if(G.score>stats.best)stats.best=G.score;
   localStorage.setItem('cz3',JSON.stringify(stats));refreshH();
-  saveScore();
+  await saveScore();
   loadLeaderboard();
   if(G.correct===G.queue.length)confetti();
 }
