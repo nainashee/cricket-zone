@@ -5,6 +5,8 @@ import { randomUUID } from "crypto";
 const client = new DynamoDBClient({ region: "us-east-1" });
 const db = DynamoDBDocumentClient.from(client);
 
+const SCORES_TABLE = process.env.SCORES_TABLE || "cricket-zone-scores";
+
 export const handler = async (event) => {
   const headers = { "Access-Control-Allow-Origin": "https://playhowzat.com" };
 
@@ -25,7 +27,7 @@ export const handler = async (event) => {
     const ttl = Math.floor(Date.now() / 1000) + (90 * 24 * 60 * 60); // 90 days
 
     await db.send(new PutCommand({
-      TableName: "cricket-zone-scores",
+      TableName: SCORES_TABLE,
       Item: {
         userId,
         scoreId,

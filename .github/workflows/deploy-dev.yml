@@ -1,9 +1,9 @@
-name: Deploy Cricket Zone
+name: Deploy to Dev
 
 on:
   push:
     branches:
-      - main
+      - dev
 
 jobs:
   deploy:
@@ -30,36 +30,30 @@ jobs:
           cd backend/functions/save-score && npm install
           cd ../leaderboard && npm install
 
-      - name: Deploy Lambda functions to prod
+      - name: Deploy Lambda functions to dev
         run: |
           cd backend/functions/daily-challenge
           zip -r ../daily-challenge.zip .
           aws lambda update-function-code \
-            --function-name cricket-zone-daily-challenge \
+            --function-name cricket-zone-daily-challenge-dev \
             --zip-file fileb://../daily-challenge.zip
 
           cd ../save-score
           zip -r ../save-score.zip .
           aws lambda update-function-code \
-            --function-name cricket-zone-save-score \
+            --function-name cricket-zone-save-score-dev \
             --zip-file fileb://../save-score.zip
 
           cd ../leaderboard
           zip -r ../leaderboard.zip .
           aws lambda update-function-code \
-            --function-name cricket-zone-leaderboard \
+            --function-name cricket-zone-leaderboard-dev \
             --zip-file fileb://../leaderboard.zip
 
-      - name: Inject prod API URL into frontend
+      - name: Inject dev API URL into frontend
         run: |
-          sed -i "s|__API_URL__|${{ secrets.PROD_API_URL }}|g" frontend/index.html
+          sed -i "s|__API_URL__|${{ secrets.DEV_API_URL }}|g" frontend/index.html
 
-      - name: Sync frontend to S3
+      - name: Sync frontend to dev S3 bucket
         run: |
-          aws s3 sync frontend/ s3://${{ secrets.S3_BUCKET }}/ --delete
-
-      - name: Invalidate CloudFront cache
-        run: |
-          aws cloudfront create-invalidation \
-            --distribution-id ${{ secrets.CF_DISTRIBUTION_ID }} \
-            --paths "/*"
+          aws s3 sync frontend/ s3://${{ secrets.DEV_S3_BUCKET }}/ --delete
