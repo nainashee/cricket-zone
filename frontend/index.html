@@ -729,6 +729,7 @@ function tryVid(){
   v.style.display='none';ph.style.display='flex';
   const t=document.createElement('video');t.src=src;
   t.oncanplay=()=>{v.src=src;v.style.display='block';ph.style.display='none';v.play();};
+  t.load();
 }
 
 function renderPips(){

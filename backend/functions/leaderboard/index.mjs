@@ -11,19 +11,28 @@ export const handler = async (event) => {
     const category = event.queryStringParameters?.category || "bowling";
     const date = new Date().toISOString().split("T")[0];
 
-    // Fetch all scores for today — no Limit so we get everything before sorting
-    const result = await db.send(new QueryCommand({
-      TableName: "cricket-zone-scores",
-      IndexName: "category-date-index",
-      KeyConditionExpression: "category = :cat AND #d = :date",
-      ExpressionAttributeNames: { "#d": "date" },
-      ExpressionAttributeValues: {
-        ":cat": category,
-        ":date": date
-      }
-    }));
+    // Paginate through ALL items for today
+    let items = [];
+    let lastKey = undefined;
 
-    const items = result.Items || [];
+    do {
+      const params = {
+        TableName: "cricket-zone-scores",
+        IndexName: "category-date-index",
+        KeyConditionExpression: "category = :cat AND #d = :date",
+        ExpressionAttributeNames: { "#d": "date" },
+        ExpressionAttributeValues: {
+          ":cat": category,
+          ":date": date
+        },
+        ...(lastKey && { ExclusiveStartKey: lastKey })
+      };
+
+      const result = await db.send(new QueryCommand(params));
+      items = items.concat(result.Items || []);
+      lastKey = result.LastEvaluatedKey;
+
+    } while (lastKey);
 
     // Deduplicate — keep only the highest score per userId
     const best = {};
