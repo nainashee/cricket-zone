@@ -1,4 +1,4 @@
-# 🏏 Cricket Zone — Know Your Legends
+# 🏏 Howzat — Know Your Legends
 ### [playhowzat.com](https://playhowzat.com)
 
 A cricket trivia game where players identify legendary bowlers from their silhouette bowling action. Built as a full-stack AWS cloud engineering portfolio project.
@@ -54,18 +54,18 @@ Browser → API Gateway → Lambda → DynamoDB
     ▼          ▼              ▼
 ┌──────────────────────────────────────┐
 │           Lambda Functions           │
-│  cricket-zone-daily-challenge        │
-│  cricket-zone-save-score             │
-│  cricket-zone-leaderboard            │
+│  howzat-daily-challenge              │
+│  howzat-save-score                   │
+│  howzat-leaderboard                  │
 │  Runtime: Node.js 20.x               │
 └──────────────────┬───────────────────┘
                    │
                    ▼
 ┌──────────────────────────────────────┐
 │              DynamoDB                │
-│  cricket-zone-scores                 │
+│  howzat-scores                       │
 │  └─ GSI: category-date-index         │
-│  cricket-zone-content                │
+│  howzat-content                      │
 └──────────────────────────────────────┘
 ```
 
@@ -90,7 +90,7 @@ Browser → API Gateway → Lambda → DynamoDB
 ## 🗂️ Project Structure
 
 ```
-cricket-zone/
+howzat/
 ├── frontend/
 │   ├── index.html                 # Single-file frontend (HTML/CSS/JS)
 │   └── content/
@@ -135,7 +135,7 @@ cricket-zone/
 1. **Clone the repository**
    ```bash
    git clone <repository-url>
-   cd cricket-zone
+   cd howzat
    ```
 
 2. **Install dependencies for backend functions**
