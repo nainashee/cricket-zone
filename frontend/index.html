@@ -303,6 +303,7 @@ video{width:100%;height:100%;object-fit:cover;}
 .top5-spinner{width:14px;height:14px;border:2px solid var(--border2);border-top-color:var(--accent);border-radius:50%;animation:spin 0.7s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg);}}
 
+.hero-daily-preview:hover .hero-play-overlay{opacity:1!important;}
 /* ── NAME MODAL ── */
 .name-overlay{position:fixed;inset:0;z-index:990;background:rgba(7,9,10,0.88);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;opacity:0;animation:fadeIn 0.3s ease forwards;}
 @keyframes fadeIn{to{opacity:1;}}
@@ -383,48 +384,17 @@ video{width:100%;height:100%;object-fit:cover;}
       <button class="hero-cta" onclick="document.getElementById('catsAnchor').scrollIntoView({behavior:'smooth'})">Choose Your Challenge ↓</button>
     </div>
     <div class="hero-right">
-      <div class="hero-visual">
+      <div class="hero-visual hero-daily-preview" onclick="startGame('daily')" title="Play today's daily challenge" style="cursor:pointer;">
         <div class="hero-visual-glow"></div>
-        <div class="sil-wrap">
-          <span class="sil-icon">
-            <svg viewBox="0 0 80 80" width="72" height="72" xmlns="http://www.w3.org/2000/svg">
-              <defs>
-                <linearGradient id="hwg" x1="0" y1="0" x2="1" y2="0">
-                  <stop offset="0%"   stop-color="#c8a96e"/>
-                  <stop offset="45%"  stop-color="#e8cc8a"/>
-                  <stop offset="100%" stop-color="#b08040"/>
-                </linearGradient>
-                <linearGradient id="hbg" x1="0" y1="0" x2="1" y2="1">
-                  <stop offset="0%"   stop-color="#e84040"/>
-                  <stop offset="100%" stop-color="#8b1010"/>
-                </linearGradient>
-                <filter id="shdw" x="-20%" y="-20%" width="140%" height="140%">
-                  <feDropShadow dx="1" dy="2" stdDeviation="1.5" flood-color="rgba(0,0,0,0.4)"/>
-                </filter>
-              </defs>
-              <!-- stumps -->
-              <rect x="13" y="22" width="8"   height="42" rx="3" fill="url(#hwg)" filter="url(#shdw)"/>
-              <rect x="36" y="18" width="8"   height="46" rx="3" fill="url(#hwg)" filter="url(#shdw)"/>
-              <rect x="59" y="22" width="8"   height="42" rx="3" fill="url(#hwg)" filter="url(#shdw)"/>
-              <!-- wood grain highlights -->
-              <rect x="18.5" y="22" width="1.5" height="42" rx="1" fill="rgba(0,0,0,0.12)"/>
-              <rect x="41.5" y="18" width="1.5" height="46" rx="1" fill="rgba(0,0,0,0.12)"/>
-              <rect x="64.5" y="22" width="1.5" height="42" rx="1" fill="rgba(0,0,0,0.12)"/>
-              <!-- bails flying off -->
-              <rect x="8"  y="16" width="20" height="5" rx="2" fill="url(#hwg)" transform="rotate(-22 18 18.5)" filter="url(#shdw)"/>
-              <rect x="48" y="13" width="20" height="5" rx="2" fill="url(#hwg)" transform="rotate(20 58 15.5)" filter="url(#shdw)"/>
-              <!-- ball -->
-              <circle cx="63" cy="53" r="12" fill="url(#hbg)" filter="url(#shdw)"/>
-              <!-- seam lines -->
-              <path d="M55 47 Q63 42 71 47" stroke="rgba(255,210,210,0.65)" stroke-width="1.6" fill="none" stroke-linecap="round"/>
-              <path d="M54 53 Q63 58.5 72 53" stroke="rgba(255,210,210,0.65)" stroke-width="1.6" fill="none" stroke-linecap="round"/>
-              <!-- shine -->
-              <ellipse cx="57.5" cy="47.5" rx="3.5" ry="2" fill="rgba(255,255,255,0.2)" transform="rotate(-20 57.5 47.5)"/>
-            </svg>
-          </span>
-          <p class="sil-q">WHO AM I?</p>
+        <video id="heroVid" autoplay muted loop playsinline style="width:100%;height:100%;object-fit:cover;display:none;position:absolute;inset:0;z-index:0;"></video>
+        <div class="sil-wrap" id="heroPlaceholder" style="position:relative;z-index:1;">
+          <div style="width:52px;height:52px;border-radius:50%;background:var(--surface2);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:1.4rem;margin:0 auto;animation:phPulse 2.5s ease-in-out infinite;">🏏</div>
+          <p class="sil-q" style="margin-top:0.9rem;">WHO AM I?</p>
         </div>
-        <div class="hero-pill">15 Bowlers · 3 Modes</div>
+        <div class="hero-play-overlay" style="position:absolute;inset:0;background:rgba(7,9,10,0.52);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 0.25s;z-index:2;">
+          <div style="background:var(--accent);color:var(--bg);border-radius:10px;padding:0.65rem 1.4rem;font-size:0.85rem;font-weight:700;font-family:'DM Sans',sans-serif;box-shadow:0 8px 28px var(--accent-glow);">▶ Play Daily Challenge</div>
+        </div>
+        <div class="hero-pill" style="z-index:3;">📅 Today's Challenge</div>
       </div>
     </div>
   </div>
@@ -687,7 +657,21 @@ let stats=JSON.parse(localStorage.getItem('cz3')||'{"games":0,"wins":0,"best":0,
 function boot(){
   refreshH();refreshLS();
   document.getElementById('rosterGrid').innerHTML=BOWLERS.map(b=>`<div class="ri"><span class="ri-name">${b.name}</span><span class="ri-nat">${b.nation}</span></div>`).join('');
+  loadHeroDailyVideo();
   loadTop5();
+}
+
+function loadHeroDailyVideo(){
+  // Same daily seed logic as startGame('daily') so it always matches
+  const seed=new Date().toISOString().slice(0,10);
+  let hash=0;for(let i=0;i<seed.length;i++){hash=(hash<<5)-hash+seed.charCodeAt(i);hash|=0;}
+  const bowler=BOWLERS[Math.abs(hash)%BOWLERS.length];
+  const vid=document.getElementById('heroVid');
+  const ph=document.getElementById('heroPlaceholder');
+  if(!vid||!bowler)return;
+  vid.src=`content/bowling/${bowler.id}.mp4`;
+  vid.oncanplay=()=>{vid.style.display='block';if(ph)ph.style.display='none';};
+  vid.load();
 }
 
 function refreshH(){document.getElementById('hStreak').textContent=stats.streak;document.getElementById('hBest').textContent=stats.best||'—';}
