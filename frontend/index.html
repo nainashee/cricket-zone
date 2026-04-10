@@ -689,7 +689,7 @@ function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classL
 function showLanding(){stopTimer();refreshLS();showScreen('landingScreen');loadTop5();}
 function showCategory(){showScreen('categoryScreen');}
 
-const API = 'https://h3laal38ta.execute-api.us-east-1.amazonaws.com';
+const API = '__API_URL__';
 
 async function startGame(mode){
   G.mode=mode;G.score=0;G.correct=0;G.idx=0;G.results=[];
