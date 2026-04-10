@@ -650,6 +650,9 @@ const BOWLERS=[
   {id:'waqar',name:'Waqar Younis',nation:'Pakistan',era:'1989–2003',style:'Right-arm fast',clues:['Reverse swing pioneer','Pakistan','1989–2003','Right-arm fast']},
 ];
 
+// Only bowlers that have a video clip — used to build game queues
+const VIDEO_BOWLERS=BOWLERS.filter(b=>['anderson','boult','harbhajan','kumble','mcgrath','murali','rabada','shoaib','starc','steyn','waqar','warne'].includes(b.id));
+
 const MAX_G=5,BLITZ_T=15,PTS=[1000,750,500,250,100];
 const G={mode:'classic',queue:[],idx:0,bowler:null,guesses:[],cluesLit:0,score:0,correct:0,results:[],timer:null,tLeft:BLITZ_T,pick:''};
 let stats=JSON.parse(localStorage.getItem('cz3')||'{"games":0,"wins":0,"best":0,"streak":0}');
@@ -665,7 +668,7 @@ function loadHeroDailyVideo(){
   // Same daily seed logic as startGame('daily') so it always matches
   const seed=new Date().toISOString().slice(0,10);
   let hash=0;for(let i=0;i<seed.length;i++){hash=(hash<<5)-hash+seed.charCodeAt(i);hash|=0;}
-  const bowler=BOWLERS[Math.abs(hash)%BOWLERS.length];
+  const bowler=VIDEO_BOWLERS[Math.abs(hash)%VIDEO_BOWLERS.length];
   const vid=document.getElementById('heroVid');
   const ph=document.getElementById('heroPlaceholder');
   if(!vid||!bowler)return;
@@ -690,22 +693,15 @@ const API = 'https://h3laal38ta.execute-api.us-east-1.amazonaws.com';
 
 async function startGame(mode){
   G.mode=mode;G.score=0;G.correct=0;G.idx=0;G.results=[];
-  const sh=[...BOWLERS].sort(()=>Math.random()-0.5);
+  const sh=[...VIDEO_BOWLERS].sort(()=>Math.random()-0.5);
 
   if(mode==='daily'){
-    try{
-      const res=await fetch(`${API}/daily?category=bowling`);
-      const data=await res.json();
-      const bowler=BOWLERS.find(b=>b.id===data.bowler);
-      if(!bowler)throw new Error('Bowler not found');
-      G.queue=[bowler];
-    }catch(err){
-      console.error('Daily fetch failed:',err);
-      toast('Could not load daily bowler. Try again.','');
-      return;
-    }
+    // Use same seed as loadHeroDailyVideo so hero preview always matches
+    const seed=new Date().toISOString().slice(0,10);
+    let hash=0;for(let i=0;i<seed.length;i++){hash=(hash<<5)-hash+seed.charCodeAt(i);hash|=0;}
+    G.queue=[VIDEO_BOWLERS[Math.abs(hash)%VIDEO_BOWLERS.length]];
   } else {
-    G.queue=mode==='blitz'?sh.slice(0,15):sh.slice(0,10);
+    G.queue=mode==='blitz'?sh.slice(0,VIDEO_BOWLERS.length):sh.slice(0,10);
   }
 
   document.getElementById('modeCrumb').textContent=mode==='classic'?'Classic':mode==='blitz'?'Blitz':'Daily';
