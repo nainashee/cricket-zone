@@ -1200,13 +1200,7 @@ async function revealFinal(){
   await saveScore();
   loadLeaderboard();
   if(G.correct===G.queue.length)confetti();
-  console.log('[revealFinal] reached guest check','| isGuest():',isGuest(),'| cz_guest:',sessionStorage.getItem('cz_guest'),'| cz_name:',localStorage.getItem('cz_name'),'| isTokenValid():',isTokenValid());
-  if(isGuest()){
-    console.log('[revealFinal] isGuest() is TRUE — scheduling showGuestSavePrompt in 1400ms');
-    setTimeout(()=>{console.log('[revealFinal] setTimeout fired — calling showGuestSavePrompt');showGuestSavePrompt();},1400);
-  }else{
-    console.log('[revealFinal] isGuest() is FALSE — prompt will not show');
-  }
+  if(isGuest())setTimeout(showGuestSavePrompt,1400);
 }
 
 function showGuestSavePrompt(){
