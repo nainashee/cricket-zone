@@ -744,7 +744,27 @@ function getCurrentUserName(){ return localStorage.getItem('cz_user_name'); }
 // ─── Guest session (sessionStorage — lost on tab close) ───
 function isGuest(){ return sessionStorage.getItem('cz_guest')==='1'; }
 
-function continueAsGuest(){
+function showGuestNameInput(){
+  document.getElementById('authTabs').style.display='none';
+  document.getElementById('authGuestBtn').style.display='none';
+  document.getElementById('authSub').textContent='Choose a display name';
+  document.getElementById('authForm').innerHTML=`
+    <input class="auth-field" id="afGuestName" type="text" placeholder="Enter your display name" maxlength="20" autocomplete="off" onkeydown="if(event.key==='Enter')confirmGuestName()"/>
+    <div class="auth-err" id="afErr"></div>
+    <button class="auth-btn" onclick="confirmGuestName()">Continue →</button>`;
+  setTimeout(()=>document.getElementById('afGuestName')?.focus(),80);
+}
+
+function confirmGuestName(){
+  const val=document.getElementById('afGuestName')?.value.trim();
+  const errEl=document.getElementById('afErr');
+  if(!val){errEl.textContent='Please enter a display name.';return;}
+  if(!/^[a-zA-Z0-9 ]+$/.test(val)){errEl.textContent='Letters, numbers and spaces only.';return;}
+  continueAsGuest(val);
+}
+
+function continueAsGuest(name){
+  localStorage.setItem('cz_name',name);
   sessionStorage.setItem('cz_guest','1');
   authDismiss();
   updateHeaderUser();
@@ -778,7 +798,7 @@ async function postPendingScore(idToken){
 }
 
 function signOut(){
-  ['cz_id_token','cz_user_sub','cz_user_name'].forEach(k=>localStorage.removeItem(k));
+  ['cz_id_token','cz_user_sub','cz_user_name','cz_name'].forEach(k=>localStorage.removeItem(k));
   Object.keys(localStorage).filter(k=>k.startsWith('CognitoIdentityServiceProvider.')).forEach(k=>localStorage.removeItem(k));
   location.reload();
 }
@@ -797,7 +817,7 @@ function updateHeaderUser(){
   if(!el)return;
   if(isGuest()){
     el.style.display='flex';
-    nameEl.textContent='Guest';
+    nameEl.textContent=localStorage.getItem('cz_name')||'Guest';
     if(btn){btn.textContent='Create Account';btn.onclick=()=>{showAuthModal();setTimeout(()=>authTab('register'),50);};}
   }else{
     const name=getCurrentUserName();
@@ -835,13 +855,13 @@ function showAuthModal(){
   overlay.className='auth-overlay';
   overlay.innerHTML=`<div class="auth-modal">
     <div class="auth-logo"><span style="color:#c9a84c;">HOW</span><em style="font-style:normal;color:var(--accent);">ZAT</em></div>
-    <div class="auth-sub">Sign in to track your scores</div>
-    <div class="auth-tabs">
+    <div class="auth-sub" id="authSub">Sign in to track your scores</div>
+    <div class="auth-tabs" id="authTabs">
       <button class="auth-tab active" id="atLogin" onclick="authTab('login')">Sign In</button>
       <button class="auth-tab" id="atReg" onclick="authTab('register')">Register</button>
     </div>
     <div id="authForm"></div>
-    <button class="auth-guest" onclick="continueAsGuest()">Continue as Guest</button>
+    <button class="auth-guest" id="authGuestBtn" onclick="showGuestNameInput()">Continue as Guest</button>
   </div>`;
   document.body.appendChild(overlay);
   renderAuthLogin();
