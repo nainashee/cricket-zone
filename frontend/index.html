@@ -758,14 +758,20 @@ function showGuestNameInput(){
 function confirmGuestName(){
   const val=document.getElementById('afGuestName')?.value.trim();
   const errEl=document.getElementById('afErr');
-  if(!val){errEl.textContent='Please enter a display name.';return;}
-  if(!/^[a-zA-Z0-9 ]+$/.test(val)){errEl.textContent='Letters, numbers and spaces only.';return;}
+  const setErr=msg=>{if(errEl)errEl.textContent=msg;};
+  if(!val){setErr('Please enter a display name.');return;}
+  if(!/^[a-zA-Z0-9 ]+$/.test(val)){setErr('Letters, numbers and spaces only.');return;}
   continueAsGuest(val);
+}
+
+function generateUUID(){
+  if(typeof crypto!=='undefined'&&typeof crypto.randomUUID==='function')return crypto.randomUUID();
+  return'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,c=>{const r=Math.random()*16|0;return(c==='x'?r:r&0x3|0x8).toString(16);});
 }
 
 function getOrCreateGuestId(){
   let id=localStorage.getItem('cz_uid');
-  if(!id){id='guest_'+crypto.randomUUID();localStorage.setItem('cz_uid',id);}
+  if(!id){id='guest_'+generateUUID();localStorage.setItem('cz_uid',id);}
   return id;
 }
 
