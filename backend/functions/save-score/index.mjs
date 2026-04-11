@@ -8,13 +8,13 @@ const db = DynamoDBDocumentClient.from(client);
 const SCORES_TABLE = process.env.SCORES_TABLE || "cricket-zone-scores";
 
 export const handler = async (event) => {
-  const headers = { "Access-Control-Allow-Origin": "https://playhowzat.com" };
+  const headers = { "Access-Control-Allow-Origin": "*" };
 
   try {
     const body = JSON.parse(event.body);
-    const { userId, playerName, score, category, gameMode } = body;
+    const { score, category, gameMode } = body;
 
-    if (!userId || !playerName || score === undefined || !category || !gameMode) {
+    if (score === undefined || !category || !gameMode) {
       return {
         statusCode: 400,
         headers,
@@ -22,9 +22,50 @@ export const handler = async (event) => {
       };
     }
 
-    const date = new Date().toISOString().split("T")[0];
+    const claims = event.requestContext?.authorizer?.jwt?.claims;
+
+    let userId, playerName;
+
+    if (claims?.sub) {
+      // ── Authenticated path ────────────────────────────────────────────
+      userId     = claims.sub;
+      playerName = claims.name || claims.email || userId;
+    } else {
+      // ── Guest path ────────────────────────────────────────────────────
+      const guestName = typeof body.playerName === "string" ? body.playerName.trim() : "";
+      const guestId   = typeof body.userId     === "string" ? body.userId.trim()     : "";
+
+      if (!guestName || guestName.length > 30) {
+        return {
+          statusCode: 400,
+          headers,
+          body: JSON.stringify({ error: "playerName must be 1–30 characters" })
+        };
+      }
+
+      if (typeof score !== "number" || score < 0 || score > 10000) {
+        return {
+          statusCode: 400,
+          headers,
+          body: JSON.stringify({ error: "score must be a number between 0 and 10000" })
+        };
+      }
+
+      if (!guestId.startsWith("guest_")) {
+        return {
+          statusCode: 400,
+          headers,
+          body: JSON.stringify({ error: "Invalid guest userId" })
+        };
+      }
+
+      userId     = guestId;
+      playerName = guestName;
+    }
+
+    const date    = new Date().toISOString().split("T")[0];
     const scoreId = `${category}#${date}#${randomUUID()}`;
-    const ttl = Math.floor(Date.now() / 1000) + (90 * 24 * 60 * 60); // 90 days
+    const ttl     = Math.floor(Date.now() / 1000) + (90 * 24 * 60 * 60);
 
     await db.send(new PutCommand({
       TableName: SCORES_TABLE,

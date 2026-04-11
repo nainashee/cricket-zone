@@ -12,6 +12,18 @@ provider "aws" {
   profile = "cricket-zone"
 }
 
+variable "google_client_id" {
+  description = "Google OAuth 2.0 client ID"
+  type        = string
+  sensitive   = true
+}
+
+variable "google_client_secret" {
+  description = "Google OAuth 2.0 client secret"
+  type        = string
+  sensitive   = true
+}
+
 # ─────────────────────────────────────────
 # DynamoDB Tables (dev)
 # ─────────────────────────────────────────
@@ -225,7 +237,7 @@ resource "aws_apigatewayv2_api" "dev" {
   cors_configuration {
     allow_origins = ["*"]
     allow_methods = ["GET", "POST", "OPTIONS"]
-    allow_headers = ["Content-Type"]
+    allow_headers = ["Content-Type", "Authorization"]
   }
 }
 
@@ -358,4 +370,119 @@ output "dev_api_url" {
 output "dev_frontend_url" {
   value       = "http://${aws_s3_bucket_website_configuration.frontend_dev.website_endpoint}"
   description = "Dev frontend URL (S3 static website)"
+}
+
+
+
+# ─────────────────────────────────────────
+# Cognito User Pool (dev)
+# ─────────────────────────────────────────
+
+resource "aws_cognito_user_pool" "dev" {
+  name = "cricket-zone-users-dev"
+
+  username_attributes      = ["email"]
+  auto_verified_attributes = ["email"]
+
+  password_policy {
+    minimum_length    = 8
+    require_uppercase = true
+    require_lowercase = true
+    require_numbers   = true
+    require_symbols   = false
+  }
+
+  account_recovery_setting {
+    recovery_mechanism {
+      name     = "verified_email"
+      priority = 1
+    }
+  }
+
+  tags = {
+    Project     = "cricket-zone"
+    Environment = "dev"
+  }
+}
+
+resource "aws_cognito_user_pool_domain" "dev" {
+  domain       = "howzat-dev"
+  user_pool_id = aws_cognito_user_pool.dev.id
+}
+
+resource "aws_cognito_identity_provider" "google_dev" {
+  user_pool_id  = aws_cognito_user_pool.dev.id
+  provider_name = "Google"
+  provider_type = "Google"
+
+  provider_details = {
+    client_id        = var.google_client_id
+    client_secret    = var.google_client_secret
+    authorize_scopes = "email openid profile"
+  }
+
+  attribute_mapping = {
+    username = "sub"
+    email    = "email"
+    name     = "name"
+  }
+}
+
+resource "aws_cognito_user_pool_client" "web_dev" {
+  name         = "cricket-zone-web-client-dev"
+  user_pool_id = aws_cognito_user_pool.dev.id
+
+  generate_secret = false
+
+  explicit_auth_flows = [
+    "ALLOW_USER_SRP_AUTH",
+    "ALLOW_USER_PASSWORD_AUTH",
+    "ALLOW_REFRESH_TOKEN_AUTH"
+  ]
+
+  supported_identity_providers = ["COGNITO", "Google"]
+
+  callback_urls = ["http://localhost", "http://localhost:3000", "http://localhost:8080"]
+  logout_urls   = ["http://localhost", "http://localhost:3000", "http://localhost:8080"]
+
+  allowed_oauth_flows_user_pool_client = true
+  allowed_oauth_flows                  = ["code"]
+  allowed_oauth_scopes                 = ["email", "openid", "profile"]
+
+  depends_on = [aws_cognito_identity_provider.google_dev]
+}
+
+# ─────────────────────────────────────────
+# API Gateway JWT Authorizer (dev)
+# ─────────────────────────────────────────
+
+resource "aws_apigatewayv2_authorizer" "cognito_dev" {
+  api_id           = aws_apigatewayv2_api.dev.id
+  authorizer_type  = "JWT"
+  identity_sources = ["$request.header.Authorization"]
+  name             = "cognito-authorizer-dev"
+
+  jwt_configuration {
+    audience = [aws_cognito_user_pool_client.web_dev.id]
+    issuer   = "https://cognito-idp.us-east-1.amazonaws.com/${aws_cognito_user_pool.dev.id}"
+  }
+}
+
+# ─────────────────────────────────────────
+# Cognito Outputs (dev)
+# ─────────────────────────────────────────
+
+output "cognito_user_pool_id_dev" {
+  value       = aws_cognito_user_pool.dev.id
+  description = "Dev Cognito User Pool ID"
+}
+
+output "cognito_client_id_dev" {
+  value       = aws_cognito_user_pool_client.web_dev.id
+  description = "Dev Cognito App Client ID"
+}
+
+output "cognito_domain_dev" {
+  value       = "https://${aws_cognito_user_pool_domain.dev.domain}.auth.us-east-1.amazoncognito.com"
+  description = "Dev Cognito hosted domain — used as the OAuth2 base URL for Google sign-in"
 }
