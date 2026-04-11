@@ -8,13 +8,26 @@ const db = DynamoDBDocumentClient.from(client);
 const SCORES_TABLE = process.env.SCORES_TABLE || "cricket-zone-scores";
 
 export const handler = async (event) => {
-  const headers = { "Access-Control-Allow-Origin": "https://playhowzat.com" };
+  const headers = { "Access-Control-Allow-Origin": "*" };
 
   try {
-    const body = JSON.parse(event.body);
-    const { userId, playerName, score, category, gameMode } = body;
+    // userId and playerName come from the verified Cognito JWT — not the request body
+    const claims = event.requestContext?.authorizer?.jwt?.claims;
+    if (!claims?.sub) {
+      return {
+        statusCode: 401,
+        headers,
+        body: JSON.stringify({ error: "Unauthorized" })
+      };
+    }
 
-    if (!userId || !playerName || score === undefined || !category || !gameMode) {
+    const userId     = claims.sub;
+    const playerName = claims.name || claims.email || userId;
+
+    const body = JSON.parse(event.body);
+    const { score, category, gameMode } = body;
+
+    if (score === undefined || !category || !gameMode) {
       return {
         statusCode: 400,
         headers,
@@ -22,9 +35,9 @@ export const handler = async (event) => {
       };
     }
 
-    const date = new Date().toISOString().split("T")[0];
+    const date    = new Date().toISOString().split("T")[0];
     const scoreId = `${category}#${date}#${randomUUID()}`;
-    const ttl = Math.floor(Date.now() / 1000) + (90 * 24 * 60 * 60); // 90 days
+    const ttl     = Math.floor(Date.now() / 1000) + (90 * 24 * 60 * 60);
 
     await db.send(new PutCommand({
       TableName: SCORES_TABLE,
