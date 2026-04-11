@@ -322,6 +322,29 @@ video{width:100%;height:100%;object-fit:cover;}
 .nm-btn:hover{background:#d8ff45;transform:translateY(-1px);box-shadow:0 8px 24px var(--accent-glow);}
 .nm-overlay-out{animation:fadeOut 0.25s ease forwards;}
 @keyframes fadeOut{to{opacity:0;}}
+/* ── AUTH MODAL ── */
+.auth-overlay{position:fixed;inset:0;z-index:990;background:rgba(7,9,10,0.92);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;opacity:0;animation:fadeIn 0.3s ease forwards;}
+.auth-modal{background:var(--surface);border:1px solid var(--border);border-radius:24px;padding:2.2rem 2rem 2rem;max-width:400px;width:92%;text-align:center;}
+.auth-logo{font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:0.1em;margin-bottom:0.25rem;}
+.auth-sub{font-size:0.78rem;color:var(--text3);margin-bottom:1.5rem;font-family:'DM Mono',monospace;letter-spacing:0.04em;}
+.auth-tabs{display:flex;border:1px solid var(--border2);border-radius:10px;margin-bottom:1.4rem;overflow:hidden;}
+.auth-tab{flex:1;padding:0.58rem;font-size:0.82rem;font-weight:500;cursor:pointer;background:transparent;border:none;color:var(--text3);transition:all 0.2s;font-family:'DM Sans',sans-serif;}
+.auth-tab.active{background:var(--surface2);color:var(--text);}
+.auth-field{width:100%;background:var(--surface2);border:1.5px solid var(--border2);border-radius:12px;padding:0.76rem 1rem;font-size:0.9rem;font-family:'DM Sans',sans-serif;color:var(--text);outline:none;transition:all 0.2s;margin-bottom:0.6rem;box-sizing:border-box;}
+.auth-field:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-dim);}
+.auth-btn{width:100%;background:var(--accent);color:var(--bg);border:none;border-radius:12px;padding:0.84rem;font-size:0.9rem;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all 0.2s;margin-bottom:0.7rem;}
+.auth-btn:hover{background:#d8ff45;transform:translateY(-1px);}
+.auth-btn:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
+.auth-google{width:100%;background:transparent;color:var(--text2);border:1.5px solid var(--border2);border-radius:12px;padding:0.76rem;font-size:0.87rem;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:0.6rem;}
+.auth-google:hover{border-color:var(--text3);color:var(--text);}
+.auth-divider{display:flex;align-items:center;gap:0.75rem;margin:0.7rem 0;color:var(--text3);font-size:0.72rem;font-family:'DM Mono',monospace;}
+.auth-divider::before,.auth-divider::after{content:'';flex:1;height:1px;background:var(--border2);}
+.auth-err{font-size:0.75rem;color:var(--red);margin-top:-0.25rem;margin-bottom:0.45rem;font-family:'DM Mono',monospace;text-align:left;min-height:1rem;}
+/* ── HEADER USER ── */
+.huser{display:flex;align-items:center;gap:0.55rem;}
+.hu-name{font-size:0.72rem;color:var(--text3);font-family:'DM Mono',monospace;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.hu-signout{background:transparent;border:1px solid var(--border2);border-radius:8px;color:var(--text3);font-size:0.7rem;font-family:'DM Mono',monospace;padding:0.28rem 0.6rem;cursor:pointer;transition:all 0.2s;}
+.hu-signout:hover{border-color:var(--text3);color:var(--text);}
 </style>
 </head>
 <body>
@@ -365,6 +388,10 @@ video{width:100%;height:100%;object-fit:cover;}
   <div class="hstats">
     <div class="hst"><span class="hst-v" id="hStreak">0</span><span class="hst-l">Streak</span></div>
     <div class="hst"><span class="hst-v" id="hBest">—</span><span class="hst-l">Best</span></div>
+  </div>
+  <div class="huser" id="hUser" style="display:none;">
+    <span class="hu-name" id="huName"></span>
+    <button class="hu-signout" onclick="signOut()">Sign out</button>
   </div>
 </header>
 
@@ -631,6 +658,7 @@ video{width:100%;height:100%;object-fit:cover;}
 
 </main>
 
+<script src="https://cdn.jsdelivr.net/npm/amazon-cognito-identity-js@6/dist/amazon-cognito-identity.min.js"></script>
 <script>
 const BOWLERS=[
   {id:'malinga',name:'Lasith Malinga',nation:'Sri Lanka',era:'2004–2019',style:'Right-arm fast',clues:['Slingy round-arm action','Sri Lanka','2004–2019','Right-arm fast']},
@@ -657,11 +685,17 @@ const MAX_G=5,BLITZ_T=15,PTS=[1000,750,500,250,100];
 const G={mode:'classic',queue:[],idx:0,bowler:null,guesses:[],cluesLit:0,score:0,correct:0,results:[],timer:null,tLeft:BLITZ_T,pick:''};
 let stats=JSON.parse(localStorage.getItem('cz3')||'{"games":0,"wins":0,"best":0,"streak":0}');
 
-function boot(){
+async function boot(){
   refreshH();refreshLS();
   document.getElementById('rosterGrid').innerHTML=BOWLERS.map(b=>`<div class="ri"><span class="ri-name">${b.name}</span><span class="ri-nat">${b.nation}</span></div>`).join('');
   loadHeroDailyVideo();
   loadTop5();
+  const handled=await handleOAuthCallback();
+  if(!handled&&!isTokenValid()){
+    showAuthModal();
+  }else{
+    updateHeaderUser();
+  }
 }
 
 function loadHeroDailyVideo(){
@@ -690,6 +724,180 @@ function showLanding(){stopTimer();refreshLS();showScreen('landingScreen');loadT
 function showCategory(){showScreen('categoryScreen');}
 
 const API = '__API_URL__';
+const COGNITO_USER_POOL_ID = '__COGNITO_USER_POOL_ID__';
+const COGNITO_CLIENT_ID    = '__COGNITO_CLIENT_ID__';
+const COGNITO_DOMAIN       = '__COGNITO_DOMAIN__';
+
+// ─── Auth helpers ───
+function parseJwt(token){
+  const b64=token.split('.')[1].replace(/-/g,'+').replace(/_/g,'/');
+  return JSON.parse(atob(b64));
+}
+function getIdToken(){ return localStorage.getItem('cz_id_token'); }
+function getCurrentUserId(){ return localStorage.getItem('cz_user_sub'); }
+function getCurrentUserName(){ return localStorage.getItem('cz_user_name'); }
+
+function storeAuth(idToken){
+  const claims=parseJwt(idToken);
+  localStorage.setItem('cz_id_token',idToken);
+  localStorage.setItem('cz_user_sub',claims.sub);
+  localStorage.setItem('cz_user_name',claims.name||claims.email||claims.sub);
+  updateHeaderUser();
+}
+
+function signOut(){
+  ['cz_id_token','cz_user_sub','cz_user_name'].forEach(k=>localStorage.removeItem(k));
+  Object.keys(localStorage).filter(k=>k.startsWith('CognitoIdentityServiceProvider.')).forEach(k=>localStorage.removeItem(k));
+  location.reload();
+}
+
+function isTokenValid(){
+  const t=getIdToken();
+  if(!t)return false;
+  try{const {exp}=parseJwt(t);return Date.now()/1000<exp-60;}
+  catch{return false;}
+}
+
+function updateHeaderUser(){
+  const el=document.getElementById('hUser');
+  const nameEl=document.getElementById('huName');
+  if(!el)return;
+  const name=getCurrentUserName();
+  if(name){el.style.display='flex';nameEl.textContent=name;}
+  else{el.style.display='none';}
+}
+
+async function handleOAuthCallback(){
+  const params=new URLSearchParams(window.location.search);
+  const code=params.get('code');
+  if(!code)return false;
+  window.history.replaceState({},'',window.location.pathname);
+  try{
+    const res=await fetch(`${COGNITO_DOMAIN}/oauth2/token`,{
+      method:'POST',
+      headers:{'Content-Type':'application/x-www-form-urlencoded'},
+      body:new URLSearchParams({grant_type:'authorization_code',client_id:COGNITO_CLIENT_ID,code,redirect_uri:window.location.origin})
+    });
+    const data=await res.json();
+    if(data.id_token){storeAuth(data.id_token);return true;}
+  }catch(e){console.error('OAuth callback failed:',e);}
+  return false;
+}
+
+// ─── Auth modal ───
+function showAuthModal(){
+  const overlay=document.createElement('div');
+  overlay.id='authOverlay';
+  overlay.className='auth-overlay';
+  overlay.innerHTML=`<div class="auth-modal">
+    <div class="auth-logo"><span style="color:#c9a84c;">HOW</span><em style="font-style:normal;color:var(--accent);">ZAT</em></div>
+    <div class="auth-sub">Sign in to track your scores</div>
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="atLogin" onclick="authTab('login')">Sign In</button>
+      <button class="auth-tab" id="atReg" onclick="authTab('register')">Register</button>
+    </div>
+    <div id="authForm"></div>
+  </div>`;
+  document.body.appendChild(overlay);
+  renderAuthLogin();
+}
+
+function authTab(tab){
+  document.getElementById('atLogin').classList.toggle('active',tab==='login');
+  document.getElementById('atReg').classList.toggle('active',tab==='register');
+  if(tab==='login')renderAuthLogin();else renderAuthRegister();
+}
+
+function authDismiss(){
+  const el=document.getElementById('authOverlay');
+  if(el){el.style.opacity='0';el.style.transition='opacity 0.2s';setTimeout(()=>el.remove(),200);}
+}
+
+function googleSignIn(){
+  const url=`${COGNITO_DOMAIN}/oauth2/authorize?identity_provider=Google&response_type=code&client_id=${COGNITO_CLIENT_ID}&redirect_uri=${encodeURIComponent(window.location.origin)}&scope=email+openid+profile`;
+  window.location.href=url;
+}
+
+const GOOGLE_SVG=`<svg width="18" height="18" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg"><path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/><path d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332C2.438 15.983 5.482 18 9 18z" fill="#34A853"/><path d="M3.964 10.707c-.18-.54-.282-1.117-.282-1.707s.102-1.167.282-1.707V4.961H.957C.347 6.175 0 7.55 0 9s.348 2.825.957 4.039l3.007-2.332z" fill="#FBBC05"/><path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.961L3.964 7.293C4.672 5.163 6.656 3.58 9 3.58z" fill="#EA4335"/></svg>`;
+
+function renderAuthLogin(){
+  document.getElementById('authForm').innerHTML=`
+    <input class="auth-field" id="afEmail" type="email" placeholder="Email" autocomplete="email"/>
+    <input class="auth-field" id="afPass" type="password" placeholder="Password" autocomplete="current-password"/>
+    <div class="auth-err" id="afErr"></div>
+    <button class="auth-btn" id="afBtn" onclick="doSignIn()">Sign In →</button>
+    <div class="auth-divider">or</div>
+    <button class="auth-google" onclick="googleSignIn()">${GOOGLE_SVG} Continue with Google</button>`;
+  setTimeout(()=>document.getElementById('afEmail')?.focus(),80);
+}
+
+function renderAuthRegister(){
+  document.getElementById('authForm').innerHTML=`
+    <input class="auth-field" id="afName" type="text" placeholder="Display name" maxlength="30" autocomplete="name"/>
+    <input class="auth-field" id="afEmail" type="email" placeholder="Email" autocomplete="email"/>
+    <input class="auth-field" id="afPass" type="password" placeholder="Password (min 8 chars)" autocomplete="new-password"/>
+    <div class="auth-err" id="afErr"></div>
+    <button class="auth-btn" id="afBtn" onclick="doSignUp()">Create Account →</button>
+    <div class="auth-divider">or</div>
+    <button class="auth-google" onclick="googleSignIn()">${GOOGLE_SVG} Continue with Google</button>`;
+  setTimeout(()=>document.getElementById('afName')?.focus(),80);
+}
+
+function renderAuthVerify(email){
+  document.getElementById('authForm').innerHTML=`
+    <div style="font-size:0.8rem;color:var(--text2);margin-bottom:1.2rem;line-height:1.55;">We sent a 6-digit code to <strong style="color:var(--text);">${email}</strong></div>
+    <input class="auth-field" id="afCode" type="text" placeholder="Verification code" inputmode="numeric" maxlength="6" autocomplete="one-time-code"/>
+    <div class="auth-err" id="afErr"></div>
+    <button class="auth-btn" onclick="doVerify('${email.replace(/'/g,'&#39;')}')">Verify Email →</button>`;
+  setTimeout(()=>document.getElementById('afCode')?.focus(),80);
+}
+
+function doSignIn(){
+  const email=document.getElementById('afEmail')?.value.trim();
+  const pass=document.getElementById('afPass')?.value;
+  const errEl=document.getElementById('afErr');
+  const btn=document.getElementById('afBtn');
+  if(!email||!pass){errEl.textContent='Please fill in all fields.';return;}
+  btn.disabled=true;btn.textContent='Signing in…';errEl.textContent='';
+  const pool=new AmazonCognitoIdentity.CognitoUserPool({UserPoolId:COGNITO_USER_POOL_ID,ClientId:COGNITO_CLIENT_ID});
+  const user=new AmazonCognitoIdentity.CognitoUser({Username:email,Pool:pool});
+  const authDetails=new AmazonCognitoIdentity.AuthenticationDetails({Username:email,Password:pass});
+  user.authenticateUser(authDetails,{
+    onSuccess(session){storeAuth(session.getIdToken().getJwtToken());authDismiss();},
+    onFailure(err){errEl.textContent=err.message||'Sign in failed.';btn.disabled=false;btn.textContent='Sign In →';}
+  });
+}
+
+function doSignUp(){
+  const name=document.getElementById('afName')?.value.trim();
+  const email=document.getElementById('afEmail')?.value.trim();
+  const pass=document.getElementById('afPass')?.value;
+  const errEl=document.getElementById('afErr');
+  const btn=document.getElementById('afBtn');
+  if(!name||!email||!pass){errEl.textContent='Please fill in all fields.';return;}
+  if(pass.length<8){errEl.textContent='Password must be at least 8 characters.';return;}
+  btn.disabled=true;btn.textContent='Creating account…';errEl.textContent='';
+  const pool=new AmazonCognitoIdentity.CognitoUserPool({UserPoolId:COGNITO_USER_POOL_ID,ClientId:COGNITO_CLIENT_ID});
+  const nameAttr=new AmazonCognitoIdentity.CognitoUserAttribute({Name:'name',Value:name});
+  pool.signUp(email,pass,[nameAttr],null,(err)=>{
+    if(err){errEl.textContent=err.message||'Registration failed.';btn.disabled=false;btn.textContent='Create Account →';return;}
+    renderAuthVerify(email);
+  });
+}
+
+function doVerify(email){
+  const code=document.getElementById('afCode')?.value.trim();
+  const errEl=document.getElementById('afErr');
+  if(!code){errEl.textContent='Please enter the verification code.';return;}
+  errEl.textContent='';
+  const pool=new AmazonCognitoIdentity.CognitoUserPool({UserPoolId:COGNITO_USER_POOL_ID,ClientId:COGNITO_CLIENT_ID});
+  const user=new AmazonCognitoIdentity.CognitoUser({Username:email,Pool:pool});
+  user.confirmRegistration(code,true,(err)=>{
+    if(err){errEl.textContent=err.message||'Verification failed.';return;}
+    document.getElementById('authForm').innerHTML=`<div style="font-size:0.82rem;color:var(--text2);padding-bottom:0.5rem;">Account verified! Signing you in…</div>`;
+    setTimeout(()=>{authTab('login');renderAuthLogin();},1000);
+  });
+}
 
 async function startGame(mode){
   G.mode=mode;G.score=0;G.correct=0;G.idx=0;G.results=[];
@@ -794,23 +1002,12 @@ function nextBowler(){G.idx++;showScreen('gameScreen');loadBowler();}
 
 async function saveScore(){
   try{
-    const userId=localStorage.getItem('cz_uid')||(()=>{
-      const id='guest_'+Math.random().toString(36).slice(2,9);
-      localStorage.setItem('cz_uid',id);
-      return id;
-    })();
-    const playerName=localStorage.getItem('cz_name')||userId;
+    const idToken=getIdToken();
+    if(!idToken)return;
     await fetch(`${API}/score`,{
       method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        userId,
-        playerName,
-        score:G.score,
-        gameMode:G.mode,
-        category:'bowling',
-        date:new Date().toISOString().slice(0,10)
-      })
+      headers:{'Content-Type':'application/json','Authorization':`Bearer ${idToken}`},
+      body:JSON.stringify({score:G.score,gameMode:G.mode,category:'bowling'})
     });
   }catch(err){
     console.error('Score save failed:',err);
@@ -828,7 +1025,7 @@ async function loadLeaderboard(){
       return;
     }
 
-    const currentUserId=localStorage.getItem('cz_uid');
+    const currentUserId=getCurrentUserId();
     const allScores=data.leaderboard;
     const top5=allScores.slice(0,5);
     const myIdx=allScores.findIndex(s=>s.userId===currentUserId);
@@ -875,50 +1072,7 @@ async function loadLeaderboard(){
 }
 
 function showFinal(){
-  const savedName=localStorage.getItem('cz_name');
-  if(!savedName){
-    showNameModal(()=>revealFinal());
-  } else {
-    revealFinal();
-  }
-}
-
-function showNameModal(onConfirm){
-  const overlay=document.createElement('div');
-  overlay.className='name-overlay';
-  overlay.innerHTML=`
-    <div class="name-modal">
-      <span class="nm-icon">🏆</span>
-      <div class="nm-title">NICE GAME!</div>
-      <p class="nm-sub">Enter your name to appear on the<br><span>Howzat Leaderboard</span></p>
-      <input class="nm-input" id="nmInput" type="text" placeholder="Your name" maxlength="20" autocomplete="off" spellcheck="false"/>
-      <div class="nm-error" id="nmError"></div>
-      <button class="nm-btn" id="nmBtn">Save & See My Score →</button>
-    </div>`;
-  document.body.appendChild(overlay);
-  const input=overlay.querySelector('#nmInput');
-  const btn=overlay.querySelector('#nmBtn');
-  const err=overlay.querySelector('#nmError');
-  setTimeout(()=>input.focus(),350);
-
-  function confirm(){
-    const val=input.value.trim();
-    if(!val){
-      input.classList.remove('shake');
-      void input.offsetWidth; // reflow to restart animation
-      input.classList.add('shake');
-      err.textContent='Please enter your name to continue.';
-      input.focus();
-      return;
-    }
-    localStorage.setItem('cz_name',val);
-    overlay.classList.add('nm-overlay-out');
-    setTimeout(()=>{overlay.remove();onConfirm();},260);
-  }
-
-  btn.addEventListener('click',confirm);
-  input.addEventListener('keydown',e=>{if(e.key==='Enter')confirm();});
-  input.addEventListener('input',()=>{input.classList.remove('shake');err.textContent='';});
+  revealFinal();
 }
 
 async function revealFinal(){
@@ -997,7 +1151,7 @@ async function loadTop5(){
   try{
     const res=await fetch(`${API}/leaderboard?category=bowling`);
     const data=await res.json();
-    const currentUserId=localStorage.getItem('cz_uid');
+    const currentUserId=getCurrentUserId();
 
     if(!data.leaderboard||!data.leaderboard.length){
       el.innerHTML='<div class="top5-empty">No scores yet today — be the first! 🏏</div>';
