@@ -11,19 +11,6 @@ export const handler = async (event) => {
   const headers = { "Access-Control-Allow-Origin": "*" };
 
   try {
-    // userId and playerName come from the verified Cognito JWT — not the request body
-    const claims = event.requestContext?.authorizer?.jwt?.claims;
-    if (!claims?.sub) {
-      return {
-        statusCode: 401,
-        headers,
-        body: JSON.stringify({ error: "Unauthorized" })
-      };
-    }
-
-    const userId     = claims.sub;
-    const playerName = claims.name || claims.email || userId;
-
     const body = JSON.parse(event.body);
     const { score, category, gameMode } = body;
 
@@ -33,6 +20,47 @@ export const handler = async (event) => {
         headers,
         body: JSON.stringify({ error: "Missing required fields" })
       };
+    }
+
+    const claims = event.requestContext?.authorizer?.jwt?.claims;
+
+    let userId, playerName;
+
+    if (claims?.sub) {
+      // ── Authenticated path ────────────────────────────────────────────
+      userId     = claims.sub;
+      playerName = claims.name || claims.email || userId;
+    } else {
+      // ── Guest path ────────────────────────────────────────────────────
+      const guestName = typeof body.playerName === "string" ? body.playerName.trim() : "";
+      const guestId   = typeof body.userId     === "string" ? body.userId.trim()     : "";
+
+      if (!guestName || guestName.length > 30) {
+        return {
+          statusCode: 400,
+          headers,
+          body: JSON.stringify({ error: "playerName must be 1–30 characters" })
+        };
+      }
+
+      if (typeof score !== "number" || score < 0 || score > 10000) {
+        return {
+          statusCode: 400,
+          headers,
+          body: JSON.stringify({ error: "score must be a number between 0 and 10000" })
+        };
+      }
+
+      if (!guestId.startsWith("guest_")) {
+        return {
+          statusCode: 400,
+          headers,
+          body: JSON.stringify({ error: "Invalid guest userId" })
+        };
+      }
+
+      userId     = guestId;
+      playerName = guestName;
     }
 
     const date    = new Date().toISOString().split("T")[0];

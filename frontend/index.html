@@ -763,8 +763,15 @@ function confirmGuestName(){
   continueAsGuest(val);
 }
 
+function getOrCreateGuestId(){
+  let id=localStorage.getItem('cz_uid');
+  if(!id){id='guest_'+crypto.randomUUID();localStorage.setItem('cz_uid',id);}
+  return id;
+}
+
 function continueAsGuest(name){
   localStorage.setItem('cz_name',name);
+  getOrCreateGuestId();
   sessionStorage.setItem('cz_guest','1');
   authDismiss();
   updateHeaderUser();
@@ -1092,6 +1099,28 @@ async function saveScore(){
   }
 }
 
+async function saveScoreAsGuest(){
+  const btn=document.getElementById('guestSaveBtn');
+  if(btn){btn.disabled=true;btn.textContent='Saving…';}
+  try{
+    const playerName=localStorage.getItem('cz_name')||'Guest';
+    const userId=getOrCreateGuestId();
+    const res=await fetch(`${API}/score`,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({score:G.score,gameMode:G.mode,category:'bowling',playerName,userId})
+    });
+    if(!res.ok)throw new Error(await res.text());
+    guestPromptDismiss();
+    toast('Score saved!','ok');
+    loadLeaderboard();
+  }catch(err){
+    console.error('Guest score save failed:',err);
+    if(btn){btn.disabled=false;btn.textContent='Save as Guest';}
+    toast('Save failed, try again','');
+  }
+}
+
 async function loadLeaderboard(){
   try{
     const res=await fetch(`${API}/leaderboard?category=bowling`);
@@ -1177,7 +1206,8 @@ function showGuestSavePrompt(){
     <div class="gsp-score">${G.score}</div>
     <div style="font-size:0.72rem;color:var(--text3);font-family:'DM Mono',monospace;letter-spacing:0.08em;margin-bottom:1rem;">POINTS</div>
     <div style="font-size:0.82rem;color:var(--text2);line-height:1.6;margin-bottom:1.6rem;">Want to save your score and<br>appear on the leaderboard?</div>
-    <button class="auth-btn" onclick="guestPromptSignUp()">Create Free Account</button>
+    <button class="auth-btn" id="guestSaveBtn" onclick="saveScoreAsGuest()">Save as Guest</button>
+    <button class="auth-google" style="margin-top:0.6rem;" onclick="guestPromptSignUp()">Create Free Account</button>
     <button class="auth-guest" onclick="guestPromptDismiss()">Maybe Later</button>
   </div>`;
   document.body.appendChild(overlay);
