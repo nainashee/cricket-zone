@@ -340,6 +340,10 @@ video{width:100%;height:100%;object-fit:cover;}
 .auth-divider{display:flex;align-items:center;gap:0.75rem;margin:0.7rem 0;color:var(--text3);font-size:0.72rem;font-family:'DM Mono',monospace;}
 .auth-divider::before,.auth-divider::after{content:'';flex:1;height:1px;background:var(--border2);}
 .auth-err{font-size:0.75rem;color:var(--red);margin-top:-0.25rem;margin-bottom:0.45rem;font-family:'DM Mono',monospace;text-align:left;min-height:1rem;}
+.auth-guest{width:100%;background:transparent;color:var(--text3);border:none;padding:0.65rem;font-size:0.77rem;font-family:'DM Mono',monospace;cursor:pointer;margin-top:0.3rem;transition:color 0.2s;letter-spacing:0.03em;}
+.auth-guest:hover{color:var(--text2);}
+/* ── GUEST SAVE PROMPT ── */
+.gsp-score{font-family:'Bebas Neue',sans-serif;font-size:2.4rem;color:var(--accent);letter-spacing:0.06em;line-height:1;}
 /* ── HEADER USER ── */
 .huser{display:flex;align-items:center;gap:0.55rem;}
 .hu-name{font-size:0.72rem;color:var(--text3);font-family:'DM Mono',monospace;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
@@ -691,7 +695,7 @@ async function boot(){
   loadHeroDailyVideo();
   loadTop5();
   const handled=await handleOAuthCallback();
-  if(!handled&&!isTokenValid()){
+  if(!handled&&!isTokenValid()&&!isGuest()){
     showAuthModal();
   }else{
     updateHeaderUser();
@@ -737,12 +741,40 @@ function getIdToken(){ return localStorage.getItem('cz_id_token'); }
 function getCurrentUserId(){ return localStorage.getItem('cz_user_sub'); }
 function getCurrentUserName(){ return localStorage.getItem('cz_user_name'); }
 
+// ─── Guest session (sessionStorage — lost on tab close) ───
+function isGuest(){ return sessionStorage.getItem('cz_guest')==='1'; }
+
+function continueAsGuest(){
+  sessionStorage.setItem('cz_guest','1');
+  authDismiss();
+  updateHeaderUser();
+}
+
+let _signUpCreds=null; // {email,pass} held briefly for auto sign-in after verify
+
 function storeAuth(idToken){
   const claims=parseJwt(idToken);
   localStorage.setItem('cz_id_token',idToken);
   localStorage.setItem('cz_user_sub',claims.sub);
   localStorage.setItem('cz_user_name',claims.name||claims.email||claims.sub);
+  sessionStorage.removeItem('cz_guest');
   updateHeaderUser();
+  postPendingScore(idToken);
+}
+
+async function postPendingScore(idToken){
+  const raw=sessionStorage.getItem('cz_pending_score');
+  if(!raw)return;
+  sessionStorage.removeItem('cz_pending_score');
+  try{
+    const pending=JSON.parse(raw);
+    await fetch(`${API}/score`,{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':`Bearer ${idToken}`},
+      body:JSON.stringify(pending)
+    });
+    toast('Score saved to leaderboard!','ok');
+  }catch(e){console.error('Pending score post failed:',e);}
 }
 
 function signOut(){
@@ -761,10 +793,22 @@ function isTokenValid(){
 function updateHeaderUser(){
   const el=document.getElementById('hUser');
   const nameEl=document.getElementById('huName');
+  const btn=el?.querySelector('.hu-signout');
   if(!el)return;
-  const name=getCurrentUserName();
-  if(name){el.style.display='flex';nameEl.textContent=name;}
-  else{el.style.display='none';}
+  if(isGuest()){
+    el.style.display='flex';
+    nameEl.textContent='Guest';
+    if(btn){btn.textContent='Create Account';btn.onclick=()=>{showAuthModal();setTimeout(()=>authTab('register'),50);};}
+  }else{
+    const name=getCurrentUserName();
+    if(name){
+      el.style.display='flex';
+      nameEl.textContent=name;
+      if(btn){btn.textContent='Sign out';btn.onclick=signOut;}
+    }else{
+      el.style.display='none';
+    }
+  }
 }
 
 async function handleOAuthCallback(){
@@ -797,6 +841,7 @@ function showAuthModal(){
       <button class="auth-tab" id="atReg" onclick="authTab('register')">Register</button>
     </div>
     <div id="authForm"></div>
+    <button class="auth-guest" onclick="continueAsGuest()">Continue as Guest</button>
   </div>`;
   document.body.appendChild(overlay);
   renderAuthLogin();
@@ -877,10 +922,11 @@ function doSignUp(){
   if(!name||!email||!pass){errEl.textContent='Please fill in all fields.';return;}
   if(pass.length<8){errEl.textContent='Password must be at least 8 characters.';return;}
   btn.disabled=true;btn.textContent='Creating account…';errEl.textContent='';
+  _signUpCreds={email,pass};
   const pool=new AmazonCognitoIdentity.CognitoUserPool({UserPoolId:COGNITO_USER_POOL_ID,ClientId:COGNITO_CLIENT_ID});
   const nameAttr=new AmazonCognitoIdentity.CognitoUserAttribute({Name:'name',Value:name});
   pool.signUp(email,pass,[nameAttr],null,(err)=>{
-    if(err){errEl.textContent=err.message||'Registration failed.';btn.disabled=false;btn.textContent='Create Account →';return;}
+    if(err){errEl.textContent=err.message||'Registration failed.';btn.disabled=false;btn.textContent='Create Account →';_signUpCreds=null;return;}
     renderAuthVerify(email);
   });
 }
@@ -894,8 +940,20 @@ function doVerify(email){
   const user=new AmazonCognitoIdentity.CognitoUser({Username:email,Pool:pool});
   user.confirmRegistration(code,true,(err)=>{
     if(err){errEl.textContent=err.message||'Verification failed.';return;}
-    document.getElementById('authForm').innerHTML=`<div style="font-size:0.82rem;color:var(--text2);padding-bottom:0.5rem;">Account verified! Signing you in…</div>`;
-    setTimeout(()=>{authTab('login');renderAuthLogin();},1000);
+    document.getElementById('authForm').innerHTML=`<div style="font-size:0.82rem;color:var(--text2);padding-bottom:0.5rem;">Verified! Signing you in…</div>`;
+    if(_signUpCreds&&_signUpCreds.email===email){
+      const creds=_signUpCreds;_signUpCreds=null;
+      const pool2=new AmazonCognitoIdentity.CognitoUserPool({UserPoolId:COGNITO_USER_POOL_ID,ClientId:COGNITO_CLIENT_ID});
+      const user2=new AmazonCognitoIdentity.CognitoUser({Username:creds.email,Pool:pool2});
+      const authDetails=new AmazonCognitoIdentity.AuthenticationDetails({Username:creds.email,Password:creds.pass});
+      user2.authenticateUser(authDetails,{
+        onSuccess(session){storeAuth(session.getIdToken().getJwtToken());authDismiss();},
+        onFailure(){_signUpCreds=null;setTimeout(()=>{authTab('login');renderAuthLogin();},800);}
+      });
+    }else{
+      _signUpCreds=null;
+      setTimeout(()=>{authTab('login');renderAuthLogin();},1000);
+    }
   });
 }
 
@@ -1087,6 +1145,34 @@ async function revealFinal(){
   await saveScore();
   loadLeaderboard();
   if(G.correct===G.queue.length)confetti();
+  if(isGuest())setTimeout(showGuestSavePrompt,1400);
+}
+
+function showGuestSavePrompt(){
+  const overlay=document.createElement('div');
+  overlay.id='guestPromptOverlay';
+  overlay.className='auth-overlay';
+  overlay.innerHTML=`<div class="auth-modal" style="max-width:340px;text-align:center;">
+    <div style="font-size:1.8rem;margin-bottom:0.5rem;">🏏</div>
+    <div class="gsp-score">${G.score}</div>
+    <div style="font-size:0.72rem;color:var(--text3);font-family:'DM Mono',monospace;letter-spacing:0.08em;margin-bottom:1rem;">POINTS</div>
+    <div style="font-size:0.82rem;color:var(--text2);line-height:1.6;margin-bottom:1.6rem;">Want to save your score and<br>appear on the leaderboard?</div>
+    <button class="auth-btn" onclick="guestPromptSignUp()">Create Free Account</button>
+    <button class="auth-guest" onclick="guestPromptDismiss()">Maybe Later</button>
+  </div>`;
+  document.body.appendChild(overlay);
+}
+
+function guestPromptDismiss(){
+  const el=document.getElementById('guestPromptOverlay');
+  if(el){el.style.opacity='0';el.style.transition='opacity 0.2s';setTimeout(()=>el.remove(),200);}
+}
+
+function guestPromptSignUp(){
+  sessionStorage.setItem('cz_pending_score',JSON.stringify({score:G.score,gameMode:G.mode,category:'bowling'}));
+  sessionStorage.removeItem('cz_guest');
+  guestPromptDismiss();
+  setTimeout(()=>{showAuthModal();setTimeout(()=>authTab('register'),50);},260);
 }
 
 function buildDailyShareCardHTML(){
