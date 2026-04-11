@@ -597,7 +597,7 @@ video{width:100%;height:100%;object-fit:cover;}
       <div class="vid-ph-icon">🏏</div>
       <p>Watch the action and identify the bowler</p>
     </div>
-    <video id="bvid" loop muted autoplay playsinline style="display:none;"></video>
+    <video id="bvid" loop muted autoplay playsinline preload="auto" style="display:none;"></video>
     <div class="nbadge" id="nbadge"></div>
   </div>
 
@@ -1022,9 +1022,9 @@ function loadBowler(){
 function tryVid(){
   const v=document.getElementById('bvid'),ph=document.getElementById('vidPH');
   v.style.display='none';ph.style.display='flex';
-  v.src=`content/bowling/${G.bowler.id}.mp4`;
+  const src=`content/bowling/${G.bowler.id}.mp4`;
   v.oncanplay=()=>{v.style.display='block';ph.style.display='none';v.play();};
-  v.load();
+  if(v.src!==src){v.src=src;}else{if(v.readyState>=3){v.style.display='block';ph.style.display='none';v.play();}else{v.play();}}
 }
 
 function renderPips(){
@@ -1087,7 +1087,12 @@ function showResult(won,pts){
   if(won)confetti();
   const last=G.idx>=G.queue.length-1,nb=document.getElementById('nextBtn');
   if(last){nb.textContent='See Final Score →';nb.onclick=showFinal;if(G.mode==='daily'){document.getElementById('dshare').style.display='block';document.getElementById('dsharebox').innerHTML=buildDailyShareCardHTML();}}
-  else{nb.textContent='Next Bowler →';nb.onclick=nextBowler;document.getElementById('dshare').style.display='none';}
+  else{
+    nb.textContent='Next Bowler →';nb.onclick=nextBowler;document.getElementById('dshare').style.display='none';
+    // Start fetching next bowler's video into HTTP cache while user reads the result screen
+    const nextBowler=G.queue[G.idx+1];
+    if(nextBowler){const v=document.getElementById('bvid');if(v.src!==`content/bowling/${nextBowler.id}.mp4`)v.src=`content/bowling/${nextBowler.id}.mp4`;}
+  }
 }
 function nextBowler(){G.idx++;showScreen('gameScreen');loadBowler();}
 
