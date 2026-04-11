@@ -269,11 +269,9 @@ resource "aws_apigatewayv2_route" "daily_challenge_dev" {
 }
 
 resource "aws_apigatewayv2_route" "save_score_dev" {
-  api_id             = aws_apigatewayv2_api.dev.id
-  route_key          = "POST /score"
-  target             = "integrations/${aws_apigatewayv2_integration.save_score_dev.id}"
-  authorization_type = "JWT"
-  authorizer_id      = aws_apigatewayv2_authorizer.cognito_dev.id
+  api_id    = aws_apigatewayv2_api.dev.id
+  route_key = "POST /score"
+  target    = "integrations/${aws_apigatewayv2_integration.save_score_dev.id}"
 }
 
 resource "aws_apigatewayv2_route" "leaderboard_dev" {
