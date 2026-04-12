@@ -112,6 +112,19 @@ resource "aws_s3_bucket_policy" "frontend" {
   })
 }
 
+# Allow browser PUT requests for avatar uploads (presigned URL flow)
+resource "aws_s3_bucket_cors_configuration" "frontend" {
+  bucket = aws_s3_bucket.frontend.id
+
+  cors_rule {
+    allowed_headers = ["*"]
+    allowed_methods = ["PUT"]
+    allowed_origins = ["https://playhowzat.com"]
+    expose_headers  = []
+    max_age_seconds = 3000
+  }
+}
+
 # Output the CloudFront URL when apply completes
 output "cloudfront_url" {
   value = "https://${aws_cloudfront_distribution.frontend.domain_name}"
@@ -223,13 +236,46 @@ resource "aws_iam_role_policy" "lambda_dynamodb" {
         Action = [
           "dynamodb:PutItem",
           "dynamodb:Query",
-          "dynamodb:GetItem"
+          "dynamodb:GetItem",
+          "dynamodb:DeleteItem"
         ]
         Resource = [
           aws_dynamodb_table.scores.arn,
           "${aws_dynamodb_table.scores.arn}/index/*",
           aws_dynamodb_table.content.arn
         ]
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy" "lambda_cognito" {
+  name = "cricket-zone-lambda-cognito"
+  role = aws_iam_role.lambda_exec.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect   = "Allow"
+        Action   = ["cognito-idp:AdminDeleteUser"]
+        Resource = aws_cognito_user_pool.main.arn
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy" "lambda_s3_avatars" {
+  name = "cricket-zone-lambda-s3-avatars"
+  role = aws_iam_role.lambda_exec.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect   = "Allow"
+        Action   = ["s3:PutObject"]
+        Resource = "${aws_s3_bucket.frontend.arn}/avatars/*"
       }
     ]
   })
@@ -264,6 +310,20 @@ data "archive_file" "leaderboard" {
   type        = "zip"
   source_dir  = "../backend/functions/leaderboard"
   output_path = "../backend/functions/leaderboard.zip"
+  excludes    = ["node_modules/.cache"]
+}
+
+data "archive_file" "delete_account" {
+  type        = "zip"
+  source_dir  = "../backend/functions/delete-account"
+  output_path = "../backend/functions/delete-account.zip"
+  excludes    = ["node_modules/.cache"]
+}
+
+data "archive_file" "avatar_upload" {
+  type        = "zip"
+  source_dir  = "../backend/functions/avatar-upload"
+  output_path = "../backend/functions/avatar-upload.zip"
   excludes    = ["node_modules/.cache"]
 }
 
@@ -306,6 +366,44 @@ resource "aws_lambda_function" "leaderboard" {
   }
 }
 
+resource "aws_lambda_function" "delete_account" {
+  filename         = data.archive_file.delete_account.output_path
+  function_name    = "cricket-zone-delete-account"
+  role             = aws_iam_role.lambda_exec.arn
+  handler          = "index.handler"
+  runtime          = "nodejs20.x"
+  source_code_hash = data.archive_file.delete_account.output_base64sha256
+
+  environment {
+    variables = {
+      COGNITO_USER_POOL_ID = aws_cognito_user_pool.main.id
+    }
+  }
+
+  tags = {
+    Project = "cricket-zone"
+  }
+}
+
+resource "aws_lambda_function" "avatar_upload" {
+  filename         = data.archive_file.avatar_upload.output_path
+  function_name    = "cricket-zone-avatar-upload"
+  role             = aws_iam_role.lambda_exec.arn
+  handler          = "index.handler"
+  runtime          = "nodejs20.x"
+  source_code_hash = data.archive_file.avatar_upload.output_base64sha256
+
+  environment {
+    variables = {
+      AVATAR_BUCKET = aws_s3_bucket.frontend.bucket
+    }
+  }
+
+  tags = {
+    Project = "cricket-zone"
+  }
+}
+
 
 
 # ─────────────────────────────────────────
@@ -318,7 +416,7 @@ resource "aws_apigatewayv2_api" "main" {
 
   cors_configuration {
     allow_origins = ["https://playhowzat.com"]
-    allow_methods = ["GET", "POST", "OPTIONS"]
+    allow_methods = ["GET", "POST", "DELETE", "OPTIONS"]
     allow_headers = ["Content-Type", "Authorization"]
   }
 }
@@ -362,6 +460,32 @@ resource "aws_apigatewayv2_route" "leaderboard" {
   target    = "integrations/${aws_apigatewayv2_integration.leaderboard.id}"
 }
 
+resource "aws_apigatewayv2_integration" "delete_account" {
+  api_id                 = aws_apigatewayv2_api.main.id
+  integration_type       = "AWS_PROXY"
+  integration_uri        = aws_lambda_function.delete_account.invoke_arn
+  payload_format_version = "2.0"
+}
+
+resource "aws_apigatewayv2_integration" "avatar_upload" {
+  api_id                 = aws_apigatewayv2_api.main.id
+  integration_type       = "AWS_PROXY"
+  integration_uri        = aws_lambda_function.avatar_upload.invoke_arn
+  payload_format_version = "2.0"
+}
+
+resource "aws_apigatewayv2_route" "delete_account" {
+  api_id    = aws_apigatewayv2_api.main.id
+  route_key = "DELETE /account"
+  target    = "integrations/${aws_apigatewayv2_integration.delete_account.id}"
+}
+
+resource "aws_apigatewayv2_route" "avatar_upload" {
+  api_id    = aws_apigatewayv2_api.main.id
+  route_key = "GET /avatar/upload-url"
+  target    = "integrations/${aws_apigatewayv2_integration.avatar_upload.id}"
+}
+
 resource "aws_apigatewayv2_stage" "default" {
   api_id      = aws_apigatewayv2_api.main.id
   name        = "$default"
@@ -388,6 +512,22 @@ resource "aws_lambda_permission" "leaderboard" {
   statement_id  = "AllowAPIGatewayInvoke"
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.leaderboard.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_apigatewayv2_api.main.execution_arn}/*/*"
+}
+
+resource "aws_lambda_permission" "delete_account" {
+  statement_id  = "AllowAPIGatewayInvoke"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.delete_account.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_apigatewayv2_api.main.execution_arn}/*/*"
+}
+
+resource "aws_lambda_permission" "avatar_upload" {
+  statement_id  = "AllowAPIGatewayInvoke"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.avatar_upload.function_name
   principal     = "apigateway.amazonaws.com"
   source_arn    = "${aws_apigatewayv2_api.main.execution_arn}/*/*"
 }

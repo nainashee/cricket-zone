@@ -130,13 +130,46 @@ resource "aws_iam_role_policy" "lambda_dynamodb_dev" {
         Action = [
           "dynamodb:PutItem",
           "dynamodb:Query",
-          "dynamodb:GetItem"
+          "dynamodb:GetItem",
+          "dynamodb:DeleteItem"
         ]
         Resource = [
           aws_dynamodb_table.scores_dev.arn,
           "${aws_dynamodb_table.scores_dev.arn}/index/*",
           aws_dynamodb_table.content_dev.arn
         ]
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy" "lambda_cognito_dev" {
+  name = "cricket-zone-lambda-cognito-dev"
+  role = aws_iam_role.lambda_exec_dev.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect   = "Allow"
+        Action   = ["cognito-idp:AdminDeleteUser"]
+        Resource = aws_cognito_user_pool.dev.arn
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy" "lambda_s3_avatars_dev" {
+  name = "cricket-zone-lambda-s3-avatars-dev"
+  role = aws_iam_role.lambda_exec_dev.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect   = "Allow"
+        Action   = ["s3:PutObject"]
+        Resource = "${aws_s3_bucket.frontend_dev.arn}/avatars/*"
       }
     ]
   })
@@ -169,6 +202,20 @@ data "archive_file" "leaderboard_dev" {
   type        = "zip"
   source_dir  = "../../backend/functions/leaderboard"
   output_path = "../../backend/functions/leaderboard-dev.zip"
+  excludes    = ["node_modules/.cache"]
+}
+
+data "archive_file" "delete_account_dev" {
+  type        = "zip"
+  source_dir  = "../../backend/functions/delete-account"
+  output_path = "../../backend/functions/delete-account-dev.zip"
+  excludes    = ["node_modules/.cache"]
+}
+
+data "archive_file" "avatar_upload_dev" {
+  type        = "zip"
+  source_dir  = "../../backend/functions/avatar-upload"
+  output_path = "../../backend/functions/avatar-upload-dev.zip"
   excludes    = ["node_modules/.cache"]
 }
 
@@ -226,6 +273,47 @@ resource "aws_lambda_function" "leaderboard_dev" {
   }
 }
 
+resource "aws_lambda_function" "delete_account_dev" {
+  filename         = data.archive_file.delete_account_dev.output_path
+  function_name    = "cricket-zone-delete-account-dev"
+  role             = aws_iam_role.lambda_exec_dev.arn
+  handler          = "index.handler"
+  runtime          = "nodejs20.x"
+  source_code_hash = data.archive_file.delete_account_dev.output_base64sha256
+
+  environment {
+    variables = {
+      COGNITO_USER_POOL_ID = aws_cognito_user_pool.dev.id
+      SCORES_TABLE         = "cricket-zone-scores-dev"
+    }
+  }
+
+  tags = {
+    Project     = "cricket-zone"
+    Environment = "dev"
+  }
+}
+
+resource "aws_lambda_function" "avatar_upload_dev" {
+  filename         = data.archive_file.avatar_upload_dev.output_path
+  function_name    = "cricket-zone-avatar-upload-dev"
+  role             = aws_iam_role.lambda_exec_dev.arn
+  handler          = "index.handler"
+  runtime          = "nodejs20.x"
+  source_code_hash = data.archive_file.avatar_upload_dev.output_base64sha256
+
+  environment {
+    variables = {
+      AVATAR_BUCKET = aws_s3_bucket.frontend_dev.bucket
+    }
+  }
+
+  tags = {
+    Project     = "cricket-zone"
+    Environment = "dev"
+  }
+}
+
 # ─────────────────────────────────────────
 # API Gateway (dev)
 # ─────────────────────────────────────────
@@ -236,7 +324,7 @@ resource "aws_apigatewayv2_api" "dev" {
 
   cors_configuration {
     allow_origins = ["*"]
-    allow_methods = ["GET", "POST", "OPTIONS"]
+    allow_methods = ["GET", "POST", "DELETE", "OPTIONS"]
     allow_headers = ["Content-Type", "Authorization"]
   }
 }
@@ -280,6 +368,32 @@ resource "aws_apigatewayv2_route" "leaderboard_dev" {
   target    = "integrations/${aws_apigatewayv2_integration.leaderboard_dev.id}"
 }
 
+resource "aws_apigatewayv2_integration" "delete_account_dev" {
+  api_id                 = aws_apigatewayv2_api.dev.id
+  integration_type       = "AWS_PROXY"
+  integration_uri        = aws_lambda_function.delete_account_dev.invoke_arn
+  payload_format_version = "2.0"
+}
+
+resource "aws_apigatewayv2_integration" "avatar_upload_dev" {
+  api_id                 = aws_apigatewayv2_api.dev.id
+  integration_type       = "AWS_PROXY"
+  integration_uri        = aws_lambda_function.avatar_upload_dev.invoke_arn
+  payload_format_version = "2.0"
+}
+
+resource "aws_apigatewayv2_route" "delete_account_dev" {
+  api_id    = aws_apigatewayv2_api.dev.id
+  route_key = "DELETE /account"
+  target    = "integrations/${aws_apigatewayv2_integration.delete_account_dev.id}"
+}
+
+resource "aws_apigatewayv2_route" "avatar_upload_dev" {
+  api_id    = aws_apigatewayv2_api.dev.id
+  route_key = "GET /avatar/upload-url"
+  target    = "integrations/${aws_apigatewayv2_integration.avatar_upload_dev.id}"
+}
+
 resource "aws_apigatewayv2_stage" "default_dev" {
   api_id      = aws_apigatewayv2_api.dev.id
   name        = "$default"
@@ -306,6 +420,22 @@ resource "aws_lambda_permission" "leaderboard_dev" {
   statement_id  = "AllowAPIGatewayInvoke"
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.leaderboard_dev.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_apigatewayv2_api.dev.execution_arn}/*/*"
+}
+
+resource "aws_lambda_permission" "delete_account_dev" {
+  statement_id  = "AllowAPIGatewayInvoke"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.delete_account_dev.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_apigatewayv2_api.dev.execution_arn}/*/*"
+}
+
+resource "aws_lambda_permission" "avatar_upload_dev" {
+  statement_id  = "AllowAPIGatewayInvoke"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.avatar_upload_dev.function_name
   principal     = "apigateway.amazonaws.com"
   source_arn    = "${aws_apigatewayv2_api.dev.execution_arn}/*/*"
 }
@@ -337,6 +467,18 @@ resource "aws_s3_bucket_website_configuration" "frontend_dev" {
 
   index_document {
     suffix = "index.html"
+  }
+}
+
+resource "aws_s3_bucket_cors_configuration" "frontend_dev" {
+  bucket = aws_s3_bucket.frontend_dev.id
+
+  cors_rule {
+    allowed_headers = ["*"]
+    allowed_methods = ["PUT"]
+    allowed_origins = ["*"]
+    expose_headers  = []
+    max_age_seconds = 3000
   }
 }
 
