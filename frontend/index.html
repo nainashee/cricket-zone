@@ -34,10 +34,10 @@ header{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify
 .logo:hover{opacity:0.75;}
 .logo-mark{width:30px;height:30px;background:var(--accent);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:0.8rem;padding:2px;}
 .logo em{color:var(--accent);font-style:normal;}
-.hstats{display:flex;gap:1.5rem;}
-.hst{text-align:right;}
-.hst-v{font-family:'Bebas Neue',sans-serif;font-size:1.05rem;color:var(--accent);letter-spacing:0.05em;display:block;line-height:1;}
-.hst-l{font-family:'DM Mono',monospace;font-size:0.58rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em;}
+.hstats{display:flex;gap:1.2rem;}
+.hst{display:flex;align-items:center;gap:0.3rem;}
+.hst-emoji{font-size:0.82rem;line-height:1;}
+.hst-v{font-family:'Bebas Neue',sans-serif;font-size:1.05rem;color:var(--accent);letter-spacing:0.05em;line-height:1;}
 
 /* ── SCREENS ── */
 .screen{display:none;}
@@ -344,11 +344,31 @@ video{width:100%;height:100%;object-fit:cover;}
 .auth-guest:hover{color:var(--text2);}
 /* ── GUEST SAVE PROMPT ── */
 .gsp-score{font-family:'Bebas Neue',sans-serif;font-size:2.4rem;color:var(--accent);letter-spacing:0.06em;line-height:1;}
-/* ── HEADER USER ── */
-.huser{display:flex;align-items:center;gap:0.55rem;}
-.hu-name{font-size:0.72rem;color:var(--text3);font-family:'DM Mono',monospace;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.hu-signout{background:transparent;border:1px solid var(--border2);border-radius:8px;color:var(--text3);font-size:0.7rem;font-family:'DM Mono',monospace;padding:0.28rem 0.6rem;cursor:pointer;transition:all 0.2s;}
-.hu-signout:hover{border-color:var(--text3);color:var(--text);}
+/* ── HEADER PROFILE ── */
+.hright{display:flex;align-items:center;gap:0.65rem;position:relative;}
+.havatar{width:32px;height:32px;border-radius:50%;overflow:hidden;cursor:pointer;border:1.5px solid var(--border2);flex-shrink:0;transition:border-color 0.2s;}
+.havatar:hover{border-color:var(--accent);}
+.havatar img{width:100%;height:100%;object-fit:cover;display:block;}
+.hname{font-size:0.75rem;color:var(--text2);font-family:'DM Mono',monospace;max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:pointer;transition:color 0.2s;}
+.hname:hover{color:var(--text);}
+.hprofile-drop{position:absolute;top:calc(100% + 0.65rem);right:0;min-width:230px;background:var(--surface);border:1px solid var(--border2);border-radius:14px;padding:0.5rem;box-shadow:0 16px 48px rgba(0,0,0,0.65);z-index:200;opacity:0;pointer-events:none;transform:translateY(-8px);transition:opacity 0.18s ease,transform 0.18s ease;}
+.hprofile-drop.open{opacity:1;pointer-events:auto;transform:translateY(0);}
+.drop-avatar-wrap{display:flex;flex-direction:column;align-items:center;padding:1rem 0.5rem 0.8rem;border-bottom:1px solid var(--border2);margin-bottom:0.3rem;}
+.drop-avatar-lg{width:56px;height:56px;border-radius:50%;overflow:hidden;border:2px solid var(--border2);position:relative;cursor:pointer;flex-shrink:0;}
+.drop-avatar-lg:hover .drop-av-edit{opacity:1;}
+.drop-av-edit{position:absolute;inset:0;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;border-radius:50%;opacity:0;transition:opacity 0.2s;font-size:0.6rem;color:#fff;font-family:'DM Mono',monospace;letter-spacing:0.04em;pointer-events:none;}
+.drop-info{text-align:center;margin-top:0.55rem;}
+.drop-info-name{font-size:0.82rem;color:var(--text);font-weight:500;}
+.drop-info-sub{font-size:0.68rem;color:var(--text3);font-family:'DM Mono',monospace;margin-top:0.15rem;}
+.drop-divider{height:1px;background:var(--border2);margin:0.3rem 0;}
+.drop-item{display:flex;align-items:center;gap:0.55rem;padding:0.48rem 0.65rem;border-radius:8px;font-size:0.79rem;font-family:'DM Sans',sans-serif;color:var(--text2);cursor:pointer;transition:all 0.15s;border:none;background:transparent;width:100%;text-align:left;}
+.drop-item:hover{background:var(--surface2);color:var(--text);}
+.drop-item.danger{color:var(--red);}
+.drop-item.danger:hover{background:rgba(255,79,79,0.08);}
+.drop-item.locked{opacity:0.38;pointer-events:none;}
+.drop-lock{margin-left:auto;font-size:0.72rem;}
+.drop-create{width:100%;margin-top:0.45rem;background:var(--accent);color:var(--bg);border:none;border-radius:9px;padding:0.58rem 1rem;font-size:0.8rem;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all 0.2s;}
+.drop-create:hover{background:#d8ff45;}
 </style>
 </head>
 <body>
@@ -390,12 +410,13 @@ video{width:100%;height:100%;object-fit:cover;}
     <span style="display:inline-flex;letter-spacing:0.12em;"><span style="color:#c9a84c;">HOW</span><em style="font-style:normal;color:var(--accent);">ZAT</em></span>
   </div>
   <div class="hstats">
-    <div class="hst"><span class="hst-v" id="hStreak">0</span><span class="hst-l">Streak</span></div>
-    <div class="hst"><span class="hst-v" id="hBest">—</span><span class="hst-l">Best</span></div>
+    <div class="hst"><span class="hst-emoji">🔥</span><span class="hst-v" id="hStreak">0</span></div>
+    <div class="hst"><span class="hst-emoji">⭐</span><span class="hst-v" id="hBest">—</span></div>
   </div>
-  <div class="huser" id="hUser" style="display:none;">
-    <span class="hu-name" id="huName"></span>
-    <button class="hu-signout" onclick="signOut()">Sign out</button>
+  <div class="hright" id="hUser" style="display:none;">
+    <div class="havatar" id="hAvatarBtn" onclick="toggleProfileDropdown()"></div>
+    <span class="hname" id="huName" onclick="toggleProfileDropdown()"></span>
+    <div class="hprofile-drop" id="hProfileDrop"></div>
   </div>
 </header>
 
@@ -731,6 +752,7 @@ const API = '__API_URL__';
 const COGNITO_USER_POOL_ID = '__COGNITO_USER_POOL_ID__';
 const COGNITO_CLIENT_ID    = '__COGNITO_CLIENT_ID__';
 const COGNITO_DOMAIN       = '__COGNITO_DOMAIN__';
+const AVATAR_BASE          = '__AVATAR_BASE_URL__';
 
 // ─── Auth helpers ───
 function parseJwt(token){
@@ -790,6 +812,8 @@ function storeAuth(idToken){
   localStorage.setItem('cz_id_token',idToken);
   localStorage.setItem('cz_user_sub',claims.sub);
   localStorage.setItem('cz_user_name',claims.name||claims.email||claims.sub);
+  if(claims.email)localStorage.setItem('cz_user_email',claims.email);
+  if(claims.picture)localStorage.setItem('cz_user_picture',claims.picture);
   sessionStorage.removeItem('cz_guest');
   updateHeaderUser();
   postPendingScore(idToken);
@@ -811,7 +835,7 @@ async function postPendingScore(idToken){
 }
 
 function signOut(){
-  ['cz_id_token','cz_user_sub','cz_user_name','cz_name'].forEach(k=>localStorage.removeItem(k));
+  ['cz_id_token','cz_user_sub','cz_user_name','cz_user_email','cz_user_picture','cz_avatar_url','cz_name'].forEach(k=>localStorage.removeItem(k));
   Object.keys(localStorage).filter(k=>k.startsWith('CognitoIdentityServiceProvider.')).forEach(k=>localStorage.removeItem(k));
   location.reload();
 }
@@ -823,24 +847,150 @@ function isTokenValid(){
   catch{return false;}
 }
 
+function makeInitialsAvatar(name,size=32){
+  const initials=(name||'?').split(' ').map(w=>w[0]||'').join('').slice(0,2).toUpperCase()||'?';
+  let hash=0;for(let i=0;i<(name||'').length;i++){hash=(hash<<5)-hash+(name||'').charCodeAt(i);hash|=0;}
+  const hue=Math.abs(hash)%360;
+  const bg=`hsl(${hue},50%,26%)`;
+  const fg=`hsl(${hue},75%,72%)`;
+  const fs=Math.round(size*0.4);
+  const ty=Math.round(size*0.665);
+  const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}"><rect width="${size}" height="${size}" rx="${size/2}" fill="${bg}"/><text x="${size/2}" y="${ty}" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="${fs}" font-weight="600" fill="${fg}">${initials}</text></svg>`;
+  return`data:image/svg+xml,${encodeURIComponent(svg)}`;
+}
+
+function getAvatarSrc(name){
+  const custom=localStorage.getItem('cz_avatar_url');
+  if(custom)return custom;
+  const picture=localStorage.getItem('cz_user_picture');
+  if(picture)return picture;
+  return makeInitialsAvatar(name||'?');
+}
+
 function updateHeaderUser(){
   const el=document.getElementById('hUser');
   const nameEl=document.getElementById('huName');
-  const btn=el?.querySelector('.hu-signout');
+  const avatarEl=document.getElementById('hAvatarBtn');
   if(!el)return;
-  if(isGuest()){
+  const guest=isGuest();
+  const name=guest?(localStorage.getItem('cz_name')||'Guest'):getCurrentUserName();
+  if(name||guest){
     el.style.display='flex';
-    nameEl.textContent=localStorage.getItem('cz_name')||'Guest';
-    if(btn){btn.textContent='Create Account';btn.onclick=()=>{showAuthModal();setTimeout(()=>authTab('register'),50);};}
-  }else{
-    const name=getCurrentUserName();
-    if(name){
-      el.style.display='flex';
-      nameEl.textContent=name;
-      if(btn){btn.textContent='Sign out';btn.onclick=signOut;}
-    }else{
-      el.style.display='none';
+    if(nameEl)nameEl.textContent=name||'';
+    if(avatarEl){
+      const src=getAvatarSrc(name||'Guest');
+      const fb=makeInitialsAvatar(name||'Guest');
+      avatarEl.innerHTML=`<img src="${src}" width="32" height="32" onerror="this.src='${fb}'" alt="">`;
     }
+  }else{
+    el.style.display='none';
+  }
+}
+
+function toggleProfileDropdown(){
+  const drop=document.getElementById('hProfileDrop');
+  if(!drop)return;
+  if(drop.classList.contains('open')){drop.classList.remove('open');}
+  else{renderProfileDropdown();drop.classList.add('open');}
+}
+
+function closeProfileDropdown(){
+  const drop=document.getElementById('hProfileDrop');
+  if(drop)drop.classList.remove('open');
+}
+
+function renderProfileDropdown(){
+  const drop=document.getElementById('hProfileDrop');
+  if(!drop)return;
+  const guest=isGuest();
+  const name=guest?(localStorage.getItem('cz_name')||'Guest'):getCurrentUserName()||'';
+  const email=localStorage.getItem('cz_user_email')||'';
+  const src=getAvatarSrc(name);
+  const fb=makeInitialsAvatar(name||'Guest',56);
+  if(guest){
+    drop.innerHTML=`
+      <div class="drop-avatar-wrap">
+        <div class="drop-avatar-lg" style="cursor:default;">
+          <img src="${src}" width="56" height="56" style="width:56px;height:56px;object-fit:cover;border-radius:50%;display:block;" onerror="this.src='${fb}'" alt="">
+        </div>
+        <div class="drop-info">
+          <div class="drop-info-name">${name}</div>
+          <div class="drop-info-sub">Guest</div>
+        </div>
+      </div>
+      <div class="drop-divider"></div>
+      <div class="drop-item locked">📷 Change Photo<span class="drop-lock">🔒</span></div>
+      <div class="drop-item locked">🚪 Sign Out<span class="drop-lock">🔒</span></div>
+      <div class="drop-item locked danger">🗑 Delete Account<span class="drop-lock">🔒</span></div>
+      <div class="drop-divider"></div>
+      <button class="drop-create" onclick="closeProfileDropdown();showAuthModal();setTimeout(()=>authTab('register'),50);">Create Free Account</button>`;
+  }else{
+    drop.innerHTML=`
+      <div class="drop-avatar-wrap">
+        <div class="drop-avatar-lg">
+          <img src="${src}" width="56" height="56" style="width:56px;height:56px;object-fit:cover;border-radius:50%;display:block;" onerror="this.src='${fb}'" alt="" id="dropAvImg">
+          <div class="drop-av-edit">EDIT<input type="file" accept="image/*" onchange="uploadAvatar(this.files[0])" style="position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;pointer-events:auto;"></div>
+        </div>
+        <div class="drop-info">
+          <div class="drop-info-name">${name}</div>
+          ${email?`<div class="drop-info-sub">${email}</div>`:''}
+        </div>
+      </div>
+      <div class="drop-divider"></div>
+      <button class="drop-item" onclick="signOut()">🚪 Sign Out</button>
+      <button class="drop-item danger" onclick="confirmDeleteAccount()">🗑 Delete Account</button>`;
+  }
+}
+
+function confirmDeleteAccount(){
+  const drop=document.getElementById('hProfileDrop');
+  if(!drop)return;
+  drop.innerHTML=`
+    <div style="padding:1rem;text-align:center;">
+      <div style="font-size:1.8rem;margin-bottom:0.6rem;">⚠️</div>
+      <div style="font-size:0.87rem;color:var(--text);font-weight:600;margin-bottom:0.45rem;">Delete Account?</div>
+      <div style="font-size:0.74rem;color:var(--text3);font-family:'DM Mono',monospace;line-height:1.7;margin-bottom:1.3rem;">Your account and all scores will be permanently deleted. This cannot be undone.</div>
+      <button class="drop-item danger" style="width:100%;justify-content:center;margin-bottom:0.35rem;" onclick="doDeleteAccount()">Yes, Delete Everything</button>
+      <button class="drop-item" style="width:100%;justify-content:center;" onclick="renderProfileDropdown()">Cancel</button>
+    </div>`;
+}
+
+async function doDeleteAccount(){
+  const idToken=getIdToken();
+  if(!idToken)return;
+  try{
+    const res=await fetch(`${API}/account`,{method:'DELETE',headers:{'Authorization':`Bearer ${idToken}`}});
+    if(!res.ok)throw new Error(await res.text());
+    localStorage.clear();
+    sessionStorage.clear();
+    location.href=window.location.pathname;
+  }catch(err){
+    console.error('Delete account failed:',err);
+    toast('Delete failed, try again','');
+  }
+}
+
+async function uploadAvatar(file){
+  if(!file)return;
+  if(file.size>2*1024*1024){toast('Image must be under 2 MB','');return;}
+  const idToken=getIdToken();
+  if(!idToken)return;
+  toast('Uploading…','');
+  try{
+    const res=await fetch(`${API}/avatar/upload-url?contentType=${encodeURIComponent(file.type||'image/jpeg')}`,{headers:{'Authorization':`Bearer ${idToken}`}});
+    if(!res.ok)throw new Error('Could not get upload URL');
+    const {url}=await res.json();
+    const uploadRes=await fetch(url,{method:'PUT',headers:{'Content-Type':file.type||'image/jpeg'},body:file});
+    if(!uploadRes.ok)throw new Error('Upload failed');
+    const userId=getCurrentUserId();
+    const avatarUrl=`${AVATAR_BASE}/avatars/${userId}?t=${Date.now()}`;
+    localStorage.setItem('cz_avatar_url',avatarUrl);
+    updateHeaderUser();
+    renderProfileDropdown();
+    toast('Avatar updated!','ok');
+  }catch(err){
+    console.error('Avatar upload failed:',err);
+    toast('Upload failed, try again','');
   }
 }
 
@@ -1160,9 +1310,13 @@ async function loadLeaderboard(){
     function renderRow(s,i,isMe){
       const name=s.playerName||s.userId;
       const youBadge=isMe?`<span style="font-family:'DM Mono',monospace;font-size:0.58rem;color:var(--accent);background:var(--accent-dim);border:1px solid var(--border);border-radius:100px;padding:0.1rem 0.45rem;margin-left:0.4rem;vertical-align:middle;">YOU</span>`:'';
+      const avFb=makeInitialsAvatar(name,24);
+      const avSrc=`${AVATAR_BASE}/avatars/${s.userId}`;
+      const avHtml=`<img src="${avSrc}" width="24" height="24" style="width:24px;height:24px;border-radius:50%;object-fit:cover;flex-shrink:0;" onerror="this.src='${avFb}'" alt="">`;
       return`<div style="display:flex;align-items:center;justify-content:space-between;padding:0.65rem 0.9rem;border-bottom:1px solid var(--border2);${isMe?'background:rgba(200,242,48,0.04);':''}">
-        <div style="display:flex;align-items:center;gap:0.75rem;">
-          <span style="font-family:'Bebas Neue',sans-serif;font-size:1.1rem;color:${isMe?'var(--accent)':rankColor(i)};width:1.4rem;text-align:center;">${i+1}</span>
+        <div style="display:flex;align-items:center;gap:0.6rem;">
+          <span style="font-family:'Bebas Neue',sans-serif;font-size:1.1rem;color:${isMe?'var(--accent)':rankColor(i)};width:1.4rem;text-align:center;flex-shrink:0;">${i+1}</span>
+          ${avHtml}
           <span style="font-size:0.82rem;color:${isMe?'var(--text)':'var(--text2)'};font-weight:${isMe?500:400};">${name}${youBadge}</span>
         </div>
         <div style="display:flex;align-items:center;gap:0.8rem;">
@@ -1319,9 +1473,13 @@ async function loadTop5(){
       const name=s.playerName||'Anonymous';
       const youBadge=isMe?'<span class="top5-you">YOU</span>':'';
       const medal=i===0?'🥇':i===1?'🥈':i===2?'🥉':'';
+      const avFb=makeInitialsAvatar(name,22);
+      const avSrc=`${AVATAR_BASE}/avatars/${s.userId}`;
+      const avHtml=`<img src="${avSrc}" width="22" height="22" style="width:22px;height:22px;border-radius:50%;object-fit:cover;flex-shrink:0;" onerror="this.src='${avFb}'" alt="">`;
       return`<div class="top5-row${isMe?' me':''}">
         <div class="top5-left">
           <span class="top5-rank" style="color:${isMe?'var(--accent)':rankColor(i)}">${medal||i+1}</span>
+          ${avHtml}
           <span class="top5-name${isMe?' me':''}">${name}${youBadge}</span>
         </div>
         <div class="top5-right">
@@ -1338,7 +1496,10 @@ async function loadTop5(){
   }
 }
 
-document.addEventListener('click',e=>{if(!e.target.closest('.sarea'))document.getElementById('ddrop').classList.remove('open');});
+document.addEventListener('click',e=>{
+  if(!e.target.closest('.sarea'))document.getElementById('ddrop').classList.remove('open');
+  if(!e.target.closest('#hUser'))closeProfileDropdown();
+});
 boot();
 </script>
 </body>
