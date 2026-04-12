@@ -22,7 +22,18 @@ export const handler = async (event) => {
       };
     }
 
-    const claims = event.requestContext?.authorizer?.jwt?.claims;
+    // Prefer claims injected by an API Gateway JWT authorizer; fall back to
+    // manually decoding the Authorization header when no authorizer is attached.
+    let claims = event.requestContext?.authorizer?.jwt?.claims;
+    if (!claims?.sub) {
+      const auth = event.headers?.Authorization ?? event.headers?.authorization ?? '';
+      if (auth.startsWith('Bearer ')) {
+        try {
+          const payload = auth.split('.')[1];
+          claims = JSON.parse(Buffer.from(payload, 'base64url').toString());
+        } catch { claims = null; }
+      }
+    }
 
     let userId, playerName;
 
