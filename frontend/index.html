@@ -106,6 +106,8 @@ main{position:relative;z-index:1;}
 .cat-card.daily-card{border-color:rgba(245,158,11,0.2);box-shadow:0 0 28px rgba(245,158,11,0.06);}
 .cat-card.daily-card:hover{border-color:rgba(245,158,11,0.45);box-shadow:0 20px 50px rgba(0,0,0,0.5),0 0 0 1px rgba(245,158,11,0.35);}
 .cat-card.daily-card .cat-arr{background:#f59e0b;}
+.cat-card.daily-card.played{cursor:default;opacity:0.55;filter:saturate(0.25);}
+.cat-card.daily-card.played:hover{transform:none;box-shadow:0 0 28px rgba(245,158,11,0.06);border-color:rgba(245,158,11,0.2);}
 .daily-banner-inner{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:0.3rem;}
 .daily-banner-icons{display:flex;align-items:center;gap:0.4rem;font-size:2.4rem;animation:iconFloat 3s ease-in-out infinite;}
 .daily-stamp{font-family:'Bebas Neue',sans-serif;font-size:0.7rem;letter-spacing:0.22em;color:rgba(245,158,11,0.55);margin-top:0.1rem;}
@@ -407,10 +409,10 @@ video{width:100%;height:100%;object-fit:cover;}
       <p class="hero-eyebrow">The Ultimate Cricket Challenge</p>
       <h1 class="hero-title">KNOW YOUR<span class="hl">LEGENDS</span></h1>
       <p class="hero-desc">Identify cricket's greatest players from their silhouette alone. Three categories. Iconic moments. How well do you know the game?</p>
-      <button class="hero-cta" onclick="startGame('daily')">Play Daily Challenge →</button>
+      <button class="hero-cta" onclick="tryStartDaily()">Play Daily Challenge →</button>
     </div>
     <div class="hero-right">
-      <div class="hero-visual hero-daily-preview" onclick="startGame('daily')" title="Play today's daily challenge" style="cursor:pointer;">
+      <div class="hero-visual hero-daily-preview" onclick="tryStartDaily()" title="Play today's daily challenge" style="cursor:pointer;">
         <div class="hero-visual-glow"></div>
         <video id="heroVid" autoplay muted loop playsinline style="width:100%;height:100%;object-fit:cover;display:none;position:absolute;inset:0;z-index:0;"></video>
         <div class="sil-wrap" id="heroPlaceholder" style="position:relative;z-index:1;">
@@ -433,7 +435,7 @@ video{width:100%;height:100%;object-fit:cover;}
 
     <div class="cat-grid">
 
-      <div class="cat-card live daily-card" onclick="startGame('daily')">
+      <div class="cat-card live daily-card" id="dailyCard" onclick="tryStartDaily()">
         <div class="cat-banner cb-daily"><div class="cb-glow"></div>
           <div class="daily-banner-inner">
             <div class="daily-banner-icons">🏏<span style="font-size:1.6rem;opacity:0.75;">🗓️</span></div>
@@ -447,7 +449,7 @@ video{width:100%;height:100%;object-fit:cover;}
           <p class="cat-desc">One bowler. One chance. Every day a new legend to identify — come back tomorrow for the next one.</p>
           <div class="cat-foot">
             <span class="cat-meta">1 bowler · Resets daily</span>
-            <div class="cat-arr">→</div>
+            <div class="cat-arr" id="dailyArr">→</div>
           </div>
           <div class="cat-countdown">
             <span>Next challenge in:</span>
@@ -640,6 +642,7 @@ let stats=JSON.parse(localStorage.getItem('cz3')||'{"games":0,"wins":0,"best":0,
 
 async function boot(){
   refreshH();refreshLS();
+  applyDailyCardState();
   loadHeroDailyVideo();
   loadTop5();
   const handled=await handleOAuthCallback();
@@ -650,9 +653,30 @@ async function boot(){
   }
 }
 
+function getTodayLocal(){
+  const d=new Date();
+  return`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+function hasDailyPlayed(){return localStorage.getItem('howzat_last_played')===getTodayLocal();}
+function markDailyPlayed(){localStorage.setItem('howzat_last_played',getTodayLocal());}
+function tryStartDaily(){if(hasDailyPlayed())return;startGame('daily');}
+
+function applyDailyCardState(){
+  const card=document.getElementById('dailyCard');
+  const arr=document.getElementById('dailyArr');
+  if(!card||!arr)return;
+  if(hasDailyPlayed()){
+    card.classList.add('played');
+    arr.outerHTML='<span id="dailyArr" style="font-family:\'DM Mono\',monospace;font-size:0.65rem;color:var(--text3);letter-spacing:0.04em;">Come back tomorrow</span>';
+  }else{
+    card.classList.remove('played');
+    if(arr.tagName!=='DIV'){arr.outerHTML='<div class="cat-arr" id="dailyArr">→</div>';}
+  }
+}
+
 function loadHeroDailyVideo(){
   // Same daily seed logic as startGame('daily') so it always matches
-  const seed=new Date().toISOString().slice(0,10);
+  const seed=getTodayLocal();
   let hash=0;for(let i=0;i<seed.length;i++){hash=(hash<<5)-hash+seed.charCodeAt(i);hash|=0;}
   const bowler=VIDEO_BOWLERS[Math.abs(hash)%VIDEO_BOWLERS.length];
   const vid=document.getElementById('heroVid');
@@ -1072,7 +1096,7 @@ async function startGame(mode){
 
   if(mode==='daily'){
     // Use same seed as loadHeroDailyVideo so hero preview always matches
-    const seed=new Date().toISOString().slice(0,10);
+    const seed=getTodayLocal();
     let hash=0;for(let i=0;i<seed.length;i++){hash=(hash<<5)-hash+seed.charCodeAt(i);hash|=0;}
     G.queue=[VIDEO_BOWLERS[Math.abs(hash)%VIDEO_BOWLERS.length]];
   } else {
@@ -1282,6 +1306,7 @@ async function revealFinal(){
   stats.games++;if(G.correct>0){stats.wins++;stats.streak++;}else stats.streak=0;
   if(G.score>stats.best)stats.best=G.score;
   localStorage.setItem('cz3',JSON.stringify(stats));refreshH();
+  if(G.mode==='daily'){markDailyPlayed();applyDailyCardState();}
   await saveScore();
   loadLeaderboard();
   if(G.correct===G.queue.length)confetti();
@@ -1429,7 +1454,12 @@ function tickDailyCountdown(){
   const midnight=new Date(now);
   midnight.setHours(24,0,0,0);
   const diff=Math.max(0,Math.floor((midnight-now)/1000));
-  if(diff===0){location.reload();return;}
+  if(diff===0){
+    // New day — clear daily play record and any cached daily data, then reload
+    localStorage.removeItem('howzat_last_played');
+    Object.keys(localStorage).filter(k=>k.startsWith('howzat_daily_')).forEach(k=>localStorage.removeItem(k));
+    location.reload();return;
+  }
   const h=Math.floor(diff/3600);
   const m=Math.floor((diff%3600)/60);
   const s=diff%60;
