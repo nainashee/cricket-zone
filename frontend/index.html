@@ -113,6 +113,8 @@ main{position:relative;z-index:1;}
 .daily-stamp{font-family:'Bebas Neue',sans-serif;font-size:0.7rem;letter-spacing:0.22em;color:rgba(245,158,11,0.55);margin-top:0.1rem;}
 .cat-countdown{margin-top:0.85rem;padding-top:0.85rem;border-top:1px solid var(--border2);display:flex;align-items:center;gap:0.5rem;font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--text3);}
 .cat-countdown-val{color:#f59e0b;font-size:0.72rem;letter-spacing:0.05em;}
+.daily-done-badge{background:rgba(200,242,48,0.1);border:1px solid rgba(200,242,48,0.28);color:var(--accent);border-radius:100px;padding:0.22rem 0.7rem;font-family:'DM Mono',monospace;font-size:0.65rem;letter-spacing:0.08em;display:none;align-items:center;gap:0.3rem;}
+.daily-played-msg{font-family:'DM Mono',monospace;font-size:0.62rem;color:var(--text3);line-height:1.6;margin-top:0.75rem;display:none;}
 .cat-name{font-family:'Bebas Neue',sans-serif;font-size:1.55rem;letter-spacing:0.05em;display:block;margin-bottom:0.4rem;}
 .cat-desc{font-size:0.79rem;color:var(--text2);line-height:1.6;margin-bottom:1.1rem;font-weight:300;}
 .cat-foot{display:flex;align-items:center;justify-content:space-between;}
@@ -450,7 +452,9 @@ video{width:100%;height:100%;object-fit:cover;}
           <div class="cat-foot">
             <span class="cat-meta">1 bowler · Resets daily</span>
             <div class="cat-arr" id="dailyArr">→</div>
+            <div class="daily-done-badge" id="dailyDoneBadge">✓ Completed</div>
           </div>
+          <p class="daily-played-msg" id="dailyPlayedMsg">You've completed today's challenge. Come back tomorrow!</p>
           <div class="cat-countdown">
             <span>Next challenge in:</span>
             <span class="cat-countdown-val" id="dailyCountdown">--:--:--</span>
@@ -643,6 +647,8 @@ let stats=JSON.parse(localStorage.getItem('cz3')||'{"games":0,"wins":0,"best":0,
 async function boot(){
   refreshH();refreshLS();
   applyDailyCardState();
+  tickDailyCountdown();
+  setInterval(tickDailyCountdown,1000);
   loadHeroDailyVideo();
   loadTop5();
   const handled=await handleOAuthCallback();
@@ -664,14 +670,14 @@ function tryStartDaily(){if(hasDailyPlayed())return;startGame('daily');}
 function applyDailyCardState(){
   const card=document.getElementById('dailyCard');
   const arr=document.getElementById('dailyArr');
-  if(!card||!arr)return;
-  if(hasDailyPlayed()){
-    card.classList.add('played');
-    arr.outerHTML='<span id="dailyArr" style="font-family:\'DM Mono\',monospace;font-size:0.65rem;color:var(--text3);letter-spacing:0.04em;">Come back tomorrow</span>';
-  }else{
-    card.classList.remove('played');
-    if(arr.tagName!=='DIV'){arr.outerHTML='<div class="cat-arr" id="dailyArr">→</div>';}
-  }
+  const badge=document.getElementById('dailyDoneBadge');
+  const msg=document.getElementById('dailyPlayedMsg');
+  if(!card)return;
+  const played=hasDailyPlayed();
+  card.classList.toggle('played',played);
+  if(arr)arr.style.display=played?'none':'flex';
+  if(badge)badge.style.display=played?'flex':'none';
+  if(msg)msg.style.display=played?'block':'none';
 }
 
 function loadHeroDailyVideo(){
@@ -1480,9 +1486,6 @@ function tickDailyCountdown(){
   const s=diff%60;
   el.textContent=`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
 }
-tickDailyCountdown();
-setInterval(tickDailyCountdown,1000);
-
 document.addEventListener('click',e=>{
   if(!e.target.closest('.sarea'))document.getElementById('ddrop').classList.remove('open');
   if(!e.target.closest('#hUser'))closeProfileDropdown();
