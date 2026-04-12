@@ -100,6 +100,17 @@ main{position:relative;z-index:1;}
 .cat-tag{font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.14em;text-transform:uppercase;border-radius:100px;display:inline-block;margin-bottom:0.7rem;padding:0.18rem 0.6rem;}
 .ct-live{background:var(--accent-dim);border:1px solid var(--border);color:var(--accent);}
 .ct-soon{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:var(--text3);}
+.ct-daily{background:rgba(245,158,11,0.12);border:1px solid rgba(245,158,11,0.35);color:#f59e0b;}
+.cb-daily{background:linear-gradient(135deg,#1a1200,#2a1e00);}
+.cb-daily .cb-glow{background:radial-gradient(ellipse at center,rgba(245,158,11,0.18) 0%,transparent 70%);}
+.cat-card.daily-card{border-color:rgba(245,158,11,0.2);box-shadow:0 0 28px rgba(245,158,11,0.06);}
+.cat-card.daily-card:hover{border-color:rgba(245,158,11,0.45);box-shadow:0 20px 50px rgba(0,0,0,0.5),0 0 0 1px rgba(245,158,11,0.35);}
+.cat-card.daily-card .cat-arr{background:#f59e0b;}
+.daily-banner-inner{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:0.3rem;}
+.daily-banner-icons{display:flex;align-items:center;gap:0.4rem;font-size:2.4rem;animation:iconFloat 3s ease-in-out infinite;}
+.daily-stamp{font-family:'Bebas Neue',sans-serif;font-size:0.7rem;letter-spacing:0.22em;color:rgba(245,158,11,0.55);margin-top:0.1rem;}
+.cat-countdown{margin-top:0.85rem;padding-top:0.85rem;border-top:1px solid var(--border2);display:flex;align-items:center;gap:0.5rem;font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--text3);}
+.cat-countdown-val{color:#f59e0b;font-size:0.72rem;letter-spacing:0.05em;}
 .cat-name{font-family:'Bebas Neue',sans-serif;font-size:1.55rem;letter-spacing:0.05em;display:block;margin-bottom:0.4rem;}
 .cat-desc{font-size:0.79rem;color:var(--text2);line-height:1.6;margin-bottom:1.1rem;font-weight:300;}
 .cat-foot{display:flex;align-items:center;justify-content:space-between;}
@@ -422,15 +433,25 @@ video{width:100%;height:100%;object-fit:cover;}
 
     <div class="cat-grid">
 
-      <div class="cat-card live" onclick="startGame('daily')">
-        <div class="cat-banner cb-bowl"><div class="cb-glow"></div><span class="cb-icon">🎯</span></div>
+      <div class="cat-card live daily-card" onclick="startGame('daily')">
+        <div class="cat-banner cb-daily"><div class="cb-glow"></div>
+          <div class="daily-banner-inner">
+            <div class="daily-banner-icons">🏏<span style="font-size:1.6rem;opacity:0.75;">🗓️</span></div>
+            <span class="daily-stamp">TODAY'S CHALLENGE</span>
+          </div>
+        </div>
         <div class="cat-body">
-          <span class="cat-tag ct-live">Live Now</span>
-          <span class="cat-name">GUESS THE<br>BOWLER</span>
-          <p class="cat-desc">Identify 15 legendary bowlers from their silhouette action. Malinga's sling, Warne's loop, Bumrah's pause — can you tell them apart?</p>
+          <span class="cat-tag ct-daily">📅 Daily Challenge</span>
+          <span class="cat-name">DAILY<br>CHALLENGE</span>
+          <p style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.1em;color:#f59e0b;margin-bottom:0.5rem;text-transform:uppercase;">Guess the Bowler</p>
+          <p class="cat-desc">One bowler. One chance. Every day a new legend to identify — come back tomorrow for the next one.</p>
           <div class="cat-foot">
-            <span class="cat-meta">15 legends · Daily challenge</span>
+            <span class="cat-meta">1 bowler · Resets daily</span>
             <div class="cat-arr">→</div>
+          </div>
+          <div class="cat-countdown">
+            <span>Next challenge in:</span>
+            <span class="cat-countdown-val" id="dailyCountdown">--:--:--</span>
           </div>
         </div>
       </div>
@@ -1400,6 +1421,20 @@ async function loadTop5(){
     el.innerHTML='<div class="top5-empty">Could not load leaderboard.</div>';
   }
 }
+
+function tickDailyCountdown(){
+  const el=document.getElementById('dailyCountdown');
+  if(!el)return;
+  const now=new Date();
+  const midnight=new Date(Date.UTC(now.getUTCFullYear(),now.getUTCMonth(),now.getUTCDate()+1));
+  const diff=midnight-now;
+  const h=Math.floor(diff/3600000);
+  const m=Math.floor((diff%3600000)/60000);
+  const s=Math.floor((diff%60000)/1000);
+  el.textContent=`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+}
+tickDailyCountdown();
+setInterval(tickDailyCountdown,1000);
 
 document.addEventListener('click',e=>{
   if(!e.target.closest('.sarea'))document.getElementById('ddrop').classList.remove('open');
