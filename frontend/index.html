@@ -114,43 +114,6 @@ main{position:relative;z-index:1;}
 .ls-v{font-family:'Bebas Neue',sans-serif;font-size:1.9rem;color:var(--accent);letter-spacing:0.05em;display:block;line-height:1;margin-bottom:0.3rem;}
 .ls-l{font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.12em;}
 
-/* ── CATEGORY DETAIL ── */
-#categoryScreen{max-width:900px;margin:0 auto;padding:2rem 1.5rem 5rem;}
-.back-btn{display:inline-flex;align-items:center;gap:0.55rem;font-size:0.75rem;color:var(--text2);cursor:pointer;transition:all 0.2s;margin-bottom:2.5rem;font-family:'DM Mono',monospace;letter-spacing:0.07em;background:var(--surface);border:1px solid var(--border2);border-radius:8px;padding:0.45rem 0.9rem;text-transform:uppercase;}
-.back-btn:hover{color:var(--text);border-color:var(--accent);background:var(--surface2);}
-.cd-eyebrow{font-family:'DM Mono',monospace;font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--accent);margin-bottom:0.7rem;display:flex;align-items:center;gap:0.55rem;}
-.cd-eyebrow::before{content:'';width:16px;height:1px;background:var(--accent);}
-.cd-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(3rem,8vw,5.5rem);line-height:0.9;letter-spacing:0.02em;margin-bottom:0.9rem;}
-.cd-title span{color:var(--accent);}
-.cd-desc{font-size:0.97rem;color:var(--text2);line-height:1.7;max-width:500px;font-weight:300;margin-bottom:2.5rem;}
-
-.modes-lbl{font-family:'DM Mono',monospace;font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--text3);margin-bottom:1.1rem;}
-.modes-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:2.5rem;}
-@media(max-width:580px){.modes-grid{grid-template-columns:1fr;}}
-
-.mode-card{background:var(--surface);border:1px solid var(--border2);border-radius:16px;padding:1.4rem;cursor:pointer;transition:all 0.25s ease;position:relative;overflow:hidden;}
-.mode-card::after{content:'';position:absolute;inset:0;background:var(--accent-dim);opacity:0;transition:opacity 0.25s;pointer-events:none;}
-.mode-card:hover{border-color:var(--border);transform:translateY(-3px);box-shadow:0 16px 40px rgba(0,0,0,0.4);}
-.mode-card:hover::after{opacity:1;}
-.mode-card.star{border-color:rgba(200,242,48,0.28);box-shadow:0 0 28px rgba(200,242,48,0.07);}
-.mc-icon{font-size:1.65rem;display:block;margin-bottom:0.9rem;}
-.mc-badge{font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.14em;text-transform:uppercase;background:var(--accent-dim);border:1px solid var(--border);color:var(--accent);border-radius:100px;padding:0.16rem 0.55rem;display:inline-block;margin-bottom:0.65rem;}
-.mc-name{font-family:'Bebas Neue',sans-serif;font-size:1.45rem;letter-spacing:0.05em;display:block;margin-bottom:0.35rem;}
-.mc-desc{font-size:0.78rem;color:var(--text2);line-height:1.55;font-weight:300;}
-.mc-detail{margin-top:0.9rem;padding-top:0.9rem;border-top:1px solid var(--border2);display:flex;justify-content:space-between;}
-.mc-dv{font-family:'DM Mono',monospace;font-size:0.68rem;color:var(--text3);}
-.mc-dv span{color:var(--accent);}
-
-/* Roster */
-.roster{background:var(--surface);border:1px solid var(--border2);border-radius:16px;overflow:hidden;}
-.roster-h{padding:1rem 1.4rem;border-bottom:1px solid var(--border2);display:flex;align-items:center;justify-content:space-between;}
-.roster-ht{font-family:'Bebas Neue',sans-serif;font-size:0.95rem;letter-spacing:0.08em;}
-.roster-hc{font-family:'DM Mono',monospace;font-size:0.68rem;color:var(--text3);}
-.roster-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));}
-.ri{padding:0.8rem 1.2rem;border-right:1px solid var(--border2);border-bottom:1px solid var(--border2);transition:background 0.15s;}
-.ri:hover{background:var(--surface2);}
-.ri-name{font-size:0.8rem;display:block;margin-bottom:0.18rem;}
-.ri-nat{font-family:'DM Mono',monospace;font-size:0.62rem;color:var(--text3);}
 
 /* ── GAME ── */
 #gameScreen{max-width:860px;margin:0 auto;padding:1.75rem 1.5rem 4rem;}
@@ -433,7 +396,7 @@ video{width:100%;height:100%;object-fit:cover;}
       <p class="hero-eyebrow">The Ultimate Cricket Challenge</p>
       <h1 class="hero-title">KNOW YOUR<span class="hl">LEGENDS</span></h1>
       <p class="hero-desc">Identify cricket's greatest players from their silhouette alone. Three categories. Iconic moments. How well do you know the game?</p>
-      <button class="hero-cta" onclick="document.getElementById('catsAnchor').scrollIntoView({behavior:'smooth'})">Choose Your Challenge ↓</button>
+      <button class="hero-cta" onclick="startGame('daily')">Play Daily Challenge →</button>
     </div>
     <div class="hero-right">
       <div class="hero-visual hero-daily-preview" onclick="startGame('daily')" title="Play today's daily challenge" style="cursor:pointer;">
@@ -459,14 +422,14 @@ video{width:100%;height:100%;object-fit:cover;}
 
     <div class="cat-grid">
 
-      <div class="cat-card live" onclick="showCategory()">
+      <div class="cat-card live" onclick="startGame('daily')">
         <div class="cat-banner cb-bowl"><div class="cb-glow"></div><span class="cb-icon">🎯</span></div>
         <div class="cat-body">
           <span class="cat-tag ct-live">Live Now</span>
           <span class="cat-name">GUESS THE<br>BOWLER</span>
           <p class="cat-desc">Identify 15 legendary bowlers from their silhouette action. Malinga's sling, Warne's loop, Bumrah's pause — can you tell them apart?</p>
           <div class="cat-foot">
-            <span class="cat-meta">15 legends · 3 game modes</span>
+            <span class="cat-meta">15 legends · Daily challenge</span>
             <div class="cat-arr">→</div>
           </div>
         </div>
@@ -530,61 +493,6 @@ video{width:100%;height:100%;object-fit:cover;}
 </div>
 </div>
 
-<!-- ══ CATEGORY DETAIL ══ -->
-<div class="screen" id="categoryScreen">
-<div style="max-width:900px;margin:0 auto;padding:2rem 1.5rem 5rem;">
-
-  <button class="back-btn" onclick="showLanding()">← Back to Categories</button>
-
-  <p class="cd-eyebrow">V1 · Bowling</p>
-  <h2 class="cd-title">GUESS THE<br><span>BOWLER</span></h2>
-  <p class="cd-desc">Watch the silhouette action and identify the legend. A new clue unlocks with each wrong guess. Can you spot all 15?</p>
-
-  <p class="modes-lbl">Choose a Game Mode</p>
-  <div class="modes-grid">
-    <div class="mode-card star" onclick="startGame('classic')">
-      <span class="mc-icon">🏏</span>
-      <span class="mc-badge">Recommended</span>
-      <span class="mc-name">Classic</span>
-      <p class="mc-desc">10 bowlers, 5 guesses each. A new clue unlocks with every wrong answer.</p>
-      <div class="mc-detail">
-        <span class="mc-dv">Bowlers: <span>10</span></span>
-        <span class="mc-dv">Guesses: <span>5</span></span>
-      </div>
-    </div>
-    <div class="mode-card" onclick="startGame('blitz')">
-      <span class="mc-icon">⚡</span>
-      <span class="mc-badge">Timed</span>
-      <span class="mc-name">Blitz</span>
-      <p class="mc-desc">All 15 bowlers, 15 seconds each. Pure instinct and cricket knowledge.</p>
-      <div class="mc-detail">
-        <span class="mc-dv">Bowlers: <span>15</span></span>
-        <span class="mc-dv">Time: <span>15s</span></span>
-      </div>
-    </div>
-    <div class="mode-card" onclick="startGame('daily')">
-      <span class="mc-icon">📅</span>
-      <span class="mc-badge">Daily</span>
-      <span class="mc-name">Daily</span>
-      <p class="mc-desc">One bowler per day, the same worldwide. Share your result.</p>
-      <div class="mc-detail">
-        <span class="mc-dv">Bowlers: <span>1</span></span>
-        <span class="mc-dv">Resets: <span>Daily</span></span>
-      </div>
-    </div>
-  </div>
-
-  <div class="roster">
-    <div class="roster-h">
-      <span class="roster-ht">THE LEGENDS</span>
-      <span class="roster-hc">15 Bowlers</span>
-    </div>
-    <div class="roster-grid" id="rosterGrid"></div>
-  </div>
-
-</div>
-</div>
-
 <!-- ══ GAME ══ -->
 <div class="screen" id="gameScreen">
 <div style="max-width:860px;margin:0 auto;padding:1.75rem 1.5rem 4rem;">
@@ -593,7 +501,7 @@ video{width:100%;height:100%;object-fit:cover;}
     <div class="gbread">
       <span onclick="showLanding()">Home</span>
       <span class="sep">/</span>
-      <span onclick="showCategory()">Bowling</span>
+      <span onclick="showLanding()">Bowling</span>
       <span class="sep">/</span>
       <span class="cur" id="modeCrumb">Classic</span>
     </div>
@@ -675,7 +583,6 @@ video{width:100%;height:100%;object-fit:cover;}
   <div class="fin-btns">
     <button class="btn-p" onclick="startGame(G.mode)">Play Again</button>
     <button class="btn-p" onclick="copyShare('f')">Share</button>
-    <button class="btn-s" onclick="showCategory()">← Modes</button>
     <button class="btn-s" onclick="showLanding()">Home</button>
   </div>
 </div>
@@ -712,7 +619,6 @@ let stats=JSON.parse(localStorage.getItem('cz3')||'{"games":0,"wins":0,"best":0,
 
 async function boot(){
   refreshH();refreshLS();
-  document.getElementById('rosterGrid').innerHTML=BOWLERS.map(b=>`<div class="ri"><span class="ri-name">${b.name}</span><span class="ri-nat">${b.nation}</span></div>`).join('');
   loadHeroDailyVideo();
   loadTop5();
   const handled=await handleOAuthCallback();
@@ -746,7 +652,6 @@ function refreshLS(){
 
 function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo({top:0,behavior:'smooth'});}
 function showLanding(){stopTimer();refreshLS();showScreen('landingScreen');loadTop5();}
-function showCategory(){showScreen('categoryScreen');}
 
 const API = '__API_URL__';
 const COGNITO_USER_POOL_ID = '__COGNITO_USER_POOL_ID__';
