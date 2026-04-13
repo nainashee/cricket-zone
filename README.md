@@ -122,7 +122,14 @@ Players can play as a guest or create a free account.
 ```
 cricket-zone/
 ├── frontend/
-│   └── index.html                 # Single-file SPA (HTML/CSS/JS, ~64KB)
+│   ├── index.html                 # Single-file SPA (HTML/CSS/JS, ~64KB)
+│   ├── favicon.ico
+│   ├── favicon-96x96.png
+│   ├── favicon.svg
+│   ├── apple-touch-icon.png
+│   ├── web-app-manifest-192x192.png
+│   ├── web-app-manifest-512x512.png
+│   └── site.webmanifest           # PWA manifest (name, theme colour, icons)
 ├── infrastructure/
 │   ├── main.tf                    # All AWS infrastructure (Terraform)
 │   ├── terraform.tfstate
