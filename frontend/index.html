@@ -792,6 +792,7 @@ function storeAuth(idToken){
   const claims=parseJwt(idToken);
   localStorage.setItem('cz_id_token',idToken);
   localStorage.setItem('cz_user_sub',claims.sub);
+  localStorage.setItem('cz_uid',claims.sub);
   localStorage.setItem('cz_user_name',claims.name||claims.email||claims.sub);
   if(claims.email)localStorage.setItem('cz_user_email',claims.email);
   if(claims.picture)localStorage.setItem('cz_user_picture',claims.picture);
