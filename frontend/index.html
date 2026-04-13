@@ -35,15 +35,16 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.025) 2px,rgba(0,0,0,0.025) 4px);pointer-events:none;z-index:0;}
 
 /* ── HEADER ── */
-header{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:1rem 2rem;border-bottom:1px solid var(--border2);background:rgba(7,9,10,0.93);backdrop-filter:blur(16px);}
-.logo{font-family:'Bebas Neue',sans-serif;font-size:1.45rem;letter-spacing:0.12em;color:var(--text);display:flex;align-items:center;gap:0.55rem;transition:opacity 0.2s;}
+header{position:sticky;top:0;z-index:100;display:flex;align-items:center;padding:0.9rem 2rem;border-bottom:1px solid var(--border2);background:rgba(7,9,10,0.93);backdrop-filter:blur(16px);}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:1.75rem;letter-spacing:0.12em;color:var(--text);display:flex;align-items:center;gap:0.65rem;transition:opacity 0.2s;}
 .logo:hover{opacity:0.75;}
-.logo-mark{width:30px;height:30px;background:var(--accent);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:0.8rem;padding:2px;}
+.logo-mark{width:36px;height:36px;background:var(--accent);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:0.9rem;padding:2px;}
 .logo em{color:var(--accent);font-style:normal;}
-.hstats{display:flex;gap:1.2rem;}
-.hst{display:flex;align-items:center;gap:0.3rem;}
-.hst-emoji{font-size:0.82rem;line-height:1;}
-.hst-v{font-family:'Bebas Neue',sans-serif;font-size:1.05rem;color:var(--accent);letter-spacing:0.05em;line-height:1;}
+.hstats{display:flex;align-items:center;gap:1.4rem;margin-left:auto;}
+.hst{display:flex;align-items:center;gap:0.35rem;}
+.hst-emoji{font-size:1rem;line-height:1;}
+.hst-v{font-family:'Bebas Neue',sans-serif;font-size:1.3rem;color:var(--accent);letter-spacing:0.05em;line-height:1;}
+@media(max-width:480px){header{padding:0.8rem 1.1rem;}.logo{font-size:1.45rem;}.logo-mark{width:30px;height:30px;}.hstats{gap:1rem;}.hst-v{font-size:1.1rem;}.hname{display:none;}}
 
 /* ── SCREENS ── */
 .screen{display:none;}
@@ -329,11 +330,11 @@ video{width:100%;height:100%;object-fit:cover;}
 /* ── GUEST SAVE PROMPT ── */
 .gsp-score{font-family:'Bebas Neue',sans-serif;font-size:2.4rem;color:var(--accent);letter-spacing:0.06em;line-height:1;}
 /* ── HEADER PROFILE ── */
-.hright{display:flex;align-items:center;gap:0.65rem;position:relative;}
-.havatar{width:32px;height:32px;border-radius:50%;overflow:hidden;cursor:pointer;border:1.5px solid var(--border2);flex-shrink:0;transition:border-color 0.2s;}
+.hright{display:flex;align-items:center;gap:0.75rem;position:relative;padding-left:1.1rem;margin-left:1.1rem;border-left:1px solid var(--border2);}
+.havatar{width:38px;height:38px;border-radius:50%;overflow:hidden;cursor:pointer;border:1.5px solid var(--border2);flex-shrink:0;transition:border-color 0.2s;}
 .havatar:hover{border-color:var(--accent);}
 .havatar img{width:100%;height:100%;object-fit:cover;display:block;}
-.hname{font-size:0.75rem;color:var(--text2);font-family:'DM Mono',monospace;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:pointer;transition:color 0.2s;}
+.hname{font-size:0.82rem;color:var(--text2);font-family:'DM Mono',monospace;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:pointer;transition:color 0.2s;}
 .hname:hover{color:var(--text);}
 .hprofile-drop{position:absolute;top:calc(100% + 0.65rem);right:0;min-width:230px;background:var(--surface);border:1px solid var(--border2);border-radius:14px;padding:0.5rem;box-shadow:0 16px 48px rgba(0,0,0,0.65);z-index:200;opacity:0;pointer-events:none;transform:translateY(-8px);transition:opacity 0.18s ease,transform 0.18s ease;}
 .hprofile-drop.open{opacity:1;pointer-events:auto;transform:translateY(0);}
@@ -398,7 +399,7 @@ video{width:100%;height:100%;object-fit:cover;}
 <header>
   <div class="logo" onclick="showLanding()" style="cursor:pointer;" title="Back to home">
     <div class="logo-mark">
-      <svg viewBox="0 0 26 26" width="20" height="20" xmlns="http://www.w3.org/2000/svg">
+      <svg viewBox="0 0 26 26" width="24" height="24" xmlns="http://www.w3.org/2000/svg">
         <defs>
           <linearGradient id="wg" x1="0" y1="0" x2="1" y2="0">
             <stop offset="0%"   stop-color="#c8a96e"/>
