@@ -1,5 +1,5 @@
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import { DynamoDBDocumentClient, QueryCommand, GetCommand, BatchGetCommand } from "@aws-sdk/lib-dynamodb";
+import { DynamoDBDocumentClient, QueryCommand, GetCommand } from "@aws-sdk/lib-dynamodb";
 
 const client = new DynamoDBClient({ region: "us-east-1" });
 const db = DynamoDBDocumentClient.from(client);
@@ -90,20 +90,19 @@ export const handler = async (event) => {
         }
       }
 
-      // Fetch summary records for wins + streak (BatchGetItem, max 100 keys per call)
-      const userIds = Object.keys(userMap);
-      for (let i = 0; i < userIds.length; i += 100) {
-        const keys = userIds.slice(i, i + 100).map(uid => ({ userId: uid, scoreId: '#summary' }));
-        const batchResult = await db.send(new BatchGetCommand({
-          RequestItems: { [SCORES_TABLE]: { Keys: keys } }
-        }));
-        for (const summary of (batchResult.Responses?.[SCORES_TABLE] || [])) {
-          if (userMap[summary.userId]) {
-            if (summary.wins   !== undefined) userMap[summary.userId].wins   = summary.wins;
-            if (summary.streak !== undefined) userMap[summary.userId].streak = summary.streak;
+      // Fetch summary records for wins + streak — parallel GetItem calls (GetItem is authorised)
+      await Promise.all(Object.keys(userMap).map(async (uid) => {
+        try {
+          const { Item: summary } = await db.send(new GetCommand({
+            TableName: SCORES_TABLE,
+            Key: { userId: uid, scoreId: '#summary' }
+          }));
+          if (summary) {
+            if (summary.wins   !== undefined) userMap[uid].wins   = summary.wins;
+            if (summary.streak !== undefined) userMap[uid].streak = summary.streak;
           }
-        }
-      }
+        } catch (_) { /* summary not yet created — leave wins/streak as null */ }
+      }));
 
       leaderboard = Object.values(userMap)
         .sort((a, b) => b.totalScore - a.totalScore)

@@ -237,6 +237,7 @@ resource "aws_iam_role_policy" "lambda_dynamodb" {
           "dynamodb:PutItem",
           "dynamodb:Query",
           "dynamodb:GetItem",
+          "dynamodb:BatchGetItem",
           "dynamodb:DeleteItem"
         ]
         Resource = [
