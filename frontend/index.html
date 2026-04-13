@@ -806,25 +806,23 @@ async function loadAccountStats(){
         </div>
       </div>
     </div>`;
-  // Fetch all-time stats
+  // Fetch user summary record directly from backend
   try{
-    const r=await fetch(`${API}/leaderboard?category=bowling&alltime=true`);
+    const idToken=getIdToken();
+    const r=await fetch(`${API}/leaderboard?me=true`,{headers:{Authorization:`Bearer ${idToken}`}});
     const d=await r.json();
-    const uid=getCurrentUserId();
-    const row=d.leaderboard&&d.leaderboard.find(s=>s.userId===uid);
+    const row=d.summary;
     const loadingEl=document.getElementById('accStatsLoading');
     const bodyEl=document.getElementById('accStatsBody');
     const gridEl=document.getElementById('accStatGrid');
     if(loadingEl)loadingEl.style.display='none';
     if(row&&gridEl){
-      const total=row.score||0;
+      const total=row.totalScore||0;
       const games=row.gamesPlayed||0;
       const best=row.bestScore||0;
       const avg=games>0?Math.round(total/games):0;
-      // streak and wins live in localStorage cz3 — same source as the header 🔥 counter
-      const cz3=JSON.parse(localStorage.getItem('cz3')||'{}');
-      const streakVal=cz3.streak!=null?cz3.streak:(row.streak!=null?row.streak:'—');
-      const winRateVal=(cz3.games>0&&cz3.wins!=null)?Math.round(cz3.wins/cz3.games*100)+'%':(row.winRate!=null?`${row.winRate}%`:'—');
+      const streakVal=row.streak!=null?row.streak:'—';
+      const winRateVal=(games>0&&row.wins!=null)?Math.round(row.wins/games*100)+'%':'—';
       gridEl.innerHTML=`
         <div class="acc-stat"><span class="acc-stat-v">${total.toLocaleString()}</span><span class="acc-stat-l">Total Score</span></div>
         <div class="acc-stat"><span class="acc-stat-v">${games}</span><span class="acc-stat-l">Games Played</span></div>
@@ -1431,14 +1429,26 @@ async function saveScore(){
     const res=await fetch(`${API}/score`,{
       method:'POST',
       headers:{'Content-Type':'application/json','Authorization':`Bearer ${idToken}`},
-      body:JSON.stringify({score:G.score,gameMode:G.mode,category:'bowling',pictureUrl:localStorage.getItem('cz_user_picture')||undefined,...(()=>{try{const st=JSON.parse(localStorage.getItem('cz3')||'{}');return{streak:st.streak,wins:st.wins,gamesPlayed:st.games};}catch{return{};}})()})
+      body:JSON.stringify({score:G.score,gameMode:G.mode,category:'bowling',pictureUrl:localStorage.getItem('cz_user_picture')||undefined})
     });
     if(!res.ok){
       const body=await res.text();
       console.error('Score save failed:',res.status,body);
       toast('Score could not be saved','');
     }else{
-      console.log('Score saved:',res.status);
+      // Sync cz3 from the authoritative backend summary record
+      try{
+        const data=await res.json();
+        if(data.summary){
+          const s=data.summary;
+          stats.games=s.gamesPlayed;
+          stats.wins=s.wins;
+          stats.streak=s.streak;
+          if((s.bestScore||0)>stats.best)stats.best=s.bestScore;
+          localStorage.setItem('cz3',JSON.stringify(stats));
+          refreshH();
+        }
+      }catch(e){console.warn('Summary parse failed',e);}
     }
   }catch(err){
     console.error('Score save error:',err);

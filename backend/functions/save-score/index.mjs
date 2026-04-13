@@ -1,5 +1,5 @@
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import { DynamoDBDocumentClient, PutCommand } from "@aws-sdk/lib-dynamodb";
+import { DynamoDBDocumentClient, PutCommand, GetCommand } from "@aws-sdk/lib-dynamodb";
 import { randomUUID } from "crypto";
 
 const client = new DynamoDBClient({ region: "us-east-1" });
@@ -37,11 +37,6 @@ export const handler = async (event) => {
 
     const pictureUrl = typeof body.pictureUrl === 'string' && body.pictureUrl.length <= 2048
       ? body.pictureUrl : undefined;
-
-    const toNonNegInt = v => (typeof v === 'number' && Number.isFinite(v) && v >= 0) ? Math.floor(v) : undefined;
-    const streak      = toNonNegInt(body.streak);
-    const wins        = toNonNegInt(body.wins);
-    const gamesPlayed = toNonNegInt(body.gamesPlayed);
 
     let userId, playerName;
 
@@ -83,10 +78,11 @@ export const handler = async (event) => {
     }
 
     const isGuest  = !claims?.sub;
-    const date    = new Date().toISOString().split("T")[0];
-    const scoreId = `${category}#${date}#${randomUUID()}`;
-    const ttl     = Math.floor(Date.now() / 1000) + (90 * 24 * 60 * 60);
+    const date     = new Date().toISOString().split("T")[0];
+    const scoreId  = `${category}#${date}#${randomUUID()}`;
+    const ttl      = Math.floor(Date.now() / 1000) + (90 * 24 * 60 * 60);
 
+    // ── Write the game record ─────────────────────────────────────────
     await db.send(new PutCommand({
       TableName: SCORES_TABLE,
       Item: {
@@ -98,13 +94,43 @@ export const handler = async (event) => {
         gameMode,
         date,
         ttl,
-        ...(isGuest && { isGuest: true }),
-        ...(pictureUrl   !== undefined && { pictureUrl }),
-        ...(streak       !== undefined && { streak }),
-        ...(wins         !== undefined && { wins }),
-        ...(gamesPlayed  !== undefined && { gamesPlayed })
+        ...(isGuest     && { isGuest: true }),
+        ...(pictureUrl  !== undefined && { pictureUrl }),
       }
     }));
+
+    // ── Upsert user summary record (authenticated users only) ─────────
+    if (!isGuest) {
+      const { Item: existing } = await db.send(new GetCommand({
+        TableName: SCORES_TABLE,
+        Key: { userId, scoreId: '#summary' }
+      }));
+
+      const isWin = score > 0;
+      const summary = {
+        userId,
+        scoreId:     '#summary',
+        totalScore:  (existing?.totalScore  || 0) + score,
+        gamesPlayed: (existing?.gamesPlayed || 0) + 1,
+        wins:        (existing?.wins        || 0) + (isWin ? 1 : 0),
+        bestScore:   Math.max(existing?.bestScore || 0, score),
+        streak:      isWin ? (existing?.streak || 0) + 1 : 0,
+        lastPlayed:  new Date().toISOString(),
+        playerName,
+        ...(pictureUrl !== undefined && { pictureUrl }),
+      };
+
+      await db.send(new PutCommand({
+        TableName: SCORES_TABLE,
+        Item: summary
+      }));
+
+      return {
+        statusCode: 200,
+        headers,
+        body: JSON.stringify({ message: "Score saved", scoreId, summary })
+      };
+    }
 
     return {
       statusCode: 200,
