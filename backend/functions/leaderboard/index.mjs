@@ -44,20 +44,42 @@ export const handler = async (event) => {
 
     } while (lastKey);
 
-    // Deduplicate — keep only the highest score per userId; exclude guest scores
-    const best = {};
-    for (const item of items) {
-      if (item.isGuest || item.userId?.startsWith('guest_')) continue;
-      const uid = item.userId;
-      if (!best[uid] || item.score > best[uid].score) {
-        best[uid] = item;
-      }
-    }
+    let leaderboard;
 
-    // Sort by score descending, take top 20
-    const leaderboard = Object.values(best)
-      .sort((a, b) => b.score - a.score)
-      .slice(0, 20);
+    if (alltime) {
+      // Sum every score per userId; take playerName + pictureUrl from most recent record
+      const userMap = {};
+      for (const item of items) {
+        if (item.isGuest || item.userId?.startsWith('guest_')) continue;
+        const uid = item.userId;
+        if (!userMap[uid]) {
+          userMap[uid] = { userId: uid, playerName: item.playerName, pictureUrl: item.pictureUrl, totalScore: 0, latestDate: '' };
+        }
+        userMap[uid].totalScore += (item.score || 0);
+        if (item.date > userMap[uid].latestDate) {
+          userMap[uid].latestDate = item.date;
+          userMap[uid].playerName = item.playerName;
+          if (item.pictureUrl) userMap[uid].pictureUrl = item.pictureUrl;
+        }
+      }
+      leaderboard = Object.values(userMap)
+        .sort((a, b) => b.totalScore - a.totalScore)
+        .slice(0, 20)
+        .map(({ userId, playerName, pictureUrl, totalScore }) => ({ userId, playerName, pictureUrl, score: totalScore }));
+    } else {
+      // Daily: keep only the highest single score per userId for today
+      const best = {};
+      for (const item of items) {
+        if (item.isGuest || item.userId?.startsWith('guest_')) continue;
+        const uid = item.userId;
+        if (!best[uid] || item.score > best[uid].score) {
+          best[uid] = item;
+        }
+      }
+      leaderboard = Object.values(best)
+        .sort((a, b) => b.score - a.score)
+        .slice(0, 20);
+    }
 
     return {
       statusCode: 200,
