@@ -795,8 +795,10 @@ function storeAuth(idToken){
   localStorage.setItem('cz_user_name',claims.name||claims.email||claims.sub);
   if(claims.email)localStorage.setItem('cz_user_email',claims.email);
   if(claims.picture)localStorage.setItem('cz_user_picture',claims.picture);
-  // Restore previously uploaded S3 avatar on every login so it survives sign-out/sign-in cycles
-  if(claims.sub)localStorage.setItem('cz_avatar_url',`${AVATAR_BASE}/avatars/${claims.sub}`);
+  // Restore S3 avatar only if this user previously uploaded a custom one
+  if(claims.sub && localStorage.getItem(`cz_has_avatar_${claims.sub}`)){
+    localStorage.setItem('cz_avatar_url',`${AVATAR_BASE}/avatars/${claims.sub}`);
+  }
   sessionStorage.removeItem('cz_guest');
   updateHeaderUser();
   postPendingScore(idToken);
@@ -983,6 +985,7 @@ async function uploadAvatar(file){
     const userId=getCurrentUserId();
     const avatarUrl=`${AVATAR_BASE}/avatars/${userId}?t=${Date.now()}`;
     localStorage.setItem('cz_avatar_url',avatarUrl);
+    localStorage.setItem(`cz_has_avatar_${userId}`,'1');
     updateHeaderUser();
     renderProfileDropdown();
     toast('Avatar updated!','ok');
