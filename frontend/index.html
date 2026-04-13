@@ -821,15 +821,15 @@ async function loadAccountStats(){
       const games=row.gamesPlayed||0;
       const best=row.bestScore||0;
       const avg=games>0?Math.round(total/games):0;
-      const streak=row.streak||0;
-      const winRate=row.winRate||'0%';
+      const streakVal=row.streak!=null?row.streak:'—';
+      const winRateVal=row.winRate!=null?`${row.winRate}%`:'—';
       gridEl.innerHTML=`
         <div class="acc-stat"><span class="acc-stat-v">${total.toLocaleString()}</span><span class="acc-stat-l">Total Score</span></div>
         <div class="acc-stat"><span class="acc-stat-v">${games}</span><span class="acc-stat-l">Games Played</span></div>
         <div class="acc-stat"><span class="acc-stat-v">${best.toLocaleString()}</span><span class="acc-stat-l">Best Score</span></div>
         <div class="acc-stat"><span class="acc-stat-v">${avg.toLocaleString()}</span><span class="acc-stat-l">Avg Score</span></div>
-        <div class="acc-stat"><span class="acc-stat-v">${streak}</span><span class="acc-stat-l">Current Streak</span></div>
-        <div class="acc-stat"><span class="acc-stat-v">${winRate}</span><span class="acc-stat-l">Win Rate</span></div>`;
+        <div class="acc-stat"><span class="acc-stat-v">${streakVal}</span><span class="acc-stat-l">Current Streak</span></div>
+        <div class="acc-stat"><span class="acc-stat-v">${winRateVal}</span><span class="acc-stat-l">Win Rate</span></div>`;
       if(bodyEl)bodyEl.style.display='block';
     }else if(bodyEl){
       if(loadingEl)loadingEl.remove();
