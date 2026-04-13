@@ -1819,7 +1819,6 @@ async function loadTop5(){
           <span class="top5-name${isMe?' me':''}">${name}${youBadge}</span>
         </div>
         <div class="top5-right">
-          <span class="top5-mode">${s.gameMode||'classic'}</span>
           <span class="top5-score">${s.score}</span>
         </div>
       </div>`;
@@ -1877,10 +1876,10 @@ async function loadAllTime(){
       const medal=i===0?'🥇':i===1?'🥈':i===2?'🥉':'';
       const avHtml=lbAvHtml(s,name,22,isMe);
       const statsParts=[
-        s.gamesPlayed!=null?`${s.gamesPlayed} game${s.gamesPlayed!==1?'s':''}`:null,
-        s.streak!=null?`${s.streak} streak`:null,
+        s.gamesPlayed!=null?`${s.gamesPlayed}G`:null,
+        s.streak!=null?`🔥${s.streak}`:null,
         s.winRate!=null?`${s.winRate}%`:null,
-        s.bestScore!=null?`Best: ${s.bestScore}`:null
+        s.bestScore!=null?`${s.bestScore}`:null
       ].filter(Boolean).join(' · ');
       const statsLine=statsParts?`<span class="top5-stats">${statsParts}</span>`:'';
       return`<div class="top5-row${isMe?' me':''}">
@@ -1893,7 +1892,6 @@ async function loadAllTime(){
           </div>
         </div>
         <div class="top5-right">
-          <span class="top5-mode">TOTAL</span>
           <span class="top5-score">${s.score}</span>
         </div>
       </div>`;
