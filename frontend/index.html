@@ -795,6 +795,8 @@ function storeAuth(idToken){
   localStorage.setItem('cz_user_name',claims.name||claims.email||claims.sub);
   if(claims.email)localStorage.setItem('cz_user_email',claims.email);
   if(claims.picture)localStorage.setItem('cz_user_picture',claims.picture);
+  // Restore previously uploaded S3 avatar on every login so it survives sign-out/sign-in cycles
+  if(claims.sub)localStorage.setItem('cz_avatar_url',`${AVATAR_BASE}/avatars/${claims.sub}`);
   sessionStorage.removeItem('cz_guest');
   updateHeaderUser();
   postPendingScore(idToken);

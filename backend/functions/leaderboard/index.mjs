@@ -47,7 +47,7 @@ export const handler = async (event) => {
     // Deduplicate — keep only the highest score per userId; exclude guest scores
     const best = {};
     for (const item of items) {
-      if (item.isGuest) continue;
+      if (item.isGuest || item.userId?.startsWith('guest_')) continue;
       const uid = item.userId;
       if (!best[uid] || item.score > best[uid].score) {
         best[uid] = item;
