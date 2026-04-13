@@ -1207,7 +1207,15 @@ function showResult(won,pts){
   document.getElementById('resPts').textContent=pts;
   if(won)confetti();
   const last=G.idx>=G.queue.length-1,nb=document.getElementById('nextBtn');
-  if(last){nb.textContent='See Final Score →';nb.onclick=showFinal;if(G.mode==='daily'){document.getElementById('dshare').style.display='block';document.getElementById('dsharebox').innerHTML=buildDailyShareCardHTML();}}
+  if(last){
+    nb.textContent='See Final Score →';nb.onclick=showFinal;
+    if(G.mode==='daily'){
+      document.getElementById('dshare').style.display='block';
+      document.getElementById('dsharebox').innerHTML=buildDailyShareCardHTML();
+      // Save immediately so score reaches DynamoDB even if user navigates away
+      markDailyPlayed();applyDailyCardState();saveScore();
+    }
+  }
   else{
     nb.textContent='Next Bowler →';nb.onclick=nextBowler;document.getElementById('dshare').style.display='none';
     // Start fetching next bowler's video into HTTP cache while user reads the result screen
@@ -1218,16 +1226,24 @@ function showResult(won,pts){
 function nextBowler(){G.idx++;showScreen('gameScreen');loadBowler();}
 
 async function saveScore(){
+  const idToken=getIdToken();
+  if(!idToken)return;
   try{
-    const idToken=getIdToken();
-    if(!idToken)return;
-    await fetch(`${API}/score`,{
+    const res=await fetch(`${API}/score`,{
       method:'POST',
       headers:{'Content-Type':'application/json','Authorization':`Bearer ${idToken}`},
       body:JSON.stringify({score:G.score,gameMode:G.mode,category:'bowling'})
     });
+    if(!res.ok){
+      const body=await res.text();
+      console.error('Score save failed:',res.status,body);
+      toast('Score could not be saved','');
+    }else{
+      console.log('Score saved:',res.status);
+    }
   }catch(err){
-    console.error('Score save failed:',err);
+    console.error('Score save error:',err);
+    toast('Score could not be saved','');
   }
 }
 
@@ -1327,9 +1343,11 @@ async function revealFinal(){
   stats.games++;if(G.correct>0){stats.wins++;stats.streak++;}else stats.streak=0;
   if(G.score>stats.best)stats.best=G.score;
   localStorage.setItem('cz3',JSON.stringify(stats));refreshH();
-  if(G.mode==='daily'){markDailyPlayed();applyDailyCardState();}
-  await saveScore();
-  loadLeaderboard();
+  // For daily: markDailyPlayed + saveScore already ran at showResult time.
+  // For other modes (future), save now.
+  if(G.mode!=='daily'){await saveScore();}
+  // Brief delay to allow DynamoDB GSI eventual consistency before querying leaderboard
+  setTimeout(loadLeaderboard,2000);
   if(G.correct===G.queue.length)confetti();
   if(isGuest())setTimeout(showGuestSavePrompt,1400);
 }
