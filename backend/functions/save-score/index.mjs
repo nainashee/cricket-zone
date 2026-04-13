@@ -38,6 +38,11 @@ export const handler = async (event) => {
     const pictureUrl = typeof body.pictureUrl === 'string' && body.pictureUrl.length <= 2048
       ? body.pictureUrl : undefined;
 
+    const toNonNegInt = v => (typeof v === 'number' && Number.isFinite(v) && v >= 0) ? Math.floor(v) : undefined;
+    const streak      = toNonNegInt(body.streak);
+    const wins        = toNonNegInt(body.wins);
+    const gamesPlayed = toNonNegInt(body.gamesPlayed);
+
     let userId, playerName;
 
     if (claims?.sub) {
@@ -94,7 +99,10 @@ export const handler = async (event) => {
         date,
         ttl,
         ...(isGuest && { isGuest: true }),
-        ...(pictureUrl && { pictureUrl })
+        ...(pictureUrl   !== undefined && { pictureUrl }),
+        ...(streak       !== undefined && { streak }),
+        ...(wins         !== undefined && { wins }),
+        ...(gamesPlayed  !== undefined && { gamesPlayed })
       }
     }));
 

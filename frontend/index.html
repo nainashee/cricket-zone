@@ -1310,7 +1310,7 @@ async function saveScore(){
     const res=await fetch(`${API}/score`,{
       method:'POST',
       headers:{'Content-Type':'application/json','Authorization':`Bearer ${idToken}`},
-      body:JSON.stringify({score:G.score,gameMode:G.mode,category:'bowling',pictureUrl:localStorage.getItem('cz_user_picture')||undefined})
+      body:JSON.stringify({score:G.score,gameMode:G.mode,category:'bowling',pictureUrl:localStorage.getItem('cz_user_picture')||undefined,...(()=>{try{const st=JSON.parse(localStorage.getItem('cz3')||'{}');return{streak:st.streak,wins:st.wins,gamesPlayed:st.games};}catch{return{};}})()})
     });
     if(!res.ok){
       const body=await res.text();
@@ -1455,7 +1455,7 @@ function guestPromptDismiss(){
 }
 
 function guestPromptSignUp(){
-  sessionStorage.setItem('cz_pending_score',JSON.stringify({score:G.score,gameMode:G.mode,category:'bowling',pictureUrl:localStorage.getItem('cz_user_picture')||undefined}));
+  sessionStorage.setItem('cz_pending_score',JSON.stringify({score:G.score,gameMode:G.mode,category:'bowling',pictureUrl:localStorage.getItem('cz_user_picture')||undefined,...(()=>{try{const st=JSON.parse(localStorage.getItem('cz3')||'{}');return{streak:st.streak,wins:st.wins,gamesPlayed:st.games};}catch{return{};}})()}));
   sessionStorage.removeItem('cz_guest');
   guestPromptDismiss();
   setTimeout(()=>{showAuthModal();setTimeout(()=>authTab('register'),50);},260);
@@ -1609,7 +1609,13 @@ async function loadAllTime(){
       const youBadge=isMe?'<span class="top5-you">YOU</span>':'';
       const medal=i===0?'🥇':i===1?'🥈':i===2?'🥉':'';
       const avHtml=lbAvHtml(s,name,22,isMe);
-      const statsLine=s.gamesPlayed!=null?`<span style="font-size:0.68rem;color:var(--text3);font-family:'DM Mono',monospace;">${s.gamesPlayed} game${s.gamesPlayed!==1?'s':''} · Best: ${s.bestScore}</span>`:'';
+      const statsParts=[
+        s.gamesPlayed!=null?`${s.gamesPlayed} game${s.gamesPlayed!==1?'s':''}`:null,
+        s.streak!=null?`${s.streak} streak`:null,
+        s.winRate!=null?`${s.winRate}%`:null,
+        s.bestScore!=null?`Best: ${s.bestScore}`:null
+      ].filter(Boolean).join(' · ');
+      const statsLine=statsParts?`<span style="font-size:0.68rem;color:var(--text3);font-family:'DM Mono',monospace;">${statsParts}</span>`:'';
       return`<div class="top5-row${isMe?' me':''}">
         <div class="top5-left">
           <span class="top5-rank" style="color:${isMe?'var(--accent)':rankColor(i)}">${medal||i+1}</span>

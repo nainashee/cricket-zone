@@ -53,22 +53,27 @@ export const handler = async (event) => {
         if (item.isGuest || item.userId?.startsWith('guest_')) continue;
         const uid = item.userId;
         if (!userMap[uid]) {
-          userMap[uid] = { userId: uid, playerName: item.playerName, pictureUrl: item.pictureUrl, totalScore: 0, gamesPlayed: 0, bestScore: 0, latestDate: '' };
+          userMap[uid] = { userId: uid, playerName: item.playerName, pictureUrl: item.pictureUrl, totalScore: 0, bestScore: 0, gamesPlayed: null, wins: null, streak: null, latestDate: '' };
         }
         const s = item.score || 0;
-        userMap[uid].totalScore  += s;
-        userMap[uid].gamesPlayed += 1;
+        userMap[uid].totalScore += s;
         if (s > userMap[uid].bestScore) userMap[uid].bestScore = s;
         if (item.date > userMap[uid].latestDate) {
-          userMap[uid].latestDate = item.date;
-          userMap[uid].playerName = item.playerName;
-          if (item.pictureUrl) userMap[uid].pictureUrl = item.pictureUrl;
+          userMap[uid].latestDate   = item.date;
+          userMap[uid].playerName   = item.playerName;
+          if (item.pictureUrl)                    userMap[uid].pictureUrl   = item.pictureUrl;
+          if (item.gamesPlayed !== undefined)      userMap[uid].gamesPlayed  = item.gamesPlayed;
+          if (item.wins        !== undefined)      userMap[uid].wins         = item.wins;
+          if (item.streak      !== undefined)      userMap[uid].streak       = item.streak;
         }
       }
       leaderboard = Object.values(userMap)
         .sort((a, b) => b.totalScore - a.totalScore)
         .slice(0, 20)
-        .map(({ userId, playerName, pictureUrl, totalScore, gamesPlayed, bestScore }) => ({ userId, playerName, pictureUrl, score: totalScore, gamesPlayed, bestScore }));
+        .map(({ userId, playerName, pictureUrl, totalScore, bestScore, gamesPlayed, wins, streak }) => {
+          const winRate = (gamesPlayed > 0 && wins != null) ? Math.round(wins / gamesPlayed * 100) : null;
+          return { userId, playerName, pictureUrl, score: totalScore, bestScore, gamesPlayed, streak, winRate };
+        });
     } else {
       // Daily: keep only the highest single score per userId for today
       const best = {};
