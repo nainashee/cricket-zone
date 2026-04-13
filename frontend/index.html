@@ -805,6 +805,7 @@ function storeAuth(idToken){
   sessionStorage.removeItem('cz_guest');
   updateHeaderUser();
   postPendingScore(idToken);
+  applyDailyCardState();
 }
 
 async function postPendingScore(idToken){
