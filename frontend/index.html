@@ -1043,12 +1043,27 @@ function renderAuthRegister(){
 }
 
 function renderAuthVerify(email){
+  const esc=email.replace(/'/g,'&#39;');
   document.getElementById('authForm').innerHTML=`
     <div style="font-size:0.8rem;color:var(--text2);margin-bottom:1.2rem;line-height:1.55;">We sent a 6-digit code to <strong style="color:var(--text);">${email}</strong></div>
     <input class="auth-field" id="afCode" type="text" placeholder="Verification code" inputmode="numeric" maxlength="6" autocomplete="one-time-code"/>
     <div class="auth-err" id="afErr"></div>
-    <button class="auth-btn" onclick="doVerify('${email.replace(/'/g,'&#39;')}')">Verify Email →</button>`;
+    <button class="auth-btn" onclick="doVerify('${esc}')">Verify Email →</button>
+    <div style="text-align:center;margin-top:0.75rem;">
+      <button onclick="resendCode('${esc}')" style="background:none;border:none;font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--text3);cursor:pointer;letter-spacing:0.04em;transition:color 0.15s;" onmouseover="this.style.color='var(--text2)'" onmouseout="this.style.color='var(--text3)'">Didn't receive it? Resend code</button>
+    </div>`;
   setTimeout(()=>document.getElementById('afCode')?.focus(),80);
+}
+
+function resendCode(email){
+  const errEl=document.getElementById('afErr');
+  const pool=new AmazonCognitoIdentity.CognitoUserPool({UserPoolId:COGNITO_USER_POOL_ID,ClientId:COGNITO_CLIENT_ID});
+  const user=new AmazonCognitoIdentity.CognitoUser({Username:email,Pool:pool});
+  user.resendConfirmationCode((err)=>{
+    if(err){if(errEl)errEl.textContent=err.message||'Could not resend code.';return;}
+    if(errEl)errEl.textContent='';
+    toast('Code resent — check your email','ok');
+  });
 }
 
 function doSignIn(){
@@ -1063,7 +1078,17 @@ function doSignIn(){
   const authDetails=new AmazonCognitoIdentity.AuthenticationDetails({Username:email,Password:pass});
   user.authenticateUser(authDetails,{
     onSuccess(session){storeAuth(session.getIdToken().getJwtToken());authDismiss();},
-    onFailure(err){errEl.textContent=err.message||'Sign in failed.';btn.disabled=false;btn.textContent='Sign In →';}
+    onFailure(err){
+      if(err.code==='UserNotConfirmedException'){
+        // Account exists but email not verified — go straight to verify screen
+        document.getElementById('authTabs').style.display='none';
+        document.getElementById('authGuestBtn').style.display='none';
+        renderAuthVerify(email);
+        return;
+      }
+      errEl.textContent=err.message||'Sign in failed.';
+      btn.disabled=false;btn.textContent='Sign In →';
+    }
   });
 }
 
@@ -1093,7 +1118,12 @@ function doVerify(email){
   const pool=new AmazonCognitoIdentity.CognitoUserPool({UserPoolId:COGNITO_USER_POOL_ID,ClientId:COGNITO_CLIENT_ID});
   const user=new AmazonCognitoIdentity.CognitoUser({Username:email,Pool:pool});
   user.confirmRegistration(code,true,(err)=>{
-    if(err){errEl.textContent=err.message||'Verification failed.';return;}
+    if(err){
+      if(err.code==='CodeMismatchException')errEl.textContent='Invalid code, please try again.';
+      else if(err.code==='ExpiredCodeException')errEl.textContent='Code has expired — use the resend link below.';
+      else errEl.textContent=err.message||'Verification failed.';
+      return;
+    }
     document.getElementById('authForm').innerHTML=`<div style="font-size:0.82rem;color:var(--text2);padding-bottom:0.5rem;">Verified! Signing you in…</div>`;
     if(_signUpCreds&&_signUpCreds.email===email){
       const creds=_signUpCreds;_signUpCreds=null;
