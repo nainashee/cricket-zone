@@ -327,6 +327,12 @@ data "archive_file" "avatar_upload" {
   excludes    = ["node_modules/.cache"]
 }
 
+data "archive_file" "played_today" {
+  type        = "zip"
+  source_dir  = "../backend/functions/played-today"
+  output_path = "../backend/functions/played-today.zip"
+}
+
 resource "aws_lambda_function" "daily_challenge" {
   filename         = data.archive_file.daily_challenge.output_path
   function_name    = "cricket-zone-daily-challenge"
@@ -377,6 +383,25 @@ resource "aws_lambda_function" "delete_account" {
   environment {
     variables = {
       COGNITO_USER_POOL_ID = aws_cognito_user_pool.main.id
+    }
+  }
+
+  tags = {
+    Project = "cricket-zone"
+  }
+}
+
+resource "aws_lambda_function" "played_today" {
+  filename         = data.archive_file.played_today.output_path
+  function_name    = "cricket-zone-played-today"
+  role             = aws_iam_role.lambda_exec.arn
+  handler          = "index.handler"
+  runtime          = "nodejs20.x"
+  source_code_hash = data.archive_file.played_today.output_base64sha256
+
+  environment {
+    variables = {
+      SCORES_TABLE = "cricket-zone-scores"
     }
   }
 
@@ -486,6 +511,19 @@ resource "aws_apigatewayv2_route" "avatar_upload" {
   target    = "integrations/${aws_apigatewayv2_integration.avatar_upload.id}"
 }
 
+resource "aws_apigatewayv2_integration" "played_today" {
+  api_id                 = aws_apigatewayv2_api.main.id
+  integration_type       = "AWS_PROXY"
+  integration_uri        = aws_lambda_function.played_today.invoke_arn
+  payload_format_version = "2.0"
+}
+
+resource "aws_apigatewayv2_route" "played_today" {
+  api_id    = aws_apigatewayv2_api.main.id
+  route_key = "GET /played-today"
+  target    = "integrations/${aws_apigatewayv2_integration.played_today.id}"
+}
+
 resource "aws_apigatewayv2_stage" "default" {
   api_id      = aws_apigatewayv2_api.main.id
   name        = "$default"
@@ -528,6 +566,14 @@ resource "aws_lambda_permission" "avatar_upload" {
   statement_id  = "AllowAPIGatewayInvoke"
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.avatar_upload.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_apigatewayv2_api.main.execution_arn}/*/*"
+}
+
+resource "aws_lambda_permission" "played_today" {
+  statement_id  = "AllowAPIGatewayInvoke"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.played_today.function_name
   principal     = "apigateway.amazonaws.com"
   source_arn    = "${aws_apigatewayv2_api.main.execution_arn}/*/*"
 }

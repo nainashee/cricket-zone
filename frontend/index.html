@@ -790,7 +790,7 @@ function continueAsGuest(name){
 
 let _signUpCreds=null; // {email,pass} held briefly for auto sign-in after verify
 
-function storeAuth(idToken){
+async function storeAuth(idToken){
   const claims=parseJwt(idToken);
   localStorage.setItem('cz_id_token',idToken);
   localStorage.setItem('cz_user_sub',claims.sub);
@@ -805,6 +805,11 @@ function storeAuth(idToken){
   sessionStorage.removeItem('cz_guest');
   updateHeaderUser();
   postPendingScore(idToken);
+  // Sync played-today state from backend so cross-device re-play is blocked
+  try{
+    const r=await fetch(`${API}/played-today`,{headers:{'Authorization':`Bearer ${idToken}`}});
+    if(r.ok){const d=await r.json();if(d.played)localStorage.setItem('howzat_last_played',getTodayLocal());}
+  }catch(e){console.warn('played-today sync failed',e);}
   applyDailyCardState();
 }
 
