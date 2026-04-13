@@ -34,29 +34,33 @@ Browser (playhowzat.com)
          ▼
 ┌─────────────────┐
 │    S3 Bucket    │  Static frontend hosting (private, OAC)
-│  (index.html)   │
+│  (index.html)   │  + user avatar storage
 └─────────────────┘
 
 Browser → API Gateway → Lambda → DynamoDB
 
-┌──────────────────────────┐
-│   API Gateway (HTTP API) │  Single endpoint, CORS enabled
-│  h3laal38ta.execute-api  │  for playhowzat.com
-└──────────┬───────────────┘
+┌──────────────────────────────────┐
+│     API Gateway (HTTP API)       │  CORS enabled for playhowzat.com
+│  h3laal38ta.execute-api          │
+└──────────┬───────────────────────┘
            │
-    ┌──────┼──────┐
-    ▼      ▼      ▼
-┌───────┐ ┌──────────┐ ┌────────────┐
-│ GET   │ │ POST     │ │ GET        │
-│/daily │ │/score    │ │/leaderboard│
-└───┬───┘ └────┬─────┘ └─────┬──────┘
-    │          │              │
-    ▼          ▼              ▼
+  ┌────────┼──────────┬────────────┬──────────────┬─────────────┐
+  ▼        ▼          ▼            ▼              ▼             ▼
+GET      POST       GET          GET            GET          DELETE
+/daily   /score   /leaderboard  /played-today  /avatar/    /account
+                                               upload-url
+  │        │          │            │              │             │
+  └────────┴──────────┴────────────┴──────────────┴─────────────┘
+                               │
+                               ▼
 ┌──────────────────────────────────────┐
 │           Lambda Functions           │
-│  howzat-daily-challenge              │
-│  howzat-save-score                   │
-│  howzat-leaderboard                  │
+│  cricket-zone-daily-challenge        │
+│  cricket-zone-save-score             │
+│  cricket-zone-leaderboard            │
+│  cricket-zone-played-today           │
+│  cricket-zone-avatar-upload          │
+│  cricket-zone-delete-account         │
 │  Runtime: Node.js 20.x               │
 └──────────────────┬───────────────────┘
                    │
@@ -73,8 +77,8 @@ Browser → API Gateway → Lambda → DynamoDB
 - **S3** — Static frontend hosting (private bucket, OAC) + user avatar storage
 - **CloudFront** — CDN with Origin Access Control, HTTPS, custom domain
 - **ACM** — SSL/TLS certificate for playhowzat.com
-- **API Gateway (HTTP API)** — Single REST endpoint, CORS configured for production domain
-- **Lambda** — Three serverless functions on Node.js 20.x
+- **API Gateway (HTTP API)** — Six routes, CORS configured for production domain
+- **Lambda** — Six serverless functions on Node.js 20.x
 - **DynamoDB** — Two tables with PAY_PER_REQUEST billing, GSI for leaderboard queries, TTL for 90-day score expiry
 - **Cognito** — User pool with email/password auth and Google OAuth (federated sign-in), email verification enforced
 - **IAM** — Least-privilege role for Lambda with scoped DynamoDB + CloudWatch permissions
@@ -96,11 +100,12 @@ Players can play as a guest or create a free account.
 |---------|-------|-----------|
 | Play all game modes | ✅ | ✅ |
 | Save scores to leaderboard | ✅ | ✅ |
-| Appear on Hall of Fame | ✅ | ✅ |
+| Appear on Hall of Fame | ❌ | ✅ |
 | Custom display name | ✅ | ✅ |
 | Profile photo | ❌ | ✅ |
 | Upload custom avatar | ❌ | ✅ |
 | Google Sign-In | ❌ | ✅ |
+| Cross-device played-today sync | ❌ | ✅ |
 
 **Authentication flow:**
 - Email/password sign-up with mandatory email verification before first sign-in
@@ -108,6 +113,7 @@ Players can play as a guest or create a free account.
 - Google profile picture shown automatically after sign-in
 - Custom avatar upload to S3 (overrides Google picture if uploaded)
 - Guest scores posted before sign-in are automatically migrated to the authenticated account
+- On sign-in, backend is queried to sync played-today state across devices
 
 ---
 
@@ -124,14 +130,11 @@ cricket-zone/
 ├── backend/
 │   └── functions/
 │       ├── daily-challenge/       # GET /daily — returns today's bowler
-│       │   ├── index.mjs
-│       │   └── package.json
 │       ├── save-score/            # POST /score — saves game result to DynamoDB
-│       │   ├── index.mjs
-│       │   └── package.json
-│       └── leaderboard/           # GET /leaderboard — top 20 scores
-│           ├── index.mjs
-│           └── package.json
+│       ├── leaderboard/           # GET /leaderboard — daily top 20 + all-time Hall of Fame
+│       ├── played-today/          # GET /played-today — checks if user played daily today
+│       ├── avatar-upload/         # GET /avatar/upload-url — presigned S3 upload URL
+│       └── delete-account/        # DELETE /account — removes Cognito user + scores
 ├── content/
 │   ├── bowling/                   # Silhouette videos and data for bowlers
 │   ├── batting/                   # Reserved for V2
@@ -139,6 +142,7 @@ cricket-zone/
 ├── .github/
 │   └── workflows/
 │       └── deploy.yml             # CI/CD: S3 deploy + CloudFront invalidation
+├── CHANGELOG.md
 ├── CLAUDE.md
 ├── .gitignore
 └── README.md
@@ -165,6 +169,9 @@ cricket-zone/
    cd backend/functions/daily-challenge && npm install
    cd ../save-score && npm install
    cd ../leaderboard && npm install
+   cd ../played-today && npm install
+   cd ../avatar-upload && npm install
+   cd ../delete-account && npm install
    ```
 
 3. **Deploy infrastructure**
@@ -179,6 +186,16 @@ cricket-zone/
    - The CI/CD pipeline automatically deploys on push to `main`
    - Manual deploy: `aws s3 sync frontend/ s3://cricket-zone-frontend-hussain/ --delete`
 
+5. **Deploy a Lambda manually**
+   ```bash
+   cd backend/functions/<function-name>
+   zip -r function.zip .
+   aws lambda update-function-code \
+     --function-name cricket-zone-<function-name> \
+     --zip-file fileb://function.zip \
+     --profile cricket-zone --region us-east-1
+   ```
+
 ---
 
 ## 🔌 API Reference
@@ -188,41 +205,40 @@ Base URL: `https://h3laal38ta.execute-api.us-east-1.amazonaws.com`
 ### `GET /daily?category=bowling`
 Returns today's bowler for the daily challenge.
 ```json
-{
-  "category": "bowling",
-  "date": "2026-04-12",
-  "bowler": "harbhajan"
-}
+{ "category": "bowling", "date": "2026-04-13", "bowler": "harbhajan" }
 ```
 
 ### `POST /score`
-Saves a completed game score to DynamoDB. Accepts an optional `Authorization: Bearer <id_token>` header — authenticated scores are attributed to the Cognito user sub; unauthenticated scores use a guest UUID.
+Saves a completed game score. Authenticated requests use `Authorization: Bearer <id_token>` — userId is taken from the JWT. Unauthenticated requests require `userId` and `playerName` in the body.
 ```json
 {
-  "userId": "guest_mg8n4xp",
-  "playerName": "Hussain",
   "score": 1000,
   "gameMode": "daily",
-  "category": "bowling"
+  "category": "bowling",
+  "pictureUrl": "https://lh3.googleusercontent.com/...",
+  "streak": 3,
+  "wins": 5,
+  "gamesPlayed": 7
 }
 ```
 
 ### `GET /leaderboard?category=bowling`
-Returns today's top 20 scores, deduplicated by user (highest score per user kept).
+Returns today's top 20 scores, deduplicated by user (highest score per user kept). Guest scores excluded.
+
+### `GET /leaderboard?category=bowling&alltime=true`
+Returns the all-time Hall of Fame — top 20 players by cumulative total score. Each row includes `gamesPlayed`, `bestScore`, `streak`, `winRate`.
+
+### `GET /played-today`
+Requires `Authorization: Bearer <id_token>`. Checks if the authenticated user has already played today's daily challenge.
 ```json
-{
-  "leaderboard": [
-    {
-      "userId": "abc-cognito-sub",
-      "playerName": "Hussain",
-      "score": 1000,
-      "gameMode": "daily",
-      "category": "bowling",
-      "date": "2026-04-12"
-    }
-  ]
-}
+{ "played": true }
 ```
+
+### `GET /avatar/upload-url?contentType=image/jpeg`
+Requires `Authorization: Bearer <id_token>`. Returns a presigned S3 URL for avatar upload.
+
+### `DELETE /account`
+Requires `Authorization: Bearer <id_token>`. Deletes the Cognito user account and all associated scores.
 
 ---
 
@@ -245,8 +261,9 @@ Requires GitHub secrets: `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `S3_BUCKE
 - [x] **Phase 3** — API Gateway + full backend integration
 - [x] **Phase 4** — Video silhouettes, player names, leaderboard (top 20, Hall of Fame), score deduplication
 - [x] **Phase 5** — User accounts (Cognito), Google Sign-In, email verification, avatar upload, guest score migration
-- [ ] **Phase 6 (V2)** — Guess the Batter category
-- [ ] **Phase 7 (V3)** — Guess the Celebration category
+- [x] **Phase 6** — Hall of Fame cumulative stats, cross-device played-today sync, player stats (streak, win rate, best score)
+- [ ] **Phase 7 (V2)** — Guess the Batter category
+- [ ] **Phase 8 (V3)** — Guess the Celebration category
 
 ---
 
@@ -267,4 +284,5 @@ Requires GitHub secrets: `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `S3_BUCKE
 
 ---
 
-*Built by Hussain — AWS Solutions Architect Associate | Cloud Engineering Portfolio Project*
+*Built by Hussain Ashfaque — AWS Solutions Architect Associate | Cloud Engineering Portfolio Project*
+*Live at [playhowzat.com](https://playhowzat.com) · [CHANGELOG](CHANGELOG.md) · v1.0.0*
