@@ -613,6 +613,8 @@ resource "aws_cognito_user_pool_client" "web" {
   allowed_oauth_flows                  = ["code"]
   allowed_oauth_scopes                 = ["email", "openid", "profile"]
 
+  read_attributes = ["email", "name", "picture"]
+
   depends_on = [aws_cognito_identity_provider.google]
 }
 

@@ -852,6 +852,12 @@ function getAvatarSrc(name){
   if(picture)return picture;
   return makeInitialsAvatar(name||'?');
 }
+function onAvatarError(img,name){
+  const picture=localStorage.getItem('cz_user_picture');
+  const initials=makeInitialsAvatar(name||'?');
+  if(picture&&img.src!==picture){img.src=picture;}
+  else{img.src=initials;}
+}
 
 function updateHeaderUser(){
   const el=document.getElementById('hUser');
@@ -866,7 +872,7 @@ function updateHeaderUser(){
     if(avatarEl){
       const src=getAvatarSrc(name||'Guest');
       const fb=makeInitialsAvatar(name||'Guest');
-      avatarEl.innerHTML=`<img src="${src}" width="32" height="32" onerror="this.src='${fb}'" alt="">`;
+      avatarEl.innerHTML=`<img src="${src}" width="32" height="32" onerror="onAvatarError(this,'${(name||'Guest').replace(/'/g,"\\'")}')" alt="">`;
     }
   }else{
     el.style.display='none';
@@ -897,7 +903,7 @@ function renderProfileDropdown(){
     drop.innerHTML=`
       <div class="drop-avatar-wrap">
         <div class="drop-avatar-lg" style="cursor:default;">
-          <img src="${src}" width="56" height="56" style="width:56px;height:56px;object-fit:cover;border-radius:50%;display:block;" onerror="this.src='${fb}'" alt="">
+          <img src="${src}" width="56" height="56" style="width:56px;height:56px;object-fit:cover;border-radius:50%;display:block;" onerror="onAvatarError(this,'${name.replace(/'/g,"\\'")}')" alt="">
         </div>
         <div class="drop-info">
           <div class="drop-info-name">${name}</div>
@@ -914,7 +920,7 @@ function renderProfileDropdown(){
     drop.innerHTML=`
       <div class="drop-avatar-wrap">
         <div class="drop-avatar-lg">
-          <img src="${src}" width="56" height="56" style="width:56px;height:56px;object-fit:cover;border-radius:50%;display:block;" onerror="this.src='${fb}'" alt="" id="dropAvImg">
+          <img src="${src}" width="56" height="56" style="width:56px;height:56px;object-fit:cover;border-radius:50%;display:block;" onerror="onAvatarError(this,'${name.replace(/'/g,"\\'")}')" alt="" id="dropAvImg">
           <div class="drop-av-edit">EDIT<input type="file" accept="image/*" onchange="uploadAvatar(this.files[0])" style="position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;pointer-events:auto;"></div>
         </div>
         <div class="drop-info">
