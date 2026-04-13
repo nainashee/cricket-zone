@@ -858,6 +858,17 @@ function onAvatarError(img,name){
   if(picture&&img.src!==picture){img.src=picture;}
   else{img.src=initials;}
 }
+function lbAvHtml(s,name,size,isMe){
+  const st=`width:${size}px;height:${size}px;border-radius:50%;object-fit:cover;flex-shrink:0;`;
+  const n=name.replace(/'/g,"\\'");
+  if(isMe){
+    const src=getAvatarSrc(name);
+    return`<img src="${src}" width="${size}" height="${size}" style="${st}" onerror="onAvatarError(this,'${n}')" alt="">`;
+  }
+  const src=s.pictureUrl||`${AVATAR_BASE}/avatars/${s.userId}`;
+  const fb=makeInitialsAvatar(name,size);
+  return`<img src="${src}" width="${size}" height="${size}" style="${st}" onerror="this.src='${fb}';this.onerror=null;" alt="">`;
+}
 
 function updateHeaderUser(){
   const el=document.getElementById('hUser');
@@ -1299,7 +1310,7 @@ async function saveScore(){
     const res=await fetch(`${API}/score`,{
       method:'POST',
       headers:{'Content-Type':'application/json','Authorization':`Bearer ${idToken}`},
-      body:JSON.stringify({score:G.score,gameMode:G.mode,category:'bowling'})
+      body:JSON.stringify({score:G.score,gameMode:G.mode,category:'bowling',pictureUrl:localStorage.getItem('cz_user_picture')||undefined})
     });
     if(!res.ok){
       const body=await res.text();
@@ -1364,9 +1375,7 @@ async function loadLeaderboard(){
     function renderRow(s,i,isMe){
       const name=s.playerName||s.userId;
       const youBadge=isMe?`<span style="font-family:'DM Mono',monospace;font-size:0.58rem;color:var(--accent);background:var(--accent-dim);border:1px solid var(--border);border-radius:100px;padding:0.1rem 0.45rem;margin-left:0.4rem;vertical-align:middle;">YOU</span>`:'';
-      const avFb=makeInitialsAvatar(name,24);
-      const avSrc=`${AVATAR_BASE}/avatars/${s.userId}`;
-      const avHtml=`<img src="${avSrc}" width="24" height="24" style="width:24px;height:24px;border-radius:50%;object-fit:cover;flex-shrink:0;" onerror="this.src='${avFb}'" alt="">`;
+      const avHtml=lbAvHtml(s,name,24,isMe);
       return`<div style="display:flex;align-items:center;justify-content:space-between;padding:0.65rem 0.9rem;border-bottom:1px solid var(--border2);${isMe?'background:rgba(200,242,48,0.04);':''}">
         <div style="display:flex;align-items:center;gap:0.6rem;">
           <span style="font-family:'Bebas Neue',sans-serif;font-size:1.1rem;color:${isMe?'var(--accent)':rankColor(i)};width:1.4rem;text-align:center;flex-shrink:0;">${i+1}</span>
@@ -1446,7 +1455,7 @@ function guestPromptDismiss(){
 }
 
 function guestPromptSignUp(){
-  sessionStorage.setItem('cz_pending_score',JSON.stringify({score:G.score,gameMode:G.mode,category:'bowling'}));
+  sessionStorage.setItem('cz_pending_score',JSON.stringify({score:G.score,gameMode:G.mode,category:'bowling',pictureUrl:localStorage.getItem('cz_user_picture')||undefined}));
   sessionStorage.removeItem('cz_guest');
   guestPromptDismiss();
   setTimeout(()=>{showAuthModal();setTimeout(()=>authTab('register'),50);},260);
@@ -1535,9 +1544,7 @@ async function loadTop5(){
       const name=s.playerName||'Anonymous';
       const youBadge=isMe?'<span class="top5-you">YOU</span>':'';
       const medal=i===0?'🥇':i===1?'🥈':i===2?'🥉':'';
-      const avFb=makeInitialsAvatar(name,22);
-      const avSrc=`${AVATAR_BASE}/avatars/${s.userId}`;
-      const avHtml=`<img src="${avSrc}" width="22" height="22" style="width:22px;height:22px;border-radius:50%;object-fit:cover;flex-shrink:0;" onerror="this.src='${avFb}'" alt="">`;
+      const avHtml=lbAvHtml(s,name,22,isMe);
       return`<div class="top5-row${isMe?' me':''}">
         <div class="top5-left">
           <span class="top5-rank" style="color:${isMe?'var(--accent)':rankColor(i)}">${medal||i+1}</span>
@@ -1601,9 +1608,7 @@ async function loadAllTime(){
       const name=s.playerName||'Anonymous';
       const youBadge=isMe?'<span class="top5-you">YOU</span>':'';
       const medal=i===0?'🥇':i===1?'🥈':i===2?'🥉':'';
-      const avFb=makeInitialsAvatar(name,22);
-      const avSrc=`${AVATAR_BASE}/avatars/${s.userId}`;
-      const avHtml=`<img src="${avSrc}" width="22" height="22" style="width:22px;height:22px;border-radius:50%;object-fit:cover;flex-shrink:0;" onerror="this.src='${avFb}'" alt="">`;
+      const avHtml=lbAvHtml(s,name,22,isMe);
       return`<div class="top5-row${isMe?' me':''}">
         <div class="top5-left">
           <span class="top5-rank" style="color:${isMe?'var(--accent)':rankColor(i)}">${medal||i+1}</span>

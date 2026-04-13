@@ -35,6 +35,9 @@ export const handler = async (event) => {
       }
     }
 
+    const pictureUrl = typeof body.pictureUrl === 'string' && body.pictureUrl.length <= 2048
+      ? body.pictureUrl : undefined;
+
     let userId, playerName;
 
     if (claims?.sub) {
@@ -90,7 +93,8 @@ export const handler = async (event) => {
         gameMode,
         date,
         ttl,
-        ...(isGuest && { isGuest: true })
+        ...(isGuest && { isGuest: true }),
+        ...(pictureUrl && { pictureUrl })
       }
     }));
 
