@@ -1641,6 +1641,17 @@ async function loadAllTime(){
     }).join('');
 
     el.innerHTML=html;
+
+    // Sync best and games into cz3 from the authoritative DynamoDB data
+    const userRow=data.leaderboard.find(s=>s.userId===currentUserId);
+    if(userRow){
+      const cz3=JSON.parse(localStorage.getItem('cz3')||'{}');
+      cz3.best=Math.max(cz3.best||0,userRow.bestScore||0);
+      cz3.games=userRow.gamesPlayed||cz3.games||0;
+      localStorage.setItem('cz3',JSON.stringify(cz3));
+      refreshH();
+    }
+
   }catch(err){
     console.error('All-time leaderboard fetch failed:',err);
     el.innerHTML='<div class="top5-empty">Could not load all time scores.</div>';
