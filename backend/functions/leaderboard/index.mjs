@@ -53,9 +53,12 @@ export const handler = async (event) => {
         if (item.isGuest || item.userId?.startsWith('guest_')) continue;
         const uid = item.userId;
         if (!userMap[uid]) {
-          userMap[uid] = { userId: uid, playerName: item.playerName, pictureUrl: item.pictureUrl, totalScore: 0, latestDate: '' };
+          userMap[uid] = { userId: uid, playerName: item.playerName, pictureUrl: item.pictureUrl, totalScore: 0, gamesPlayed: 0, bestScore: 0, latestDate: '' };
         }
-        userMap[uid].totalScore += (item.score || 0);
+        const s = item.score || 0;
+        userMap[uid].totalScore  += s;
+        userMap[uid].gamesPlayed += 1;
+        if (s > userMap[uid].bestScore) userMap[uid].bestScore = s;
         if (item.date > userMap[uid].latestDate) {
           userMap[uid].latestDate = item.date;
           userMap[uid].playerName = item.playerName;
@@ -65,7 +68,7 @@ export const handler = async (event) => {
       leaderboard = Object.values(userMap)
         .sort((a, b) => b.totalScore - a.totalScore)
         .slice(0, 20)
-        .map(({ userId, playerName, pictureUrl, totalScore }) => ({ userId, playerName, pictureUrl, score: totalScore }));
+        .map(({ userId, playerName, pictureUrl, totalScore, gamesPlayed, bestScore }) => ({ userId, playerName, pictureUrl, score: totalScore, gamesPlayed, bestScore }));
     } else {
       // Daily: keep only the highest single score per userId for today
       const best = {};

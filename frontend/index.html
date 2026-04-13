@@ -1609,11 +1609,15 @@ async function loadAllTime(){
       const youBadge=isMe?'<span class="top5-you">YOU</span>':'';
       const medal=i===0?'🥇':i===1?'🥈':i===2?'🥉':'';
       const avHtml=lbAvHtml(s,name,22,isMe);
+      const statsLine=s.gamesPlayed!=null?`<span style="font-size:0.68rem;color:var(--text3);font-family:'DM Mono',monospace;">${s.gamesPlayed} game${s.gamesPlayed!==1?'s':''} · Best: ${s.bestScore}</span>`:'';
       return`<div class="top5-row${isMe?' me':''}">
         <div class="top5-left">
           <span class="top5-rank" style="color:${isMe?'var(--accent)':rankColor(i)}">${medal||i+1}</span>
           ${avHtml}
-          <span class="top5-name${isMe?' me':''}">${name}${youBadge}</span>
+          <div style="display:flex;flex-direction:column;gap:0.1rem;">
+            <span class="top5-name${isMe?' me':''}">${name}${youBadge}</span>
+            ${statsLine}
+          </div>
         </div>
         <div class="top5-right">
           <span class="top5-mode">TOTAL</span>
