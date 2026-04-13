@@ -652,8 +652,18 @@ resource "aws_cognito_user_pool_client" "web" {
 
   supported_identity_providers = ["COGNITO", "Google"]
 
-  callback_urls = ["https://playhowzat.com"]
-  logout_urls   = ["https://playhowzat.com"]
+  callback_urls = [
+    "https://playhowzat.com",
+    "https://playhowzat.com/",
+    "https://www.playhowzat.com",
+    "https://www.playhowzat.com/"
+  ]
+  logout_urls = [
+    "https://playhowzat.com",
+    "https://playhowzat.com/",
+    "https://www.playhowzat.com",
+    "https://www.playhowzat.com/"
+  ]
 
   allowed_oauth_flows_user_pool_client = true
   allowed_oauth_flows                  = ["code"]
