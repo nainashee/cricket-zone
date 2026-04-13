@@ -1,0 +1,15 @@
+{
+  "name": "Howzat — Know Your Legends",
+  "short_name": "Howzat",
+  "icons": [
+    {
+      "src": "/favicon-96x96.png",
+      "sizes": "96x96",
+      "type": "image/png"
+    }
+  ],
+  "theme_color": "#c8f135",
+  "background_color": "#0a0a0a",
+  "display": "standalone",
+  "start_url": "/"
+}
