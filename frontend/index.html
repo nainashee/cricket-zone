@@ -358,6 +358,20 @@ video{width:100%;height:100%;object-fit:cover;}
 .acc-back{display:inline-flex;align-items:center;gap:0.45rem;font-family:'DM Mono',monospace;font-size:0.68rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--text3);cursor:pointer;border:none;background:none;padding:0;margin-bottom:2rem;transition:color 0.2s;}
 .acc-back:hover{color:var(--text2);}
 .acc-profile{display:flex;align-items:center;gap:1.4rem;margin-bottom:2.5rem;padding-bottom:2rem;border-bottom:1px solid var(--border2);}
+.acc-name-row{display:flex;align-items:center;gap:0.5rem;}
+.acc-edit-btn{background:none;border:none;padding:0.15rem;cursor:pointer;color:var(--text3);line-height:1;transition:color 0.15s;flex-shrink:0;}
+.acc-edit-btn:hover{color:var(--accent);}
+.acc-rename-form{display:flex;flex-direction:column;gap:0.5rem;margin-top:0.2rem;}
+.acc-rename-input{background:var(--surface2);border:1.5px solid var(--border2);border-radius:10px;padding:0.55rem 0.85rem;font-size:1rem;font-family:'DM Sans',sans-serif;color:var(--text);outline:none;transition:border-color 0.2s;width:100%;}
+.acc-rename-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-dim);}
+.acc-rename-input.err{border-color:var(--red);box-shadow:0 0 0 3px rgba(255,79,79,0.12);}
+.acc-rename-actions{display:flex;gap:0.5rem;align-items:center;flex-wrap:wrap;}
+.acc-rename-save{background:var(--accent);color:var(--bg);border:none;border-radius:8px;padding:0.45rem 1.1rem;font-size:0.82rem;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all 0.2s;}
+.acc-rename-save:hover:not(:disabled){background:#d8ff45;}
+.acc-rename-save:disabled{opacity:0.55;cursor:not-allowed;}
+.acc-rename-cancel{background:transparent;color:var(--text3);border:1px solid var(--border2);border-radius:8px;padding:0.45rem 1.1rem;font-size:0.82rem;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all 0.2s;}
+.acc-rename-cancel:hover{border-color:var(--text3);color:var(--text2);}
+.acc-rename-err{font-size:0.73rem;color:var(--red);font-family:'DM Mono',monospace;min-height:1rem;}
 .acc-avatar{width:72px;height:72px;border-radius:50%;overflow:hidden;border:2px solid var(--border2);flex-shrink:0;}
 .acc-avatar img{width:100%;height:100%;object-fit:cover;display:block;}
 .acc-meta{flex:1;min-width:0;}
@@ -786,7 +800,13 @@ async function loadAccountStats(){
     <div class="acc-profile">
       <div class="acc-avatar">${avatarHtml}</div>
       <div class="acc-meta">
-        <div class="acc-name">${name}</div>
+        <div class="acc-name-row">
+          <div class="acc-name" id="accName">${name}</div>
+          <button class="acc-edit-btn" id="accEditBtn" onclick="showRenameForm()" title="Rename">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          </button>
+        </div>
+        <div id="accRenameArea"></div>
         ${email?`<div class="acc-email">${email}</div>`:''}
       </div>
     </div>
@@ -816,6 +836,11 @@ async function loadAccountStats(){
     const bodyEl=document.getElementById('accStatsBody');
     const gridEl=document.getElementById('accStatGrid');
     if(loadingEl)loadingEl.style.display='none';
+    // Use summary.playerName as source of truth — overrides the localStorage placeholder
+    if(row?.playerName){
+      const nameEl=document.getElementById('accName');
+      if(nameEl)nameEl.textContent=row.playerName;
+    }
     if(row&&gridEl){
       const total=row.totalScore||0;
       const games=row.gamesPlayed||0;
@@ -839,6 +864,94 @@ async function loadAccountStats(){
   }catch(e){
     const loadingEl=document.getElementById('accStatsLoading');
     if(loadingEl)loadingEl.innerHTML='<span style="color:var(--text3);font-family:\'DM Mono\',monospace;font-size:0.72rem;">Could not load stats.</span>';
+  }
+}
+
+const RENAME_PROFANITY=['fuck','shit','cunt','dick','bitch','asshole','nigger','faggot','prick','twat','wanker','bastard'];
+const RENAME_RE=/^[a-zA-Z0-9 _-]+$/;
+function validateRenameClient(raw){
+  const name=typeof raw==='string'?raw.trim():'';
+  if(!name)return'Name cannot be empty';
+  if(name.length<3)return'At least 3 characters required';
+  if(name.length>20)return'Maximum 20 characters';
+  if(!RENAME_RE.test(name))return'Letters, numbers, spaces, _ and - only';
+  if(RENAME_PROFANITY.some(w=>name.toLowerCase().includes(w)))return'That name is not allowed';
+  return null;
+}
+
+function showRenameForm(){
+  const nameEl=document.getElementById('accName');
+  const editBtn=document.getElementById('accEditBtn');
+  const area=document.getElementById('accRenameArea');
+  if(!area||!nameEl)return;
+  const current=nameEl.textContent.trim();
+  editBtn&&(editBtn.style.display='none');
+  area.innerHTML=`
+    <div class="acc-rename-form">
+      <input class="acc-rename-input" id="accRenameInput" type="text" maxlength="20"
+        value="${current.replace(/"/g,'&quot;')}" autocomplete="off"
+        onkeydown="if(event.key==='Enter')submitRename();if(event.key==='Escape')cancelRename();"
+        oninput="document.getElementById('accRenameErr').textContent=''">
+      <div class="acc-rename-actions">
+        <button class="acc-rename-save" id="accRenameSaveBtn" onclick="submitRename()">Save</button>
+        <button class="acc-rename-cancel" onclick="cancelRename()">Cancel</button>
+      </div>
+      <div class="acc-rename-err" id="accRenameErr"></div>
+    </div>`;
+  document.getElementById('accRenameInput')?.focus();
+}
+
+function cancelRename(){
+  const editBtn=document.getElementById('accEditBtn');
+  const area=document.getElementById('accRenameArea');
+  if(area)area.innerHTML='';
+  if(editBtn)editBtn.style.display='';
+}
+
+async function submitRename(){
+  const input=document.getElementById('accRenameInput');
+  const errEl=document.getElementById('accRenameErr');
+  const saveBtn=document.getElementById('accRenameSaveBtn');
+  if(!input||!errEl||!saveBtn)return;
+  const raw=input.value;
+  const err=validateRenameClient(raw);
+  if(err){
+    input.classList.add('err');
+    errEl.textContent=err;
+    return;
+  }
+  input.classList.remove('err');
+  const newName=raw.trim();
+  saveBtn.disabled=true;
+  saveBtn.textContent='Saving…';
+  try{
+    const idToken=getIdToken();
+    const res=await fetch(`${API}/rename`,{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':`Bearer ${idToken}`},
+      body:JSON.stringify({newName})
+    });
+    const data=await res.json();
+    if(!res.ok){
+      errEl.textContent=data.error||'Rename failed — try again';
+      saveBtn.disabled=false;
+      saveBtn.textContent='Save';
+      return;
+    }
+    // Success — update all display surfaces
+    const confirmed=data.newName||newName;
+    localStorage.setItem('cz_user_name',confirmed);
+    localStorage.setItem('cz_name',confirmed);
+    const nameEl=document.getElementById('accName');
+    if(nameEl)nameEl.textContent=confirmed;
+    cancelRename();
+    updateHeaderUser();
+    renderProfileDropdown();
+    toast('Name updated!','ok');
+  }catch(e){
+    errEl.textContent='Network error — try again';
+    saveBtn.disabled=false;
+    saveBtn.textContent='Save';
   }
 }
 
@@ -916,11 +1029,22 @@ async function storeAuth(idToken){
   sessionStorage.removeItem('cz_guest');
   updateHeaderUser();
   postPendingScore(idToken);
-  // Sync played-today state from backend so cross-device re-play is blocked
+  // Sync summary record: get authoritative playerName + played-today in parallel
   try{
-    const r=await fetch(`${API}/played-today`,{headers:{'Authorization':`Bearer ${idToken}`}});
-    if(r.ok){const d=await r.json();if(d.played)localStorage.setItem('howzat_last_played',getTodayLocal());}
-  }catch(e){console.warn('played-today sync failed',e);}
+    const [summaryRes,playedRes]=await Promise.all([
+      fetch(`${API}/leaderboard?me=true`,{headers:{Authorization:`Bearer ${idToken}`}}),
+      fetch(`${API}/played-today`,{headers:{Authorization:`Bearer ${idToken}`}})
+    ]);
+    if(summaryRes.ok){
+      const sd=await summaryRes.json();
+      if(sd.summary?.playerName){
+        localStorage.setItem('cz_user_name',sd.summary.playerName);
+        localStorage.setItem('cz_name',sd.summary.playerName);
+        updateHeaderUser();
+      }
+    }
+    if(playedRes.ok){const d=await playedRes.json();if(d.played)localStorage.setItem('howzat_last_played',getTodayLocal());}
+  }catch(e){console.warn('Auth sync failed',e);}
   applyDailyCardState();
 }
 

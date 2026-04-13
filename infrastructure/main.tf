@@ -237,6 +237,7 @@ resource "aws_iam_role_policy" "lambda_dynamodb" {
           "dynamodb:PutItem",
           "dynamodb:Query",
           "dynamodb:GetItem",
+          "dynamodb:UpdateItem",
           "dynamodb:BatchGetItem",
           "dynamodb:DeleteItem"
         ]
@@ -334,6 +335,13 @@ data "archive_file" "played_today" {
   output_path = "../backend/functions/played-today.zip"
 }
 
+data "archive_file" "rename_user" {
+  type        = "zip"
+  source_dir  = "../backend/functions/rename-user"
+  output_path = "../backend/functions/rename-user.zip"
+  excludes    = ["node_modules/.cache"]
+}
+
 resource "aws_lambda_function" "daily_challenge" {
   filename         = data.archive_file.daily_challenge.output_path
   function_name    = "cricket-zone-daily-challenge"
@@ -399,6 +407,25 @@ resource "aws_lambda_function" "played_today" {
   handler          = "index.handler"
   runtime          = "nodejs20.x"
   source_code_hash = data.archive_file.played_today.output_base64sha256
+
+  environment {
+    variables = {
+      SCORES_TABLE = "cricket-zone-scores"
+    }
+  }
+
+  tags = {
+    Project = "cricket-zone"
+  }
+}
+
+resource "aws_lambda_function" "rename_user" {
+  filename         = data.archive_file.rename_user.output_path
+  function_name    = "cricket-zone-rename-user"
+  role             = aws_iam_role.lambda_exec.arn
+  handler          = "index.handler"
+  runtime          = "nodejs20.x"
+  source_code_hash = data.archive_file.rename_user.output_base64sha256
 
   environment {
     variables = {
@@ -525,6 +552,19 @@ resource "aws_apigatewayv2_route" "played_today" {
   target    = "integrations/${aws_apigatewayv2_integration.played_today.id}"
 }
 
+resource "aws_apigatewayv2_integration" "rename_user" {
+  api_id                 = aws_apigatewayv2_api.main.id
+  integration_type       = "AWS_PROXY"
+  integration_uri        = aws_lambda_function.rename_user.invoke_arn
+  payload_format_version = "2.0"
+}
+
+resource "aws_apigatewayv2_route" "rename_user" {
+  api_id    = aws_apigatewayv2_api.main.id
+  route_key = "POST /rename"
+  target    = "integrations/${aws_apigatewayv2_integration.rename_user.id}"
+}
+
 resource "aws_apigatewayv2_stage" "default" {
   api_id      = aws_apigatewayv2_api.main.id
   name        = "$default"
@@ -575,6 +615,14 @@ resource "aws_lambda_permission" "played_today" {
   statement_id  = "AllowAPIGatewayInvoke"
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.played_today.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_apigatewayv2_api.main.execution_arn}/*/*"
+}
+
+resource "aws_lambda_permission" "rename_user" {
+  statement_id  = "AllowAPIGatewayInvoke"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.rename_user.function_name
   principal     = "apigateway.amazonaws.com"
   source_arn    = "${aws_apigatewayv2_api.main.execution_arn}/*/*"
 }
