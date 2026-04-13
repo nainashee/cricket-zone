@@ -11,24 +11,32 @@ export const handler = async (event) => {
 
   try {
     const category = event.queryStringParameters?.category || "bowling";
-    const date = new Date().toISOString().split("T")[0];
+    const alltime  = event.queryStringParameters?.alltime === "true";
+    const date     = new Date().toISOString().split("T")[0];
 
-    // Paginate through ALL items for today
+    // Paginate through all matching items
     let items = [];
     let lastKey = undefined;
 
     do {
-      const params = {
-        TableName: SCORES_TABLE,
-        IndexName: "category-date-index",
-        KeyConditionExpression: "category = :cat AND #d = :date",
-        ExpressionAttributeNames: { "#d": "date" },
-        ExpressionAttributeValues: {
-          ":cat": category,
-          ":date": date
-        },
-        ...(lastKey && { ExclusiveStartKey: lastKey })
-      };
+      const params = alltime
+        ? {
+            // All-time: query by category only, no date filter
+            TableName: SCORES_TABLE,
+            IndexName: "category-date-index",
+            KeyConditionExpression: "category = :cat",
+            ExpressionAttributeValues: { ":cat": category },
+            ...(lastKey && { ExclusiveStartKey: lastKey })
+          }
+        : {
+            // Daily: filter to today's date
+            TableName: SCORES_TABLE,
+            IndexName: "category-date-index",
+            KeyConditionExpression: "category = :cat AND #d = :date",
+            ExpressionAttributeNames: { "#d": "date" },
+            ExpressionAttributeValues: { ":cat": category, ":date": date },
+            ...(lastKey && { ExclusiveStartKey: lastKey })
+          };
 
       const result = await db.send(new QueryCommand(params));
       items = items.concat(result.Items || []);

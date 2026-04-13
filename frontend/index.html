@@ -515,6 +515,30 @@ video{width:100%;height:100%;object-fit:cover;}
       </div>
     </div>
 
+    <!-- ── ALL TIME LEADERS ── -->
+    <div class="top5-section" style="margin-top:2rem;">
+      <div class="sec-head" style="margin-bottom:1.2rem;">
+        <p class="sec-lbl">Registered Players</p>
+        <h2 class="sec-title">ALL TIME TOP 20</h2>
+      </div>
+      <div class="top5-card">
+        <div class="top5-header">
+          <div class="top5-title">
+            <span>👑</span>
+            <span class="top5-title-text">HALL OF FAME</span>
+            <span class="top5-badge">All Time</span>
+          </div>
+          <span style="font-family:'DM Mono',monospace;font-size:0.62rem;color:var(--text3);">Best score per player</span>
+        </div>
+        <div id="allTimeList">
+          <div class="top5-loading">
+            <div class="top5-spinner"></div>
+            Loading all time leaders...
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
 
 </div>
@@ -651,6 +675,7 @@ async function boot(){
   setInterval(tickDailyCountdown,1000);
   loadHeroDailyVideo();
   loadTop5();
+  loadAllTime();
   const handled=await handleOAuthCallback();
   if(!handled&&!isTokenValid()&&!isGuest()){
     showAuthModal();
@@ -702,7 +727,7 @@ function refreshLS(){
 }
 
 function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo({top:0,behavior:'smooth'});}
-function showLanding(){stopTimer();refreshLS();showScreen('landingScreen');loadTop5();}
+function showLanding(){stopTimer();refreshLS();showScreen('landingScreen');loadTop5();loadAllTime();}
 
 const API = '__API_URL__';
 const COGNITO_USER_POOL_ID = '__COGNITO_USER_POOL_ID__';
@@ -1539,6 +1564,54 @@ function tickDailyCountdown(){
   const s=diff%60;
   el.textContent=`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
 }
+async function loadAllTime(){
+  const el=document.getElementById('allTimeList');
+  if(!el)return;
+  try{
+    const res=await fetch(`${API}/leaderboard?category=bowling&alltime=true`);
+    const data=await res.json();
+    const currentUserId=getCurrentUserId();
+
+    if(!data.leaderboard||!data.leaderboard.length){
+      el.innerHTML='<div class="top5-empty">No scores yet — be the first to register and play! 🏏</div>';
+      return;
+    }
+
+    function rankColor(i){
+      if(i===0)return'var(--gold)';
+      if(i===1)return'#c0c0c0';
+      if(i===2)return'#cd7f32';
+      return'var(--text3)';
+    }
+
+    const html=data.leaderboard.map((s,i)=>{
+      const isMe=s.userId===currentUserId;
+      const name=s.playerName||'Anonymous';
+      const youBadge=isMe?'<span class="top5-you">YOU</span>':'';
+      const medal=i===0?'🥇':i===1?'🥈':i===2?'🥉':'';
+      const avFb=makeInitialsAvatar(name,22);
+      const avSrc=`${AVATAR_BASE}/avatars/${s.userId}`;
+      const avHtml=`<img src="${avSrc}" width="22" height="22" style="width:22px;height:22px;border-radius:50%;object-fit:cover;flex-shrink:0;" onerror="this.src='${avFb}'" alt="">`;
+      return`<div class="top5-row${isMe?' me':''}">
+        <div class="top5-left">
+          <span class="top5-rank" style="color:${isMe?'var(--accent)':rankColor(i)}">${medal||i+1}</span>
+          ${avHtml}
+          <span class="top5-name${isMe?' me':''}">${name}${youBadge}</span>
+        </div>
+        <div class="top5-right">
+          <span class="top5-mode">${s.gameMode||'daily'}</span>
+          <span class="top5-score">${s.score}</span>
+        </div>
+      </div>`;
+    }).join('');
+
+    el.innerHTML=html;
+  }catch(err){
+    console.error('All-time leaderboard fetch failed:',err);
+    el.innerHTML='<div class="top5-empty">Could not load all time scores.</div>';
+  }
+}
+
 document.addEventListener('click',e=>{
   if(!e.target.closest('.sarea'))document.getElementById('ddrop').classList.remove('open');
   if(!e.target.closest('#hUser'))closeProfileDropdown();
