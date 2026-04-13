@@ -1,8 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<script src="//cdn.jsdelivr.net/npm/eruda"></script>
-<script>eruda.init();</script>
 <meta charset="UTF-8">
 <link rel="icon" type="image/x-icon" href="/favicon.ico">
 <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
@@ -355,6 +353,30 @@ video{width:100%;height:100%;object-fit:cover;}
 .drop-lock{margin-left:auto;font-size:0.72rem;}
 .drop-create{width:100%;margin-top:0.45rem;background:var(--accent);color:var(--bg);border:none;border-radius:9px;padding:0.58rem 1rem;font-size:0.8rem;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all 0.2s;}
 .drop-create:hover{background:#d8ff45;}
+/* ── ACCOUNT SCREEN ── */
+#accountScreen{max-width:640px;margin:0 auto;padding:2.5rem 1.5rem 5rem;}
+.acc-back{display:inline-flex;align-items:center;gap:0.45rem;font-family:'DM Mono',monospace;font-size:0.68rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--text3);cursor:pointer;border:none;background:none;padding:0;margin-bottom:2rem;transition:color 0.2s;}
+.acc-back:hover{color:var(--text2);}
+.acc-profile{display:flex;align-items:center;gap:1.4rem;margin-bottom:2.5rem;padding-bottom:2rem;border-bottom:1px solid var(--border2);}
+.acc-avatar{width:72px;height:72px;border-radius:50%;overflow:hidden;border:2px solid var(--border2);flex-shrink:0;}
+.acc-avatar img{width:100%;height:100%;object-fit:cover;display:block;}
+.acc-meta{flex:1;min-width:0;}
+.acc-name{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;letter-spacing:0.04em;line-height:1;margin-bottom:0.25rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.acc-email{font-family:'DM Mono',monospace;font-size:0.68rem;color:var(--text3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.acc-stats-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--border2);border:1px solid var(--border2);border-radius:16px;overflow:hidden;margin-bottom:2rem;}
+@media(max-width:480px){.acc-stats-grid{grid-template-columns:1fr;}}
+.acc-stat{background:var(--surface);padding:1.4rem 1.6rem;}
+.acc-stat-v{font-family:'Bebas Neue',sans-serif;font-size:2.4rem;color:var(--accent);letter-spacing:0.04em;line-height:1;display:block;margin-bottom:0.3rem;}
+.acc-stat-l{font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.12em;}
+.acc-section-title{font-family:'DM Mono',monospace;font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--text3);margin-bottom:0.85rem;}
+.acc-danger-zone{border:1px solid rgba(255,79,79,0.18);border-radius:16px;padding:1.4rem 1.6rem;background:rgba(255,79,79,0.03);}
+.acc-danger-row{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;}
+.acc-danger-text{flex:1;min-width:0;}
+.acc-danger-title{font-size:0.84rem;font-weight:500;color:var(--text);margin-bottom:0.2rem;}
+.acc-danger-sub{font-size:0.75rem;color:var(--text3);font-family:'DM Mono',monospace;line-height:1.5;}
+.acc-danger-btn{flex-shrink:0;background:transparent;color:var(--red);border:1px solid rgba(255,79,79,0.35);border-radius:9px;padding:0.52rem 1.1rem;font-size:0.8rem;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all 0.2s;white-space:nowrap;}
+.acc-danger-btn:hover{background:rgba(255,79,79,0.08);border-color:var(--red);}
+.acc-loading{display:flex;align-items:center;gap:0.55rem;font-family:'DM Mono',monospace;font-size:0.72rem;color:var(--text3);padding:1rem 0;}
 </style>
 </head>
 <body>
@@ -647,6 +669,14 @@ video{width:100%;height:100%;object-fit:cover;}
 </div>
 </div>
 
+<!-- ══ ACCOUNT ══ -->
+<div class="screen" id="accountScreen">
+  <div id="accountContent" style="max-width:640px;margin:0 auto;padding:2.5rem 1.5rem 5rem;">
+    <button class="acc-back" onclick="showLanding()">← Back</button>
+    <div class="acc-loading"><div class="top5-spinner"></div>Loading account…</div>
+  </div>
+</div>
+
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/amazon-cognito-identity-js@6/dist/amazon-cognito-identity.min.js"></script>
@@ -736,6 +766,81 @@ function refreshLS(){
 
 function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo({top:0,behavior:'smooth'});}
 function showLanding(){stopTimer();refreshLS();showScreen('landingScreen');loadTop5();loadAllTime();}
+function showAccount(){closeProfileDropdown();showScreen('accountScreen');loadAccountStats();}
+async function loadAccountStats(){
+  const el=document.getElementById('accountContent');
+  if(!el)return;
+  const name=getCurrentUserName();
+  const email=localStorage.getItem('cz_user_email')||'';
+  const idToken=getIdToken();
+  // Build avatar: prefer JWT picture claim, fall back to stored picture, then initials
+  let picSrc='';
+  try{const c=parseJwt(idToken);if(c&&c.picture)picSrc=c.picture;}catch(e){}
+  if(!picSrc)picSrc=localStorage.getItem('cz_user_picture')||localStorage.getItem('cz_avatar_url')||'';
+  const avatarHtml=picSrc
+    ?`<img src="${picSrc}" width="72" height="72" style="width:72px;height:72px;object-fit:cover;display:block;" onerror="onAvatarError(this,'${name.replace(/'/g,"\\'")}')" alt="">`
+    :`<img src="${makeInitialsAvatar(name,72)}" width="72" height="72" style="width:72px;height:72px;object-fit:cover;display:block;" alt="">`;
+  // Render shell immediately while fetching stats
+  el.innerHTML=`
+    <button class="acc-back" onclick="showLanding()">← Back</button>
+    <div class="acc-profile">
+      <div class="acc-avatar">${avatarHtml}</div>
+      <div class="acc-meta">
+        <div class="acc-name">${name}</div>
+        ${email?`<div class="acc-email">${email}</div>`:''}
+      </div>
+    </div>
+    <div class="acc-loading" id="accStatsLoading"><div class="top5-spinner"></div>Loading stats…</div>
+    <div id="accStatsBody" style="display:none;">
+      <div class="acc-stats-grid" id="accStatGrid"></div>
+    </div>
+    <div style="margin-top:2rem;">
+      <p class="acc-section-title">Danger Zone</p>
+      <div class="acc-danger-zone">
+        <div class="acc-danger-row">
+          <div class="acc-danger-text">
+            <div class="acc-danger-title">Delete Account</div>
+            <div class="acc-danger-sub">Permanently removes your account and all scores. This cannot be undone.</div>
+          </div>
+          <button class="acc-danger-btn" onclick="confirmDeleteAccount()">Delete</button>
+        </div>
+      </div>
+    </div>`;
+  // Fetch all-time stats
+  try{
+    const r=await fetch(`${API}/leaderboard?category=bowling&alltime=true`);
+    const d=await r.json();
+    const uid=getCurrentUserId();
+    const row=d.leaderboard&&d.leaderboard.find(s=>s.userId===uid);
+    const loadingEl=document.getElementById('accStatsLoading');
+    const bodyEl=document.getElementById('accStatsBody');
+    const gridEl=document.getElementById('accStatGrid');
+    if(loadingEl)loadingEl.style.display='none';
+    if(row&&gridEl){
+      const total=row.score||0;
+      const games=row.gamesPlayed||0;
+      const best=row.bestScore||0;
+      const avg=games>0?Math.round(total/games):0;
+      const streak=row.streak||0;
+      const winRate=row.winRate||'0%';
+      gridEl.innerHTML=`
+        <div class="acc-stat"><span class="acc-stat-v">${total.toLocaleString()}</span><span class="acc-stat-l">Total Score</span></div>
+        <div class="acc-stat"><span class="acc-stat-v">${games}</span><span class="acc-stat-l">Games Played</span></div>
+        <div class="acc-stat"><span class="acc-stat-v">${best.toLocaleString()}</span><span class="acc-stat-l">Best Score</span></div>
+        <div class="acc-stat"><span class="acc-stat-v">${avg.toLocaleString()}</span><span class="acc-stat-l">Avg Score</span></div>
+        <div class="acc-stat"><span class="acc-stat-v">${streak}</span><span class="acc-stat-l">Current Streak</span></div>
+        <div class="acc-stat"><span class="acc-stat-v">${winRate}</span><span class="acc-stat-l">Win Rate</span></div>`;
+      if(bodyEl)bodyEl.style.display='block';
+    }else if(bodyEl){
+      if(loadingEl)loadingEl.remove();
+      bodyEl.innerHTML='<p style="font-family:\'DM Mono\',monospace;font-size:0.72rem;color:var(--text3);padding:0.5rem 0;">No games played yet — play Classic, Blitz, or Daily to see your stats here.</p>';
+      bodyEl.style.display='block';
+    }
+  }catch(e){
+    const loadingEl=document.getElementById('accStatsLoading');
+    if(loadingEl)loadingEl.innerHTML='<span style="color:var(--text3);font-family:\'DM Mono\',monospace;font-size:0.72rem;">Could not load stats.</span>';
+  }
+}
 
 const API = '__API_URL__';
 const COGNITO_USER_POOL_ID = '__COGNITO_USER_POOL_ID__';
@@ -954,6 +1059,7 @@ function renderProfileDropdown(){
         </div>
       </div>
       <div class="drop-divider"></div>
+      <button class="drop-item" onclick="showAccount()">👤 Account</button>
       <button class="drop-item" onclick="signOut()">🚪 Sign Out</button>
       <button class="drop-item danger" onclick="confirmDeleteAccount()">🗑 Delete Account</button>`;
   }
