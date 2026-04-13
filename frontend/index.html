@@ -1322,6 +1322,12 @@ async function loadLeaderboard(){
       html+=renderRow(myEntry,myIdx,true);
     }
 
+    if(isGuest()){
+      html+=`<div style="padding:0.65rem 0.9rem;border-top:1px solid var(--border2);display:flex;align-items:center;justify-content:space-between;">
+        <span style="font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--text3);">Sign up to appear on the leaderboard</span>
+        <button onclick="closeProfileDropdown();showAuthModal();setTimeout(()=>authTab('register'),50);" style="font-family:'DM Mono',monospace;font-size:0.62rem;color:var(--accent);background:none;border:none;cursor:pointer;padding:0;letter-spacing:0.04em;">Create account →</button>
+      </div>`;
+    }
     el.innerHTML=html;
   }catch(err){
     console.error('Leaderboard fetch failed:',err);
@@ -1360,9 +1366,8 @@ function showGuestSavePrompt(){
     <div style="font-size:1.8rem;margin-bottom:0.5rem;">🏏</div>
     <div class="gsp-score">${G.score}</div>
     <div style="font-size:0.72rem;color:var(--text3);font-family:'DM Mono',monospace;letter-spacing:0.08em;margin-bottom:1rem;">POINTS</div>
-    <div style="font-size:0.82rem;color:var(--text2);line-height:1.6;margin-bottom:1.6rem;">Want to save your score and<br>appear on the leaderboard?</div>
-    <button class="auth-btn" id="guestSaveBtn" onclick="saveScoreAsGuest()">Save as Guest</button>
-    <button class="auth-google" style="margin-top:0.6rem;" onclick="guestPromptSignUp()">Create Free Account</button>
+    <div style="font-size:0.82rem;color:var(--text2);line-height:1.6;margin-bottom:1.6rem;">The leaderboard is for registered players.<br>Create a free account to save your score and compete.</div>
+    <button class="auth-google" onclick="guestPromptSignUp()">Create Free Account</button>
     <button class="auth-guest" onclick="guestPromptDismiss()">Maybe Later</button>
   </div>`;
   document.body.appendChild(overlay);

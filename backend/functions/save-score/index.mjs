@@ -74,6 +74,7 @@ export const handler = async (event) => {
       playerName = guestName;
     }
 
+    const isGuest  = !claims?.sub;
     const date    = new Date().toISOString().split("T")[0];
     const scoreId = `${category}#${date}#${randomUUID()}`;
     const ttl     = Math.floor(Date.now() / 1000) + (90 * 24 * 60 * 60);
@@ -88,7 +89,8 @@ export const handler = async (event) => {
         category,
         gameMode,
         date,
-        ttl
+        ttl,
+        ...(isGuest && { isGuest: true })
       }
     }));
 
