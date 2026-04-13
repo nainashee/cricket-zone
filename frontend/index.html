@@ -1649,6 +1649,7 @@ async function loadAllTime(){
       cz3.best=Math.max(cz3.best||0,userRow.bestScore||0);
       cz3.games=userRow.gamesPlayed||cz3.games||0;
       localStorage.setItem('cz3',JSON.stringify(cz3));
+      stats={...stats,...cz3};
       refreshH();
     }
 
