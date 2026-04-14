@@ -288,15 +288,19 @@ video{width:100%;height:100%;object-fit:cover;}
 .top5-spinner{width:14px;height:14px;border:2px solid var(--border2);border-top-color:var(--accent);border-radius:50%;animation:spin 0.7s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg);}}
 .top5-subtext{font-family:'DM Mono',monospace;font-size:0.62rem;color:var(--text3);white-space:nowrap;}
-.top5-name-col{display:flex;flex-direction:column;gap:0.1rem;min-width:0;overflow:hidden;}
-.top5-stats{font-size:0.68rem;color:var(--text3);font-family:'DM Mono',monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.top5-name-col{display:flex;flex-direction:column;gap:0.18rem;min-width:0;overflow:hidden;}
+.top5-stats-row{display:flex;align-items:center;flex-wrap:nowrap;gap:0;}
+.top5-stat{font-family:'DM Mono',monospace;font-size:0.72rem;color:var(--text3);white-space:nowrap;line-height:1.3;}
+.top5-stat:not(:last-child)::after{content:' · ';opacity:0.45;}
 @media(max-width:520px){
   .top5-row{padding:0.65rem 1rem;}
   .top5-mode{display:none;}
   .top5-subtext{display:none;}
   .top5-score{min-width:3.2rem;font-size:1.1rem;}
-  .top5-stats{font-size:0.6rem;}
   .top5-header{padding:0.85rem 1rem;}
+  .top5-stats-row{display:grid;grid-template-columns:1fr 1fr;gap:0.18rem 0.6rem;}
+  .top5-stat{font-size:0.68rem;}
+  .top5-stat:not(:last-child)::after{content:none;}
 }
 
 .hero-daily-preview:hover .hero-play-overlay{opacity:1!important;}
@@ -1876,12 +1880,14 @@ async function loadAllTime(){
       const medal=i===0?'🥇':i===1?'🥈':i===2?'🥉':'';
       const avHtml=lbAvHtml(s,name,22,isMe);
       const statsParts=[
-        s.gamesPlayed!=null?`${s.gamesPlayed}G`:null,
-        s.streak!=null?`🔥${s.streak}`:null,
-        s.winRate!=null?`${s.winRate}%`:null,
-        s.bestScore!=null?`${s.bestScore}`:null
-      ].filter(Boolean).join(' · ');
-      const statsLine=statsParts?`<span class="top5-stats">${statsParts}</span>`:'';
+        s.gamesPlayed!=null?`${s.gamesPlayed} Games`:null,
+        s.streak!=null?`🔥 ${s.streak} Streak`:null,
+        s.winRate!=null?`Win ${s.winRate}%`:null,
+        s.bestScore!=null?`Best ${s.bestScore}`:null
+      ].filter(Boolean);
+      const statsLine=statsParts.length
+        ?`<div class="top5-stats-row">${statsParts.map(p=>`<span class="top5-stat">${p}</span>`).join('')}</div>`
+        :'';
       return`<div class="top5-row${isMe?' me':''}">
         <div class="top5-left">
           <span class="top5-rank" style="color:${isMe?'var(--accent)':rankColor(i)}">${medal||i+1}</span>
