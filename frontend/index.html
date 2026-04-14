@@ -67,7 +67,8 @@ main{position:relative;z-index:1;}
 .hero-cta:hover{background:#d8ff45;transform:translateY(-2px);box-shadow:0 12px 32px var(--accent-glow);}
 
 .hero-right{opacity:0;animation:fadeUp 0.5s ease 0.3s forwards;}
-.hero-visual{background:var(--surface);border:1px solid var(--border2);border-radius:20px;aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
+.hero-visual{background:var(--surface);border:1px solid var(--border2);border-radius:20px;aspect-ratio:1/1;max-width:280px;margin-left:auto;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
+@media(max-width:680px){.hero-visual{max-width:100%;margin-left:0;}}
 .hero-visual-glow{position:absolute;inset:0;background:radial-gradient(ellipse at 60% 40%,rgba(200,242,48,0.08) 0%,transparent 65%);}
 .sil-wrap{position:relative;z-index:1;text-align:center;}
 .sil-icon{font-size:4.5rem;display:block;filter:brightness(0) invert(0.1);animation:silSway 4s ease-in-out infinite;}
@@ -313,7 +314,9 @@ video{width:100%;aspect-ratio:1/1;object-fit:cover;}
   .top5-stat:not(:last-child)::after{content:none;}
 }
 
-.hero-daily-preview:hover .hero-play-overlay{opacity:1!important;}
+#heroVid{filter:blur(6px);transform:scale(1.1);}
+.hero-cta-overlay{position:absolute;inset:0;z-index:2;background:linear-gradient(to top,rgba(7,9,10,0.82) 0%,rgba(7,9,10,0.18) 55%,transparent 100%);display:flex;align-items:flex-end;justify-content:center;padding-bottom:1.3rem;pointer-events:none;}
+.hero-played-overlay{position:absolute;inset:0;z-index:5;display:none;flex-direction:column;align-items:center;justify-content:center;background:rgba(7,9,10,0.88);text-align:center;gap:0.6rem;}
 /* ── NAME MODAL ── */
 .name-overlay{position:fixed;inset:0;z-index:990;background:rgba(7,9,10,0.88);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;opacity:0;animation:fadeIn 0.3s ease forwards;}
 @keyframes fadeIn{to{opacity:1;}}
@@ -484,17 +487,22 @@ video{width:100%;aspect-ratio:1/1;object-fit:cover;}
       <button class="hero-cta" onclick="tryStartDaily()">Play Daily Challenge →</button>
     </div>
     <div class="hero-right">
-      <div class="hero-visual hero-daily-preview" onclick="tryStartDaily()" title="Play today's daily challenge" style="cursor:pointer;">
+      <div class="hero-visual" id="heroVisual" onclick="document.getElementById('catsAnchor').scrollIntoView({behavior:'smooth'})" title="Scroll to today's challenges" style="cursor:pointer;">
         <div class="hero-visual-glow"></div>
         <video id="heroVid" autoplay muted loop playsinline style="width:100%;height:100%;object-fit:cover;display:none;position:absolute;inset:0;z-index:0;"></video>
         <div class="sil-wrap" id="heroPlaceholder" style="position:relative;z-index:1;">
           <div style="width:52px;height:52px;border-radius:50%;background:var(--surface2);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:1.4rem;margin:0 auto;animation:phPulse 2.5s ease-in-out infinite;">🏏</div>
           <p class="sil-q" style="margin-top:0.9rem;">WHO AM I?</p>
         </div>
-        <div class="hero-play-overlay" style="position:absolute;inset:0;background:rgba(7,9,10,0.52);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 0.25s;z-index:2;">
-          <div style="background:var(--accent);color:var(--bg);border-radius:10px;padding:0.65rem 1.4rem;font-size:0.85rem;font-weight:700;font-family:'DM Sans',sans-serif;box-shadow:0 8px 28px var(--accent-glow);">▶ Play Daily Challenge</div>
+        <div class="hero-cta-overlay">
+          <div style="background:var(--accent);color:var(--bg);border-radius:10px;padding:0.6rem 1.2rem;font-size:0.8rem;font-weight:700;font-family:'DM Sans',sans-serif;box-shadow:0 8px 28px var(--accent-glow);letter-spacing:0.04em;">PLAY TODAY'S CHALLENGE →</div>
         </div>
-        <div class="hero-pill" style="z-index:3;">📅 Today's Challenge</div>
+        <div class="hero-played-overlay" id="heroPlayedOverlay">
+          <span style="font-size:2rem;color:var(--accent);">✓</span>
+          <p style="font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:0.08em;color:var(--accent);">COMPLETED</p>
+          <p style="font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--text3);">Come back tomorrow</p>
+        </div>
+        <div class="hero-pill" style="z-index:6;">📅 Today's Bowler</div>
       </div>
     </div>
   </div>
@@ -515,8 +523,8 @@ video{width:100%;aspect-ratio:1/1;object-fit:cover;}
           </div>
         </div>
         <div class="cat-body">
-          <span class="cat-tag ct-daily">📅 Daily Challenge</span>
-          <span class="cat-name">DAILY<br>CHALLENGE</span>
+          <span class="cat-tag ct-daily">📅 Bowler Challenge</span>
+          <span class="cat-name">BOWLER<br>CHALLENGE</span>
           <p style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.1em;color:#f59e0b;margin-bottom:0.5rem;text-transform:uppercase;">Guess the Bowler</p>
           <p class="cat-desc">One bowler. One chance. Every day a new legend to identify — come back tomorrow for the next one.</p>
           <div class="cat-foot">
@@ -540,8 +548,8 @@ video{width:100%;aspect-ratio:1/1;object-fit:cover;}
           </div>
         </div>
         <div class="cat-body">
-          <span class="cat-tag ct-bat-daily">📅 Batting Daily</span>
-          <span class="cat-name">BATTING<br>CHALLENGE</span>
+          <span class="cat-tag ct-bat-daily">📅 Batter Challenge</span>
+          <span class="cat-name">BATTER<br>CHALLENGE</span>
           <p style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.1em;color:#4db8ff;margin-bottom:0.5rem;text-transform:uppercase;">Guess the Batter</p>
           <p class="cat-desc">One batter. One chance. Identify the legend from their silhouette — double the points.</p>
           <div class="cat-foot">
@@ -835,6 +843,8 @@ function applyDailyCardState(){
   if(arr)arr.style.display=played?'none':'flex';
   if(badge)badge.style.display=played?'flex':'none';
   if(msg)msg.style.display=played?'block':'none';
+  const heroOverlay=document.getElementById('heroPlayedOverlay');
+  if(heroOverlay)heroOverlay.style.display=played?'flex':'none';
 }
 
 function loadHeroDailyVideo(){
@@ -1553,7 +1563,7 @@ async function startGame(mode,category='bowling'){
     G.queue=mode==='blitz'?sh.slice(0,pool.length):sh.slice(0,pool.length);
   }
 
-  document.getElementById('catCrumb').textContent=category==='batting'?'Batting':'Bowling';
+  document.getElementById('catCrumb').textContent=category==='batting'?'Batter Challenge':'Bowler Challenge';
   document.getElementById('modeCrumb').textContent=mode==='classic'?'Classic':mode==='blitz'?'Blitz':'Daily';
   showScreen('gameScreen');loadBowler();
 }
