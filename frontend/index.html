@@ -36,14 +36,14 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 
 /* ── HEADER ── */
 header{position:sticky;top:0;z-index:100;display:flex;align-items:center;padding:0.9rem 2rem;border-bottom:1px solid var(--border2);background:rgba(7,9,10,0.93);backdrop-filter:blur(16px);}
-.logo{font-family:'Bebas Neue',sans-serif;font-size:1.75rem;letter-spacing:0.12em;color:var(--text);display:flex;align-items:center;gap:0.65rem;transition:opacity 0.2s;}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:1.75rem;letter-spacing:0.12em;color:var(--text);display:flex;align-items:center;gap:0.65rem;transition:opacity 0.2s;flex-shrink:1;min-width:0;}
 .logo:hover{opacity:0.75;}
 .logo-mark{width:36px;height:36px;background:var(--accent);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:0.9rem;padding:2px;}
 .logo em{color:var(--accent);font-style:normal;}
-.hstats{display:flex;align-items:center;gap:1.4rem;margin-left:auto;}
-.hst{display:flex;align-items:center;gap:0.35rem;}
-.hst-emoji{font-size:1rem;line-height:1;}
-.hst-v{font-family:'Bebas Neue',sans-serif;font-size:1.3rem;color:var(--accent);letter-spacing:0.05em;line-height:1;}
+.hstats{display:flex;align-items:center;gap:1.4rem;margin-left:auto;flex-shrink:0;}
+.hst{display:flex;align-items:center;gap:0.35rem;flex-shrink:0;}
+.hst-emoji{font-size:1rem;line-height:1;flex-shrink:0;}
+.hst-v{font-family:'Bebas Neue',sans-serif;font-size:1.3rem;color:var(--accent);letter-spacing:0.05em;line-height:1;white-space:nowrap;flex-shrink:0;}
 @media(max-width:480px){header{padding:0.8rem 1.1rem;}.logo{font-size:1.45rem;}.logo-mark{width:30px;height:30px;}.hstats{gap:1rem;}.hst-v{font-size:1.1rem;}.hname{display:none;}}
 
 /* ── SCREENS ── */
@@ -345,7 +345,7 @@ video{width:100%;height:100%;object-fit:cover;}
 /* ── GUEST SAVE PROMPT ── */
 .gsp-score{font-family:'Bebas Neue',sans-serif;font-size:2.4rem;color:var(--accent);letter-spacing:0.06em;line-height:1;}
 /* ── HEADER PROFILE ── */
-.hright{display:flex;align-items:center;gap:0.75rem;position:relative;padding-left:1.1rem;margin-left:1.1rem;border-left:1px solid var(--border2);}
+.hright{display:flex;align-items:center;gap:0.75rem;position:relative;padding-left:1.1rem;margin-left:1.1rem;border-left:1px solid var(--border2);flex-shrink:0;}
 .havatar{width:38px;height:38px;border-radius:50%;overflow:hidden;cursor:pointer;border:1.5px solid var(--border2);flex-shrink:0;transition:border-color 0.2s;}
 .havatar:hover{border-color:var(--accent);}
 .havatar img{width:100%;height:100%;object-fit:cover;display:block;}
