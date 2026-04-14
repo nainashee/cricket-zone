@@ -116,7 +116,6 @@ export const handler = async (event) => {
       // Daily: keep only the highest single score per userId for today
       const best = {};
       for (const item of items) {
-        if (item.isGuest || item.userId?.startsWith('guest_')) continue;
         const uid = item.userId;
         if (!best[uid] || item.score > best[uid].score) {
           best[uid] = item;
