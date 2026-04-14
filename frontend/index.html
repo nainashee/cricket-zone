@@ -66,15 +66,12 @@ main{position:relative;z-index:1;}
 .hero-cta{display:inline-flex;align-items:center;gap:0.55rem;background:var(--accent);color:var(--bg);border:none;border-radius:10px;padding:0.82rem 1.7rem;font-size:0.88rem;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all 0.2s;opacity:0;animation:fadeUp 0.5s ease 0.4s forwards;}
 .hero-cta:hover{background:#d8ff45;transform:translateY(-2px);box-shadow:0 12px 32px var(--accent-glow);}
 
-.hero-right{opacity:0;animation:fadeUp 0.5s ease 0.3s forwards;}
-.hero-visual{background:var(--surface);border:1px solid var(--border2);border-radius:20px;aspect-ratio:1/1;max-width:280px;margin-left:auto;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
-@media(max-width:680px){.hero-visual{max-width:100%;margin-left:0;}}
-.hero-visual-glow{position:absolute;inset:0;background:radial-gradient(ellipse at 60% 40%,rgba(200,242,48,0.08) 0%,transparent 65%);}
+
 .sil-wrap{position:relative;z-index:1;text-align:center;}
 .sil-icon{font-size:4.5rem;display:block;filter:brightness(0) invert(0.1);animation:silSway 4s ease-in-out infinite;}
 @keyframes silSway{0%,100%{transform:rotate(-2deg);}50%{transform:rotate(2deg) scaleX(-1);}}
 .sil-q{font-family:'Bebas Neue',sans-serif;font-size:0.95rem;letter-spacing:0.22em;color:var(--accent);margin-top:0.9rem;opacity:0.65;}
-.hero-pill{position:absolute;bottom:1.1rem;left:1.1rem;background:rgba(7,9,10,0.88);border:1px solid var(--border);border-radius:7px;padding:0.3rem 0.7rem;font-family:'DM Mono',monospace;font-size:0.68rem;color:var(--accent);backdrop-filter:blur(8px);}
+
 
 /* section head */
 .sec-head{margin-bottom:2rem;opacity:0;animation:fadeUp 0.5s ease 0.5s forwards;}
@@ -315,9 +312,7 @@ video{width:100%;aspect-ratio:1/1;object-fit:cover;}
   .top5-stat:not(:last-child)::after{content:none;}
 }
 
-#heroVid{filter:blur(6px);transform:scale(1.1);}
-.hero-cta-overlay{position:absolute;inset:0;z-index:2;background:linear-gradient(to top,rgba(7,9,10,0.82) 0%,rgba(7,9,10,0.18) 55%,transparent 100%);display:flex;align-items:flex-end;justify-content:center;padding-bottom:1.3rem;pointer-events:none;}
-.hero-played-overlay{position:absolute;inset:0;z-index:5;display:none;flex-direction:column;align-items:center;justify-content:center;background:rgba(7,9,10,0.88);text-align:center;gap:0.6rem;}
+
 /* ── NAME MODAL ── */
 .name-overlay{position:fixed;inset:0;z-index:990;background:rgba(7,9,10,0.88);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;opacity:0;animation:fadeIn 0.3s ease forwards;}
 @keyframes fadeIn{to{opacity:1;}}
@@ -487,25 +482,7 @@ video{width:100%;aspect-ratio:1/1;object-fit:cover;}
       <p class="hero-desc">Identify cricket's greatest players from their silhouette alone. Three categories. Iconic moments. How well do you know the game?</p>
       <button class="hero-cta" onclick="tryStartDaily()">Play Daily Challenge →</button>
     </div>
-    <div class="hero-right">
-      <div class="hero-visual" id="heroVisual" onclick="document.getElementById('catsAnchor').scrollIntoView({behavior:'smooth'})" title="Scroll to today's challenges" style="cursor:pointer;">
-        <div class="hero-visual-glow"></div>
-        <video id="heroVid" autoplay muted loop playsinline style="width:100%;height:100%;object-fit:cover;display:none;position:absolute;inset:0;z-index:0;"></video>
-        <div class="sil-wrap" id="heroPlaceholder" style="position:relative;z-index:1;">
-          <div style="width:52px;height:52px;border-radius:50%;background:var(--surface2);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:1.4rem;margin:0 auto;animation:phPulse 2.5s ease-in-out infinite;">🏏</div>
-          <p class="sil-q" style="margin-top:0.9rem;">WHO AM I?</p>
-        </div>
-        <div class="hero-cta-overlay">
-          <div style="background:var(--accent);color:var(--bg);border-radius:10px;padding:0.6rem 1.2rem;font-size:0.8rem;font-weight:700;font-family:'DM Sans',sans-serif;box-shadow:0 8px 28px var(--accent-glow);letter-spacing:0.04em;">PLAY TODAY'S CHALLENGE →</div>
-        </div>
-        <div class="hero-played-overlay" id="heroPlayedOverlay">
-          <span style="font-size:2rem;color:var(--accent);">✓</span>
-          <p style="font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:0.08em;color:var(--accent);">COMPLETED</p>
-          <p style="font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--text3);">Come back tomorrow</p>
-        </div>
-        <div class="hero-pill" style="z-index:6;">📅 Today's Bowler</div>
-      </div>
-    </div>
+
   </div>
 
   <div id="catsAnchor">
@@ -519,9 +496,6 @@ video{width:100%;aspect-ratio:1/1;object-fit:cover;}
       <div class="cat-card live daily-card" id="dailyCard" onclick="tryStartDaily()">
         <div class="cat-banner cb-daily">
           <video class="card-preview-vid" id="bowlerCardVid" autoplay muted loop playsinline></video>
-          <div class="daily-banner-inner" style="position:relative;z-index:1;">
-            <span class="daily-stamp">TODAY'S CHALLENGE</span>
-          </div>
         </div>
         <div class="cat-body">
           <span class="cat-tag ct-daily">📅 Bowler Challenge</span>
@@ -544,9 +518,6 @@ video{width:100%;aspect-ratio:1/1;object-fit:cover;}
       <div class="cat-card live bat-daily-card" id="battingCard" onclick="tryStartBatting()">
         <div class="cat-banner cb-bat-daily">
           <video class="card-preview-vid" id="batterCardVid" autoplay muted loop playsinline></video>
-          <div class="daily-banner-inner" style="position:relative;z-index:1;">
-            <span class="daily-stamp" style="color:rgba(77,184,255,0.55);">TODAY'S CHALLENGE</span>
-          </div>
         </div>
         <div class="cat-body">
           <span class="cat-tag ct-bat-daily">📅 Batter Challenge</span>
@@ -787,7 +758,7 @@ async function boot(){
   applyBattingCardState();
   tickDailyCountdown();
   setInterval(tickDailyCountdown,1000);
-  loadHeroDailyVideo();
+  loadCardPreviews();
   loadTop5();
   loadAllTime();
   const handled=await handleOAuthCallback();
@@ -844,23 +815,13 @@ function applyDailyCardState(){
   if(arr)arr.style.display=played?'none':'flex';
   if(badge)badge.style.display=played?'flex':'none';
   if(msg)msg.style.display=played?'block':'none';
-  const heroOverlay=document.getElementById('heroPlayedOverlay');
-  if(heroOverlay)heroOverlay.style.display=played?'flex':'none';
 }
 
-function loadHeroDailyVideo(){
-  // Same daily seed logic as startGame('daily') so it always matches
+function loadCardPreviews(){
+  // Bowler card preview
   const seed=getTodayLocal();
   let hash=0;for(let i=0;i<seed.length;i++){hash=(hash<<5)-hash+seed.charCodeAt(i);hash|=0;}
   const bowler=VIDEO_BOWLERS[Math.abs(hash)%VIDEO_BOWLERS.length];
-  const vid=document.getElementById('heroVid');
-  const ph=document.getElementById('heroPlaceholder');
-  if(vid&&bowler){
-    vid.src=`content/bowling/${bowler.id}.mp4`;
-    vid.oncanplay=()=>{vid.style.display='block';if(ph)ph.style.display='none';};
-    vid.load();
-  }
-  // Bowler card preview
   const cardVid=document.getElementById('bowlerCardVid');
   if(cardVid&&bowler){cardVid.src=`content/bowling/${bowler.id}.mp4`;cardVid.load();}
   // Batter card preview
