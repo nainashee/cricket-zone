@@ -102,6 +102,7 @@ main{position:relative;z-index:1;}
 .cb-bat .cb-glow{background:radial-gradient(ellipse at center,rgba(77,184,255,0.12) 0%,transparent 70%);}
 .cb-cel .cb-glow{background:radial-gradient(ellipse at center,rgba(255,209,102,0.12) 0%,transparent 70%);}
 .cb-icon{position:relative;z-index:1;font-size:3.5rem;animation:iconFloat 3s ease-in-out infinite;}
+.card-preview-vid{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:blur(6px);transform:scale(1.1);}
 @keyframes iconFloat{0%,100%{transform:translateY(0);}50%{transform:translateY(-6px);}}
 
 .cat-body{padding:1.25rem 1.4rem 1.4rem;}
@@ -516,9 +517,9 @@ video{width:100%;aspect-ratio:1/1;object-fit:cover;}
     <div class="cat-grid">
 
       <div class="cat-card live daily-card" id="dailyCard" onclick="tryStartDaily()">
-        <div class="cat-banner cb-daily"><div class="cb-glow"></div>
-          <div class="daily-banner-inner">
-            <div class="daily-banner-icons">🔴</div>
+        <div class="cat-banner cb-daily">
+          <video class="card-preview-vid" id="bowlerCardVid" autoplay muted loop playsinline></video>
+          <div class="daily-banner-inner" style="position:relative;z-index:1;">
             <span class="daily-stamp">TODAY'S CHALLENGE</span>
           </div>
         </div>
@@ -541,9 +542,9 @@ video{width:100%;aspect-ratio:1/1;object-fit:cover;}
       </div>
 
       <div class="cat-card live bat-daily-card" id="battingCard" onclick="tryStartBatting()">
-        <div class="cat-banner cb-bat-daily"><div class="cb-glow"></div>
-          <div class="daily-banner-inner">
-            <div class="daily-banner-icons">🏏🔴</div>
+        <div class="cat-banner cb-bat-daily">
+          <video class="card-preview-vid" id="batterCardVid" autoplay muted loop playsinline></video>
+          <div class="daily-banner-inner" style="position:relative;z-index:1;">
             <span class="daily-stamp" style="color:rgba(77,184,255,0.55);">TODAY'S CHALLENGE</span>
           </div>
         </div>
@@ -854,10 +855,20 @@ function loadHeroDailyVideo(){
   const bowler=VIDEO_BOWLERS[Math.abs(hash)%VIDEO_BOWLERS.length];
   const vid=document.getElementById('heroVid');
   const ph=document.getElementById('heroPlaceholder');
-  if(!vid||!bowler)return;
-  vid.src=`content/bowling/${bowler.id}.mp4`;
-  vid.oncanplay=()=>{vid.style.display='block';if(ph)ph.style.display='none';};
-  vid.load();
+  if(vid&&bowler){
+    vid.src=`content/bowling/${bowler.id}.mp4`;
+    vid.oncanplay=()=>{vid.style.display='block';if(ph)ph.style.display='none';};
+    vid.load();
+  }
+  // Bowler card preview
+  const cardVid=document.getElementById('bowlerCardVid');
+  if(cardVid&&bowler){cardVid.src=`content/bowling/${bowler.id}.mp4`;cardVid.load();}
+  // Batter card preview
+  const batSeed=getTodayLocal()+'bat';
+  let batHash=0;for(let i=0;i<batSeed.length;i++){batHash=(batHash<<5)-batHash+batSeed.charCodeAt(i);batHash|=0;}
+  const batter=VIDEO_BATTERS[Math.abs(batHash)%VIDEO_BATTERS.length];
+  const batCardVid=document.getElementById('batterCardVid');
+  if(batCardVid&&batter){batCardVid.src=`content/batting/${batter.id}.mp4`;batCardVid.load();}
 }
 
 function refreshH(){
