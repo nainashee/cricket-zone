@@ -1109,9 +1109,19 @@ async function postPendingScore(idToken){
 }
 
 function signOut(){
+  // Clear app state
   ['cz_id_token','cz_user_sub','cz_user_name','cz_user_email','cz_user_picture','cz_avatar_url','cz_name'].forEach(k=>localStorage.removeItem(k));
   Object.keys(localStorage).filter(k=>k.startsWith('CognitoIdentityServiceProvider.')).forEach(k=>localStorage.removeItem(k));
-  location.reload();
+  Object.keys(sessionStorage).filter(k=>k.startsWith('CognitoIdentityServiceProvider.')).forEach(k=>sessionStorage.removeItem(k));
+  // Revoke tokens server-side for SDK (email/password) users
+  try{
+    const pool=new AmazonCognitoIdentity.CognitoUserPool({UserPoolId:COGNITO_USER_POOL_ID,ClientId:COGNITO_CLIENT_ID});
+    const u=pool.getCurrentUser();
+    if(u) u.globalSignOut({onSuccess:()=>{},onFailure:()=>{}});
+  }catch(e){}
+  // Redirect to Cognito logout endpoint — clears the hosted UI session cookie
+  // that causes Google OAuth users to be silently re-authenticated on next visit
+  window.location.href=`${COGNITO_DOMAIN}/logout?client_id=${COGNITO_CLIENT_ID}&logout_uri=${encodeURIComponent(window.location.origin)}`;
 }
 
 function isTokenValid(){
