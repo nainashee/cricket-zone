@@ -66,14 +66,12 @@ main{position:relative;z-index:1;}
 .hero-cta{display:inline-flex;align-items:center;gap:0.55rem;background:var(--accent);color:var(--bg);border:none;border-radius:10px;padding:0.82rem 1.7rem;font-size:0.88rem;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all 0.2s;opacity:0;animation:fadeUp 0.5s ease 0.4s forwards;}
 .hero-cta:hover{background:#d8ff45;transform:translateY(-2px);box-shadow:0 12px 32px var(--accent-glow);}
 
-.hero-right{opacity:0;animation:fadeUp 0.5s ease 0.3s forwards;}
-.hero-visual{background:var(--surface);border:1px solid var(--border2);border-radius:20px;aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
-.hero-visual-glow{position:absolute;inset:0;background:radial-gradient(ellipse at 60% 40%,rgba(200,242,48,0.08) 0%,transparent 65%);}
+
 .sil-wrap{position:relative;z-index:1;text-align:center;}
 .sil-icon{font-size:4.5rem;display:block;filter:brightness(0) invert(0.1);animation:silSway 4s ease-in-out infinite;}
 @keyframes silSway{0%,100%{transform:rotate(-2deg);}50%{transform:rotate(2deg) scaleX(-1);}}
 .sil-q{font-family:'Bebas Neue',sans-serif;font-size:0.95rem;letter-spacing:0.22em;color:var(--accent);margin-top:0.9rem;opacity:0.65;}
-.hero-pill{position:absolute;bottom:1.1rem;left:1.1rem;background:rgba(7,9,10,0.88);border:1px solid var(--border);border-radius:7px;padding:0.3rem 0.7rem;font-family:'DM Mono',monospace;font-size:0.68rem;color:var(--accent);backdrop-filter:blur(8px);}
+
 
 /* section head */
 .sec-head{margin-bottom:2rem;opacity:0;animation:fadeUp 0.5s ease 0.5s forwards;}
@@ -101,6 +99,7 @@ main{position:relative;z-index:1;}
 .cb-bat .cb-glow{background:radial-gradient(ellipse at center,rgba(77,184,255,0.12) 0%,transparent 70%);}
 .cb-cel .cb-glow{background:radial-gradient(ellipse at center,rgba(255,209,102,0.12) 0%,transparent 70%);}
 .cb-icon{position:relative;z-index:1;font-size:3.5rem;animation:iconFloat 3s ease-in-out infinite;}
+.card-preview-vid{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:blur(6px);transform:scale(1.1);}
 @keyframes iconFloat{0%,100%{transform:translateY(0);}50%{transform:translateY(-6px);}}
 
 .cat-body{padding:1.25rem 1.4rem 1.4rem;}
@@ -115,6 +114,16 @@ main{position:relative;z-index:1;}
 .cat-card.daily-card .cat-arr{background:#f59e0b;}
 .cat-card.daily-card.played{cursor:default;opacity:0.55;filter:saturate(0.25);}
 .cat-card.daily-card.played:hover{transform:none;box-shadow:0 0 28px rgba(245,158,11,0.06);border-color:rgba(245,158,11,0.2);}
+.cb-bat-daily{background:linear-gradient(135deg,#050f1a,#081828);}
+.cb-bat-daily .cb-glow{background:radial-gradient(ellipse at center,rgba(77,184,255,0.18) 0%,transparent 70%);}
+.ct-bat-daily{background:rgba(77,184,255,0.12);border:1px solid rgba(77,184,255,0.35);color:#4db8ff;}
+.cat-card.bat-daily-card{border-color:rgba(77,184,255,0.2);box-shadow:0 0 28px rgba(77,184,255,0.06);}
+.cat-card.bat-daily-card:hover{border-color:rgba(77,184,255,0.45);box-shadow:0 20px 50px rgba(0,0,0,0.5),0 0 0 1px rgba(77,184,255,0.35);}
+.cat-card.bat-daily-card .cat-arr{background:#4db8ff;color:var(--bg);}
+.cat-card.bat-daily-card.played{cursor:default;opacity:0.55;filter:saturate(0.25);}
+.cat-card.bat-daily-card.played:hover{transform:none;box-shadow:0 0 28px rgba(77,184,255,0.06);border-color:rgba(77,184,255,0.2);}
+.bat-done-badge{background:rgba(77,184,255,0.1);border:1px solid rgba(77,184,255,0.28);color:#4db8ff;border-radius:100px;padding:0.22rem 0.7rem;font-family:'DM Mono',monospace;font-size:0.65rem;letter-spacing:0.08em;display:none;align-items:center;gap:0.3rem;}
+.bat-countdown-val{color:#4db8ff;font-size:0.72rem;letter-spacing:0.05em;}
 .daily-banner-inner{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:0.3rem;}
 .daily-banner-icons{display:flex;align-items:center;gap:0.4rem;font-size:2.4rem;animation:iconFloat 3s ease-in-out infinite;}
 .daily-stamp{font-family:'Bebas Neue',sans-serif;font-size:0.7rem;letter-spacing:0.22em;color:rgba(245,158,11,0.55);margin-top:0.1rem;}
@@ -164,13 +173,13 @@ main{position:relative;z-index:1;}
 .tfill.urg{background:var(--red);}
 .tnum{font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--text3);text-align:right;}
 
-.vid-wrap{position:relative;background:var(--bg2);border:1px solid var(--border2);border-radius:18px;overflow:hidden;aspect-ratio:16/9;margin-bottom:1.1rem;display:flex;align-items:center;justify-content:center;}
+.vid-wrap{position:relative;background:var(--bg2);border:1px solid var(--border2);border-radius:18px;overflow:hidden;aspect-ratio:1/1;margin-bottom:1.1rem;display:flex;align-items:center;justify-content:center;}
 .vid-ph{display:flex;flex-direction:column;align-items:center;gap:0.8rem;color:var(--text3);text-align:center;padding:2rem;}
 .vid-ph-icon{width:60px;height:60px;border-radius:50%;background:var(--surface);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:1.3rem;animation:phPulse 2.5s ease-in-out infinite;}
 @keyframes phPulse{0%,100%{box-shadow:0 0 0 0 var(--accent-dim);}50%{box-shadow:0 0 0 14px transparent;}}
 .vid-ph p{font-size:0.79rem;line-height:1.6;max-width:220px;}
 .vid-ph .vhint{font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--accent);}
-video{width:100%;height:100%;object-fit:cover;}
+video{width:100%;aspect-ratio:1/1;object-fit:cover;}
 .nbadge{position:absolute;top:0.8rem;right:0.8rem;background:rgba(7,9,10,0.88);border:1px solid var(--border);border-radius:7px;padding:0.28rem 0.62rem;font-size:0.69rem;color:var(--accent);font-family:'DM Mono',monospace;backdrop-filter:blur(8px);opacity:0;transition:opacity 0.4s;}
 .nbadge.on{opacity:1;}
 
@@ -303,7 +312,7 @@ video{width:100%;height:100%;object-fit:cover;}
   .top5-stat:not(:last-child)::after{content:none;}
 }
 
-.hero-daily-preview:hover .hero-play-overlay{opacity:1!important;}
+
 /* ── NAME MODAL ── */
 .name-overlay{position:fixed;inset:0;z-index:990;background:rgba(7,9,10,0.88);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;opacity:0;animation:fadeIn 0.3s ease forwards;}
 @keyframes fadeIn{to{opacity:1;}}
@@ -473,20 +482,7 @@ video{width:100%;height:100%;object-fit:cover;}
       <p class="hero-desc">Identify cricket's greatest players from their silhouette alone. Three categories. Iconic moments. How well do you know the game?</p>
       <button class="hero-cta" onclick="tryStartDaily()">Play Daily Challenge →</button>
     </div>
-    <div class="hero-right">
-      <div class="hero-visual hero-daily-preview" onclick="tryStartDaily()" title="Play today's daily challenge" style="cursor:pointer;">
-        <div class="hero-visual-glow"></div>
-        <video id="heroVid" autoplay muted loop playsinline style="width:100%;height:100%;object-fit:cover;display:none;position:absolute;inset:0;z-index:0;"></video>
-        <div class="sil-wrap" id="heroPlaceholder" style="position:relative;z-index:1;">
-          <div style="width:52px;height:52px;border-radius:50%;background:var(--surface2);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:1.4rem;margin:0 auto;animation:phPulse 2.5s ease-in-out infinite;">🏏</div>
-          <p class="sil-q" style="margin-top:0.9rem;">WHO AM I?</p>
-        </div>
-        <div class="hero-play-overlay" style="position:absolute;inset:0;background:rgba(7,9,10,0.52);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 0.25s;z-index:2;">
-          <div style="background:var(--accent);color:var(--bg);border-radius:10px;padding:0.65rem 1.4rem;font-size:0.85rem;font-weight:700;font-family:'DM Sans',sans-serif;box-shadow:0 8px 28px var(--accent-glow);">▶ Play Daily Challenge</div>
-        </div>
-        <div class="hero-pill" style="z-index:3;">📅 Today's Challenge</div>
-      </div>
-    </div>
+
   </div>
 
   <div id="catsAnchor">
@@ -498,15 +494,12 @@ video{width:100%;height:100%;object-fit:cover;}
     <div class="cat-grid">
 
       <div class="cat-card live daily-card" id="dailyCard" onclick="tryStartDaily()">
-        <div class="cat-banner cb-daily"><div class="cb-glow"></div>
-          <div class="daily-banner-inner">
-            <div class="daily-banner-icons">🏏<span style="font-size:1.6rem;opacity:0.75;">🗓️</span></div>
-            <span class="daily-stamp">TODAY'S CHALLENGE</span>
-          </div>
+        <div class="cat-banner cb-daily">
+          <video class="card-preview-vid" id="bowlerCardVid" autoplay muted loop playsinline></video>
         </div>
         <div class="cat-body">
-          <span class="cat-tag ct-daily">📅 Daily Challenge</span>
-          <span class="cat-name">DAILY<br>CHALLENGE</span>
+          <span class="cat-tag ct-daily">📅 Bowler Challenge</span>
+          <span class="cat-name">BOWLER<br>CHALLENGE</span>
           <p style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.1em;color:#f59e0b;margin-bottom:0.5rem;text-transform:uppercase;">Guess the Bowler</p>
           <p class="cat-desc">One bowler. One chance. Every day a new legend to identify — come back tomorrow for the next one.</p>
           <div class="cat-foot">
@@ -522,13 +515,25 @@ video{width:100%;height:100%;object-fit:cover;}
         </div>
       </div>
 
-      <div class="cat-card soon">
-        <div class="cat-banner cb-bat"><div class="cb-glow"></div><span class="cb-icon">🏏</span></div>
+      <div class="cat-card live bat-daily-card" id="battingCard" onclick="tryStartBatting()">
+        <div class="cat-banner cb-bat-daily">
+          <video class="card-preview-vid" id="batterCardVid" autoplay muted loop playsinline></video>
+        </div>
         <div class="cat-body">
-          <span class="cat-tag ct-soon">Coming Soon</span>
-          <span class="cat-name">GUESS THE<br>BATTER</span>
-          <p class="cat-desc">Full stance to follow-through. Spot Tendulkar's straight drive or Lara's sweep from a silhouette.</p>
-          <div class="cat-foot"><span class="cat-meta">V2 · In Development</span></div>
+          <span class="cat-tag ct-bat-daily">📅 Batter Challenge</span>
+          <span class="cat-name">BATTER<br>CHALLENGE</span>
+          <p style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.1em;color:#4db8ff;margin-bottom:0.5rem;text-transform:uppercase;">Guess the Batter</p>
+          <p class="cat-desc">One batter. One chance. Identify the legend from their silhouette — double the points.</p>
+          <div class="cat-foot">
+            <span class="cat-meta">1 batter · 2× points</span>
+            <div class="cat-arr" id="battingArr">→</div>
+            <div class="bat-done-badge" id="battingDoneBadge">✓ Completed</div>
+          </div>
+          <p class="daily-played-msg" id="battingPlayedMsg">You've completed today's batting challenge. Come back tomorrow!</p>
+          <div class="cat-countdown">
+            <span>Next challenge in:</span>
+            <span class="bat-countdown-val" id="battingCountdown">--:--:--</span>
+          </div>
         </div>
       </div>
 
@@ -612,7 +617,7 @@ video{width:100%;height:100%;object-fit:cover;}
     <div class="gbread">
       <span onclick="showLanding()">Home</span>
       <span class="sep">/</span>
-      <span onclick="showLanding()">Bowling</span>
+      <span id="catCrumb" onclick="showLanding()">Bowling</span>
       <span class="sep">/</span>
       <span class="cur" id="modeCrumb">Classic</span>
     </div>
@@ -635,7 +640,7 @@ video{width:100%;height:100%;object-fit:cover;}
   <div class="vid-wrap">
     <div class="vid-ph" id="vidPH">
       <div class="vid-ph-icon">🏏</div>
-      <p>Watch the action and identify the bowler</p>
+      <p id="vidPHText">Watch the action and identify the bowler</p>
     </div>
     <video id="bvid" loop muted autoplay playsinline preload="auto" style="display:none;"></video>
     <div class="nbadge" id="nbadge"></div>
@@ -730,21 +735,30 @@ const BOWLERS=[
 ];
 
 // Only bowlers that have a video clip — used to build game queues
-const VIDEO_BOWLERS=BOWLERS.filter(b=>['anderson','boult','harbhajan','kumble','mcgrath','murali','rabada','shoaib','starc','steyn','waqar','warne'].includes(b.id));
+const VIDEO_BOWLERS=BOWLERS.filter(b=>['anderson','boult','shoaib'].includes(b.id));
 
-const MAX_G=5,BLITZ_T=15,PTS=[1000,750,500,250,100];
-const G={mode:'classic',queue:[],idx:0,bowler:null,guesses:[],cluesLit:0,score:0,correct:0,results:[],timer:null,tLeft:BLITZ_T,pick:'',pickName:''};
+const BATTERS=[
+  {id:'azam',name:'Babar Azam',nation:'Pakistan',era:'2010–present',style:'Right-hand bat',clues:['Elegant cover drive specialist','Pakistan','Top-ranked ODI batter','Current Pakistan captain']},
+  {id:'tendulkar',name:'Sachin Tendulkar',nation:'India',era:'1989–2013',style:'Right-hand bat',clues:['100 international centuries','India','Mumbai Indians legend','Retired 2013']},
+];
+const VIDEO_BATTERS=BATTERS.filter(b=>['azam','tendulkar'].includes(b.id));
+
+const MAX_G=5,BLITZ_T=15,PTS=[1000,750,500,250,100],PTS_BAT=[2000,1500,1000,500,200];
+const G={mode:'classic',category:'bowling',queue:[],idx:0,bowler:null,guesses:[],cluesLit:0,score:0,correct:0,results:[],timer:null,tLeft:BLITZ_T,pick:'',pickName:''};
 let allBowlers=[];
+let allBatters=[];
 let stats=JSON.parse(localStorage.getItem('cz3')||'{"games":0,"wins":0,"best":0,"streak":0}');
 let statsReady=!!localStorage.getItem('cz3');
 
 async function boot(){
   fetch('assets/bowlers.json').then(r=>r.json()).then(d=>{allBowlers=d;}).catch(()=>{});
+  fetch('assets/batters.json').then(r=>r.json()).then(d=>{allBatters=d;}).catch(()=>{});
   refreshH();refreshLS();
   applyDailyCardState();
+  applyBattingCardState();
   tickDailyCountdown();
   setInterval(tickDailyCountdown,1000);
-  loadHeroDailyVideo();
+  loadCardPreviews();
   loadTop5();
   loadAllTime();
   const handled=await handleOAuthCallback();
@@ -771,7 +785,24 @@ function getTodayLocal() {
 }
 function hasDailyPlayed(){return localStorage.getItem('howzat_last_played')===getTodayLocal();}
 function markDailyPlayed(){localStorage.setItem('howzat_last_played',getTodayLocal());}
-function tryStartDaily(){if(hasDailyPlayed())return;startGame('daily');}
+function tryStartDaily(){if(hasDailyPlayed())return;startGame('daily','bowling');}
+
+function hasBattingPlayed(){return localStorage.getItem('howzat_batting_last_played')===getTodayLocal();}
+function markBattingPlayed(){localStorage.setItem('howzat_batting_last_played',getTodayLocal());}
+function tryStartBatting(){if(hasBattingPlayed())return;startGame('daily','batting');}
+
+function applyBattingCardState(){
+  const card=document.getElementById('battingCard');
+  const arr=document.getElementById('battingArr');
+  const badge=document.getElementById('battingDoneBadge');
+  const msg=document.getElementById('battingPlayedMsg');
+  if(!card)return;
+  const played=hasBattingPlayed();
+  card.classList.toggle('played',played);
+  if(arr)arr.style.display=played?'none':'flex';
+  if(badge)badge.style.display=played?'flex':'none';
+  if(msg)msg.style.display=played?'block':'none';
+}
 
 function applyDailyCardState(){
   const card=document.getElementById('dailyCard');
@@ -786,17 +817,19 @@ function applyDailyCardState(){
   if(msg)msg.style.display=played?'block':'none';
 }
 
-function loadHeroDailyVideo(){
-  // Same daily seed logic as startGame('daily') so it always matches
+function loadCardPreviews(){
+  // Bowler card preview
   const seed=getTodayLocal();
   let hash=0;for(let i=0;i<seed.length;i++){hash=(hash<<5)-hash+seed.charCodeAt(i);hash|=0;}
   const bowler=VIDEO_BOWLERS[Math.abs(hash)%VIDEO_BOWLERS.length];
-  const vid=document.getElementById('heroVid');
-  const ph=document.getElementById('heroPlaceholder');
-  if(!vid||!bowler)return;
-  vid.src=`content/bowling/${bowler.id}.mp4`;
-  vid.oncanplay=()=>{vid.style.display='block';if(ph)ph.style.display='none';};
-  vid.load();
+  const cardVid=document.getElementById('bowlerCardVid');
+  if(cardVid&&bowler){cardVid.src=`content/bowling/${bowler.id}.mp4`;cardVid.load();}
+  // Batter card preview
+  const batSeed=getTodayLocal()+'bat';
+  let batHash=0;for(let i=0;i<batSeed.length;i++){batHash=(batHash<<5)-batHash+batSeed.charCodeAt(i);batHash|=0;}
+  const batter=VIDEO_BATTERS[Math.abs(batHash)%VIDEO_BATTERS.length];
+  const batCardVid=document.getElementById('batterCardVid');
+  if(batCardVid&&batter){batCardVid.src=`content/batting/${batter.id}.mp4`;batCardVid.load();}
 }
 
 function refreshH(){
@@ -1488,19 +1521,21 @@ function doVerify(email){
   });
 }
 
-async function startGame(mode){
-  G.mode=mode;G.score=0;G.correct=0;G.idx=0;G.results=[];
-  const sh=[...VIDEO_BOWLERS].sort(()=>Math.random()-0.5);
+async function startGame(mode,category='bowling'){
+  G.mode=mode;G.category=category;G.score=0;G.correct=0;G.idx=0;G.results=[];
+  const pool=category==='batting'?VIDEO_BATTERS:VIDEO_BOWLERS;
+  const sh=[...pool].sort(()=>Math.random()-0.5);
 
   if(mode==='daily'){
-    // Use same seed as loadHeroDailyVideo so hero preview always matches
-    const seed=getTodayLocal();
+    // Batting seed uses a suffix so bowling and batting never land on the same index
+    const seed=getTodayLocal()+(category==='batting'?'bat':'');
     let hash=0;for(let i=0;i<seed.length;i++){hash=(hash<<5)-hash+seed.charCodeAt(i);hash|=0;}
-    G.queue=[VIDEO_BOWLERS[Math.abs(hash)%VIDEO_BOWLERS.length]];
+    G.queue=[pool[Math.abs(hash)%pool.length]];
   } else {
-    G.queue=mode==='blitz'?sh.slice(0,VIDEO_BOWLERS.length):sh.slice(0,10);
+    G.queue=mode==='blitz'?sh.slice(0,pool.length):sh.slice(0,pool.length);
   }
 
+  document.getElementById('catCrumb').textContent=category==='batting'?'Batter Challenge':'Bowler Challenge';
   document.getElementById('modeCrumb').textContent=mode==='classic'?'Classic':mode==='blitz'?'Blitz':'Daily';
   showScreen('gameScreen');loadBowler();
 }
@@ -1508,6 +1543,9 @@ async function startGame(mode){
 function loadBowler(){
   G.bowler=G.queue[G.idx];G.guesses=[];G.cluesLit=0;G.pick='';G.pickName='';
   document.getElementById('livePts').textContent=G.score+' pts';
+  const isBat=G.category==='batting';
+  document.getElementById('sfield').placeholder=isBat?'Type a batter\'s name...':'Type a bowler\'s name...';
+  const pht=document.getElementById('vidPHText');if(pht)pht.textContent=isBat?'Watch the action and identify the batter':'Watch the action and identify the bowler';
   document.getElementById('sfield').value='';
   document.getElementById('gbtn').disabled=true;
   document.getElementById('glog').innerHTML='';
@@ -1520,7 +1558,7 @@ function loadBowler(){
 function tryVid(){
   const v=document.getElementById('bvid'),ph=document.getElementById('vidPH');
   v.style.display='none';ph.style.display='flex';
-  const src=`content/bowling/${G.bowler.id}.mp4`;
+  const src=`content/${G.category}/${G.bowler.id}.mp4`;
   v.oncanplay=()=>{v.style.display='block';ph.style.display='none';v.play();};
   if(v.src!==src){v.src=src;}else{if(v.readyState>=3){v.style.display='block';ph.style.display='none';v.play();}else{v.play();}}
 }
@@ -1553,11 +1591,13 @@ function onSearch(){
   const v=document.getElementById('sfield').value.toLowerCase().trim();
   G.pick='';G.pickName='';document.getElementById('gbtn').disabled=true;
   if(!v){document.getElementById('ddrop').classList.remove('open');return;}
-  const src=allBowlers.length?allBowlers:BOWLERS.map(b=>b.name);
+  const isBatting=G.category==='batting';
+  const src=isBatting?(allBatters.length?allBatters:BATTERS.map(b=>b.name)):(allBowlers.length?allBowlers:BOWLERS.map(b=>b.name));
   const hits=src.filter(name=>name.toLowerCase().includes(v)&&!G.guesses.includes(name)).slice(0,8);
   if(!hits.length){document.getElementById('ddrop').classList.remove('open');return;}
   document.getElementById('ddrop').innerHTML=hits.map(name=>{
-    const b=BOWLERS.find(b2=>b2.name===name);
+    const pool=isBatting?BATTERS:BOWLERS;
+    const b=pool.find(b2=>b2.name===name);
     const id=b?b.id:name;
     return`<div class="ddi" onclick="pick('${id.replace(/'/g,"\\'")}','${name.replace(/'/g,"\\'")}')"><span>${name}</span></div>`;
   }).join('');
@@ -1574,7 +1614,7 @@ function submitGuess(){
   const el=document.createElement('div');el.className=`ge ${ok?'right':'wrong'}`;
   el.innerHTML=`<span class="ge-n">${name}</span><span class="${ok?'ge-ok':'ge-x'}">${ok?'✓':'✗'}</span>`;
   document.getElementById('glog').prepend(el);
-  if(ok){const pts=PTS[G.guesses.length-1]||100;G.score+=pts;G.correct++;stopTimer();logR(true,pts);setTimeout(()=>showResult(true,pts),350);}
+  if(ok){const ptsTable=G.category==='batting'?PTS_BAT:PTS;const pts=ptsTable[G.guesses.length-1]||100;G.score+=pts;G.correct++;stopTimer();logR(true,pts);setTimeout(()=>showResult(true,pts),350);}
   else{if(G.cluesLit<G.bowler.clues.length){G.cluesLit++;renderClues();}renderAtts();if(G.guesses.length>=(G.mode==='blitz'?1:MAX_G)){stopTimer();logR(false,0);setTimeout(()=>showResult(false,0),350);}}
 }
 
@@ -1595,14 +1635,17 @@ function showResult(won,pts){
       document.getElementById('dshare').style.display='block';
       document.getElementById('dsharebox').innerHTML=buildDailyShareCardHTML();
       // Save immediately so score reaches DynamoDB even if user navigates away
-      markDailyPlayed();applyDailyCardState();saveScore();
+      if(G.category==='batting'){markBattingPlayed();applyBattingCardState();}
+      else{markDailyPlayed();applyDailyCardState();}
+      saveScore();
     }
   }
   else{
-    nb.textContent='Next Bowler →';nb.onclick=nextBowler;document.getElementById('dshare').style.display='none';
-    // Start fetching next bowler's video into HTTP cache while user reads the result screen
+    const nextLabel=G.category==='batting'?'Next Batter →':'Next Bowler →';
+    nb.textContent=nextLabel;nb.onclick=nextBowler;document.getElementById('dshare').style.display='none';
+    // Start fetching next video into HTTP cache while user reads the result screen
     const nextBowler=G.queue[G.idx+1];
-    if(nextBowler){const v=document.getElementById('bvid');if(v.src!==`content/bowling/${nextBowler.id}.mp4`)v.src=`content/bowling/${nextBowler.id}.mp4`;}
+    if(nextBowler){const v=document.getElementById('bvid');const ns=`content/${G.category}/${nextBowler.id}.mp4`;if(v.src!==ns)v.src=ns;}
   }
 }
 function nextBowler(){G.idx++;showScreen('gameScreen');loadBowler();}
@@ -1614,7 +1657,7 @@ async function saveScore(){
     const res=await fetch(`${API}/score`,{
       method:'POST',
       headers:{'Content-Type':'application/json','Authorization':`Bearer ${idToken}`},
-      body:JSON.stringify({score:G.score,gameMode:G.mode,category:'bowling',pictureUrl:localStorage.getItem('cz_user_picture')||undefined})
+      body:JSON.stringify({score:G.score,gameMode:G.mode,category:G.category,pictureUrl:localStorage.getItem('cz_user_picture')||undefined})
     });
     if(!res.ok){
       const body=await res.text();
@@ -1650,7 +1693,7 @@ async function saveScoreAsGuest(){
     const res=await fetch(`${API}/score`,{
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({score:G.score,gameMode:G.mode,category:'bowling',playerName,userId})
+      body:JSON.stringify({score:G.score,gameMode:G.mode,category:G.category,playerName,userId})
     });
     if(!res.ok)throw new Error(await res.text());
     guestPromptDismiss();
@@ -1785,7 +1828,7 @@ function buildDailyShareCardHTML(){
   const outcome=r?.won?`Got it in ${r.attempts}!`:`Missed — ${G.bowler.name}`;
   return `<div class="sc-top">
     <span class="sc-brand"><span style="color:#c9a84c;">HOW</span><em>ZAT</em></span>
-    <span class="sc-mode">Daily Bowler</span>
+    <span class="sc-mode">${G.category==='batting'?'Daily Batter':'Daily Bowler'}</span>
   </div>
   <div class="sc-stats">
     <div class="sc-st"><span class="sc-sv">${r?.won?r.attempts:'-'}</span><span class="sc-sl">${r?.won?'Guess':'Missed'}</span></div>
@@ -1819,7 +1862,7 @@ function buildShareCardHTML(results,mode,score,correct,tot){
 }
 
 function buildSharePlainText(isDaily){
-  if(isDaily){const r=G.results[0];const dots=r?.won?'🟥'.repeat(Math.max(0,(r.attempts||1)-1))+'🟩':'🟥🟥🟥🟥';return`Howzat — Daily Bowler\n${new Date().toLocaleDateString()}\n\n${dots}\n\n${r?.won?`Got it in ${r.attempts}!`:`Missed — ${G.bowler.name}`}\n\nplayhowzat.com`;}
+  if(isDaily){const r=G.results[0];const dots=r?.won?'🟥'.repeat(Math.max(0,(r.attempts||1)-1))+'🟩':'🟥🟥🟥🟥';const label=G.category==='batting'?'Daily Batter':'Daily Bowler';return`Howzat — ${label}\n${new Date().toLocaleDateString()}\n\n${dots}\n\n${r?.won?`Got it in ${r.attempts}!`:`Missed — ${G.bowler.name}`}\n\nplayhowzat.com`;}
   const rows=G.results.map(r=>r.won?'🟥'.repeat(Math.max(0,r.attempts-1))+'🟩':'🟥🟥🟥🟥').join('\n');
   return`Howzat — ${G.mode.toUpperCase()}\n${G.correct}/${G.queue.length} · ${G.score} pts\n\n${rows}\n\nplayhowzat.com`;
 }
@@ -1882,21 +1925,24 @@ async function loadTop5(){
 
 function tickDailyCountdown(){
   const el=document.getElementById('dailyCountdown');
-  if(!el)return;
+  const el2=document.getElementById('battingCountdown');
   const now=new Date();
   const midnight=new Date(now);
   midnight.setHours(24,0,0,0);
   const diff=Math.max(0,Math.floor((midnight-now)/1000));
   if(diff===0){
-    // New day — clear daily play record and any cached daily data, then reload
+    // New day — clear daily play records and any cached daily data, then reload
     localStorage.removeItem('howzat_last_played');
+    localStorage.removeItem('howzat_batting_last_played');
     Object.keys(localStorage).filter(k=>k.startsWith('howzat_daily_')).forEach(k=>localStorage.removeItem(k));
     location.reload();return;
   }
   const h=Math.floor(diff/3600);
   const m=Math.floor((diff%3600)/60);
   const s=diff%60;
-  el.textContent=`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  const formatted=`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  if(el)el.textContent=formatted;
+  if(el2)el2.textContent=formatted;
 }
 async function loadAllTime(){
   const el=document.getElementById('allTimeList');
