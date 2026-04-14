@@ -448,8 +448,8 @@ video{width:100%;height:100%;object-fit:cover;}
     <span style="display:inline-flex;letter-spacing:0.12em;"><span style="color:#c9a84c;">HOW</span><em style="font-style:normal;color:var(--accent);">ZAT</em></span>
   </div>
   <div class="hstats">
-    <div class="hst"><span class="hst-emoji">🔥</span><span class="hst-v" id="hStreak">0</span></div>
-    <div class="hst"><span class="hst-emoji">⭐</span><span class="hst-v" id="hBest">—</span></div>
+    <div class="hst"><span class="hst-emoji">🔥</span><span class="hst-v" id="hStreak">–</span></div>
+    <div class="hst"><span class="hst-emoji">⭐</span><span class="hst-v" id="hBest">–</span></div>
   </div>
   <div class="hright" id="hUser" style="display:none;">
     <div class="havatar" id="hAvatarBtn" onclick="toggleProfileDropdown()"></div>
@@ -735,6 +735,7 @@ const VIDEO_BOWLERS=BOWLERS.filter(b=>['anderson','boult','harbhajan','kumble','
 const MAX_G=5,BLITZ_T=15,PTS=[1000,750,500,250,100];
 const G={mode:'classic',queue:[],idx:0,bowler:null,guesses:[],cluesLit:0,score:0,correct:0,results:[],timer:null,tLeft:BLITZ_T,pick:''};
 let stats=JSON.parse(localStorage.getItem('cz3')||'{"games":0,"wins":0,"best":0,"streak":0}');
+let statsReady=!!localStorage.getItem('cz3');
 
 async function boot(){
   refreshH();refreshLS();
@@ -749,6 +750,17 @@ async function boot(){
     showAuthModal();
   }else{
     updateHeaderUser();
+    if(!handled){
+      if(isTokenValid()){
+        // Returning user with valid token — sync stats from server
+        syncSummaryStats(getIdToken());
+      }else{
+        // Guest — no server stats, show whatever is cached locally
+        statsReady=true;
+        refreshH();
+      }
+    }
+    // handled=true: storeAuth() is already running and will call syncSummaryStats()
   }
 }
 
@@ -786,7 +798,11 @@ function loadHeroDailyVideo(){
   vid.load();
 }
 
-function refreshH(){document.getElementById('hStreak').textContent=stats.streak;document.getElementById('hBest').textContent=stats.best||'—';}
+function refreshH(){
+  if(!statsReady){document.getElementById('hStreak').textContent='–';document.getElementById('hBest').textContent='–';return;}
+  document.getElementById('hStreak').textContent=stats.streak;
+  document.getElementById('hBest').textContent=stats.best||'—';
+}
 function refreshLS(){
   document.getElementById('lsG').textContent=stats.games;
   document.getElementById('lsB').textContent=stats.best||'—';
@@ -1045,23 +1061,35 @@ async function storeAuth(idToken){
   sessionStorage.removeItem('cz_guest');
   updateHeaderUser();
   postPendingScore(idToken);
-  // Sync summary record: get authoritative playerName + played-today in parallel
+  // Sync summary record: stats + playerName + played-today in parallel
   try{
-    const [summaryRes,playedRes]=await Promise.all([
-      fetch(`${API}/leaderboard?me=true`,{headers:{Authorization:`Bearer ${idToken}`}}),
+    const [,playedRes]=await Promise.all([
+      syncSummaryStats(idToken),
       fetch(`${API}/played-today`,{headers:{Authorization:`Bearer ${idToken}`}})
     ]);
-    if(summaryRes.ok){
-      const sd=await summaryRes.json();
-      if(sd.summary?.playerName){
-        localStorage.setItem('cz_user_name',sd.summary.playerName);
-        localStorage.setItem('cz_name',sd.summary.playerName);
-        updateHeaderUser();
-      }
-    }
     if(playedRes.ok){const d=await playedRes.json();if(d.played)localStorage.setItem('howzat_last_played',getTodayLocal());}
   }catch(e){console.warn('Auth sync failed',e);}
   applyDailyCardState();
+}
+
+async function syncSummaryStats(idToken){
+  try{
+    const res=await fetch(`${API}/leaderboard?me=true`,{headers:{Authorization:`Bearer ${idToken}`}});
+    if(!res.ok){statsReady=true;refreshH();return;}
+    const sd=await res.json();
+    if(sd.summary){
+      const s=sd.summary;
+      if(s.playerName){localStorage.setItem('cz_user_name',s.playerName);localStorage.setItem('cz_name',s.playerName);updateHeaderUser();}
+      if(s.streak    !==undefined) stats.streak=s.streak;
+      if(s.bestScore !==undefined) stats.best  =s.bestScore;
+      if(s.wins      !==undefined) stats.wins  =s.wins;
+      if(s.gamesPlayed!==undefined) stats.games=s.gamesPlayed;
+      localStorage.setItem('cz3',JSON.stringify(stats));
+    }
+  }catch(e){console.warn('Summary sync failed',e);}
+  statsReady=true;
+  refreshH();
+  refreshLS();
 }
 
 async function postPendingScore(idToken){
