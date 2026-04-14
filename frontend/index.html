@@ -801,7 +801,7 @@ function loadHeroDailyVideo(){
 function refreshH(){
   if(!statsReady){document.getElementById('hStreak').textContent='–';document.getElementById('hBest').textContent='–';return;}
   document.getElementById('hStreak').textContent=stats.streak;
-  document.getElementById('hBest').textContent=stats.best||'—';
+  document.getElementById('hBest').textContent=stats.total||'—';
 }
 function refreshLS(){
   document.getElementById('lsG').textContent=stats.games;
@@ -1080,10 +1080,11 @@ async function syncSummaryStats(idToken){
     if(sd.summary){
       const s=sd.summary;
       if(s.playerName){localStorage.setItem('cz_user_name',s.playerName);localStorage.setItem('cz_name',s.playerName);updateHeaderUser();}
-      if(s.streak    !==undefined) stats.streak=s.streak;
-      if(s.bestScore !==undefined) stats.best  =s.bestScore;
-      if(s.wins      !==undefined) stats.wins  =s.wins;
-      if(s.gamesPlayed!==undefined) stats.games=s.gamesPlayed;
+      if(s.streak     !==undefined) stats.streak=s.streak;
+      if(s.totalScore !==undefined) stats.total =s.totalScore;
+      if(s.bestScore  !==undefined) stats.best  =s.bestScore;
+      if(s.wins       !==undefined) stats.wins  =s.wins;
+      if(s.gamesPlayed!==undefined) stats.games =s.gamesPlayed;
       localStorage.setItem('cz3',JSON.stringify(stats));
     }
   }catch(e){console.warn('Summary sync failed',e);}
