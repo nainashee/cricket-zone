@@ -6,6 +6,14 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [1.0.1] - 2026-04-14
+
+### Fixed
+
+- Daily challenge date seed now uses UTC (`toISOString().split("T")[0]`) instead of local browser time, eliminating a timezone mismatch where players east of UTC would see the next day's bowler before midnight UTC, and players west of UTC would see the previous day's bowler after midnight UTC — now consistent with the backend Lambda functions
+
+---
+
 ## [1.0.0] - 2026-04-13
 
 Full public launch. Covers everything built from initial commit through cross-device sync and Hall of Fame stats.
