@@ -1359,7 +1359,7 @@ function authDismiss(){
 }
 
 function googleSignIn(){
-  const url=`${COGNITO_DOMAIN}/oauth2/authorize?identity_provider=Google&response_type=code&client_id=${COGNITO_CLIENT_ID}&redirect_uri=${encodeURIComponent(window.location.origin)}&scope=email+openid+profile`;
+  const url=`${COGNITO_DOMAIN}/oauth2/authorize?identity_provider=Google&response_type=code&client_id=${COGNITO_CLIENT_ID}&redirect_uri=${encodeURIComponent(window.location.origin)}&scope=email+openid+profile&prompt=select_account`;
   window.location.href=url;
 }
 
