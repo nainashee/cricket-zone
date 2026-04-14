@@ -733,11 +733,13 @@ const BOWLERS=[
 const VIDEO_BOWLERS=BOWLERS.filter(b=>['anderson','boult','harbhajan','kumble','mcgrath','murali','rabada','shoaib','starc','steyn','waqar','warne'].includes(b.id));
 
 const MAX_G=5,BLITZ_T=15,PTS=[1000,750,500,250,100];
-const G={mode:'classic',queue:[],idx:0,bowler:null,guesses:[],cluesLit:0,score:0,correct:0,results:[],timer:null,tLeft:BLITZ_T,pick:''};
+const G={mode:'classic',queue:[],idx:0,bowler:null,guesses:[],cluesLit:0,score:0,correct:0,results:[],timer:null,tLeft:BLITZ_T,pick:'',pickName:''};
+let allBowlers=[];
 let stats=JSON.parse(localStorage.getItem('cz3')||'{"games":0,"wins":0,"best":0,"streak":0}');
 let statsReady=!!localStorage.getItem('cz3');
 
 async function boot(){
+  fetch('assets/bowlers.json').then(r=>r.json()).then(d=>{allBowlers=d;}).catch(()=>{});
   refreshH();refreshLS();
   applyDailyCardState();
   tickDailyCountdown();
@@ -1504,7 +1506,7 @@ async function startGame(mode){
 }
 
 function loadBowler(){
-  G.bowler=G.queue[G.idx];G.guesses=[];G.cluesLit=0;G.pick='';
+  G.bowler=G.queue[G.idx];G.guesses=[];G.cluesLit=0;G.pick='';G.pickName='';
   document.getElementById('livePts').textContent=G.score+' pts';
   document.getElementById('sfield').value='';
   document.getElementById('gbtn').disabled=true;
@@ -1549,23 +1551,29 @@ function renderAtts(){
 
 function onSearch(){
   const v=document.getElementById('sfield').value.toLowerCase().trim();
-  G.pick='';document.getElementById('gbtn').disabled=true;
+  G.pick='';G.pickName='';document.getElementById('gbtn').disabled=true;
   if(!v){document.getElementById('ddrop').classList.remove('open');return;}
-  const hits=BOWLERS.filter(b=>b.name.toLowerCase().split(' ').some(w=>w.startsWith(v))&&!G.guesses.includes(b.id)).slice(0,6);
+  const src=allBowlers.length?allBowlers:BOWLERS.map(b=>b.name);
+  const hits=src.filter(name=>name.toLowerCase().includes(v)&&!G.guesses.includes(name)).slice(0,8);
   if(!hits.length){document.getElementById('ddrop').classList.remove('open');return;}
-  document.getElementById('ddrop').innerHTML=hits.map(b=>`<div class="ddi" onclick="pick('${b.id}','${b.name.replace(/'/g,"\\'")}')"><span>${b.name}</span><span class="ddi-nat">${b.nation}</span></div>`).join('');
+  document.getElementById('ddrop').innerHTML=hits.map(name=>{
+    const b=BOWLERS.find(b2=>b2.name===name);
+    const id=b?b.id:name;
+    const nat=b?`<span class="ddi-nat">${b.nation}</span>`:'';
+    return`<div class="ddi" onclick="pick('${id.replace(/'/g,"\\'")}','${name.replace(/'/g,"\\'")}')"><span>${name}</span>${nat}</div>`;
+  }).join('');
   document.getElementById('ddrop').classList.add('open');
 }
-function pick(id,name){G.pick=id;document.getElementById('sfield').value=name;document.getElementById('ddrop').classList.remove('open');document.getElementById('gbtn').disabled=false;}
+function pick(id,name){G.pick=id;G.pickName=name;document.getElementById('sfield').value=name;document.getElementById('ddrop').classList.remove('open');document.getElementById('gbtn').disabled=false;}
 function onKey(e){if(e.key==='Enter'&&G.pick)submitGuess();if(e.key==='Escape')document.getElementById('ddrop').classList.remove('open');}
 
 function submitGuess(){
   if(!G.pick)return;
-  const id=G.pick,ok=id===G.bowler.id,p=BOWLERS.find(b=>b.id===id);
-  G.guesses.push(id);G.pick='';
+  const id=G.pick,name=G.pickName,ok=id===G.bowler.id;
+  G.guesses.push(name);G.pick='';G.pickName='';
   document.getElementById('sfield').value='';document.getElementById('gbtn').disabled=true;document.getElementById('ddrop').classList.remove('open');
   const el=document.createElement('div');el.className=`ge ${ok?'right':'wrong'}`;
-  el.innerHTML=`<span class="ge-n">${p.name}</span><span class="${ok?'ge-ok':'ge-x'}">${ok?'✓':'✗'}</span>`;
+  el.innerHTML=`<span class="ge-n">${name}</span><span class="${ok?'ge-ok':'ge-x'}">${ok?'✓':'✗'}</span>`;
   document.getElementById('glog').prepend(el);
   if(ok){const pts=PTS[G.guesses.length-1]||100;G.score+=pts;G.correct++;stopTimer();logR(true,pts);setTimeout(()=>showResult(true,pts),350);}
   else{if(G.cluesLit<G.bowler.clues.length){G.cluesLit++;renderClues();}renderAtts();if(G.guesses.length>=(G.mode==='blitz'?1:MAX_G)){stopTimer();logR(false,0);setTimeout(()=>showResult(false,0),350);}}
