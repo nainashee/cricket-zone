@@ -730,7 +730,13 @@ const BOWLERS=[
 ];
 
 // Only bowlers that have a video clip — used to build game queues
-const VIDEO_BOWLERS=BOWLERS.filter(b=>['anderson','boult','harbhajan','kumble','mcgrath','murali','rabada','shoaib','starc','steyn','waqar','warne'].includes(b.id));
+const VIDEO_BOWLERS=BOWLERS.filter(b=>['anderson','boult','shoaib'].includes(b.id));
+
+const BATTERS=[
+  {id:'azam',name:'Babar Azam',nation:'Pakistan',era:'2010–present',style:'Right-hand bat',clues:['Elegant cover drive specialist','Pakistan','Top-ranked ODI batter','Current Pakistan captain']},
+  {id:'tendulkar',name:'Sachin Tendulkar',nation:'India',era:'1989–2013',style:'Right-hand bat',clues:['100 international centuries','India','Mumbai Indians legend','Retired 2013']},
+];
+const VIDEO_BATTERS=BATTERS.filter(b=>['azam','tendulkar'].includes(b.id));
 
 const MAX_G=5,BLITZ_T=15,PTS=[1000,750,500,250,100];
 const G={mode:'classic',queue:[],idx:0,bowler:null,guesses:[],cluesLit:0,score:0,correct:0,results:[],timer:null,tLeft:BLITZ_T,pick:'',pickName:''};
@@ -1498,7 +1504,7 @@ async function startGame(mode){
     let hash=0;for(let i=0;i<seed.length;i++){hash=(hash<<5)-hash+seed.charCodeAt(i);hash|=0;}
     G.queue=[VIDEO_BOWLERS[Math.abs(hash)%VIDEO_BOWLERS.length]];
   } else {
-    G.queue=mode==='blitz'?sh.slice(0,VIDEO_BOWLERS.length):sh.slice(0,10);
+    G.queue=mode==='blitz'?sh.slice(0,VIDEO_BOWLERS.length):sh.slice(0,VIDEO_BOWLERS.length);
   }
 
   document.getElementById('modeCrumb').textContent=mode==='classic'?'Classic':mode==='blitz'?'Blitz':'Daily';
