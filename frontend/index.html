@@ -1559,8 +1559,7 @@ function onSearch(){
   document.getElementById('ddrop').innerHTML=hits.map(name=>{
     const b=BOWLERS.find(b2=>b2.name===name);
     const id=b?b.id:name;
-    const nat=b?`<span class="ddi-nat">${b.nation}</span>`:'';
-    return`<div class="ddi" onclick="pick('${id.replace(/'/g,"\\'")}','${name.replace(/'/g,"\\'")}')"><span>${name}</span>${nat}</div>`;
+    return`<div class="ddi" onclick="pick('${id.replace(/'/g,"\\'")}','${name.replace(/'/g,"\\'")}')"><span>${name}</span></div>`;
   }).join('');
   document.getElementById('ddrop').classList.add('open');
 }
