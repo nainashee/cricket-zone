@@ -1937,7 +1937,10 @@ async function loadAllTime(){
           </div>
         </div>
         <div class="top5-right">
-          <span class="top5-score">${s.score}</span>
+          <div style="display:flex;flex-direction:column;align-items:flex-end;">
+            <span style="font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--accent);letter-spacing:0.08em;line-height:1.2;">TOTAL</span>
+            <span class="top5-score">${s.score}</span>
+          </div>
         </div>
       </div>`;
     }).join('');
