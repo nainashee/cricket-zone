@@ -764,9 +764,8 @@ async function boot(){
   }
 }
 
-function getTodayLocal(){
-  const d=new Date();
-  return`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+function getTodayLocal() {
+  return new Date().toISOString().split("T")[0]; // UTC, matches backend
 }
 function hasDailyPlayed(){return localStorage.getItem('howzat_last_played')===getTodayLocal();}
 function markDailyPlayed(){localStorage.setItem('howzat_last_played',getTodayLocal());}
