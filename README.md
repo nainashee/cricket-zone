@@ -1,22 +1,25 @@
 # 🏏 Howzat — Know Your Legends
 ### [playhowzat.com](https://playhowzat.com)
 
-A cricket trivia game where players identify legendary bowlers from their silhouette bowling action. Built as a full-stack AWS cloud engineering portfolio project.
+A cricket trivia game where players identify legendary cricketers from their silhouette alone. Two daily challenges — bowlers and batters — with three game modes. Built as a full-stack AWS cloud engineering portfolio project.
 
 ---
 
 ## 🎮 The Game
 
-Guess the bowler from their silhouette video. Three game modes, 15 legends, one daily challenge shared worldwide.
+Guess the cricketer from their silhouette video. Two daily challenges (Bowler + Batter), three game modes, and a 277-name autocomplete list spanning legends across every era.
 
-| Mode | Bowlers | Rules |
+| Mode | Players | Rules |
 |------|---------|-------|
-| **Classic** | 10 | 5 guesses each, progressive clues unlock on each wrong answer |
-| **Blitz** | 12 | 15 second timer per bowler, pure instinct |
-| **Daily** | 1 | Same bowler for everyone, resets at midnight UTC |
+| **Classic** | 3 per category | 5 guesses each, progressive clues unlock on each wrong answer |
+| **Blitz** | 3 per category | 15 second timer per player, pure instinct |
+| **Daily** | 1 per category | Same player for everyone worldwide, resets at midnight UTC |
 
-### The Legends
+### Bowling Legends (15 total, 3 with video)
 Malinga · Bumrah · Warne · Muralitharan · Shoaib Akhtar · Wasim Akram · McGrath · Kumble · Starc · Steyn · Rabada · Boult · Anderson · Harbhajan · Waqar Younis
+
+### Batting Legends (2 with video)
+Babar Azam · Sachin Tendulkar
 
 ---
 
@@ -269,7 +272,7 @@ Requires GitHub secrets: `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `S3_BUCKE
 - [x] **Phase 4** — Video silhouettes, player names, leaderboard (top 20, Hall of Fame), score deduplication
 - [x] **Phase 5** — User accounts (Cognito), Google Sign-In, email verification, avatar upload, guest score migration
 - [x] **Phase 6** — Hall of Fame cumulative stats, cross-device played-today sync, player stats (streak, win rate, best score)
-- [ ] **Phase 7 (V2)** — Guess the Batter category
+- [x] **Phase 7 (V2)** — Guess the Batter category (independent daily seed, double points, 277-name autocomplete)
 - [ ] **Phase 8 (V3)** — Guess the Celebration category
 
 ---
@@ -292,4 +295,4 @@ Requires GitHub secrets: `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `S3_BUCKE
 ---
 
 *Built by Hussain Ashfaque — AWS Solutions Architect Associate | Cloud Engineering Portfolio Project*
-*Live at [playhowzat.com](https://playhowzat.com) · [CHANGELOG](CHANGELOG.md) · v1.0.1*
+*Live at [playhowzat.com](https://playhowzat.com) · [CHANGELOG](CHANGELOG.md) · v1.1.0*

@@ -6,6 +6,32 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [1.1.0] - 2026-04-14
+
+### Added
+
+- **Batter Challenge** — second daily challenge running independently from the Bowler Challenge; uses a separate date seed (`date + 'bat'`) so the two challenges never share the same player on any given day
+- **Double points for batting** — point table `[2000, 1500, 1000, 500, 200]` vs bowling's `[1000, 750, 500, 250, 100]`
+- **Batting played-today gate** — separate `howzat_batting_last_played` localStorage key; state syncs and resets independently at midnight UTC
+- **`BATTERS` / `VIDEO_BATTERS` arrays** — initial batting roster: Babar Azam, Sachin Tendulkar, with full clue sets and nation/era/style metadata
+- **`frontend/assets/batters.json`** — 277 famous international batter names across all eras used for autocomplete suggestions
+- **Live video previews on challenge cards** — both Bowler Challenge and Batter Challenge cards now show a blurred looping silhouette video of today's player instead of a static icon; loaded by `loadCardPreviews()` on boot
+- **303-name bowler autocomplete** — `frontend/assets/bowlers.json` added to the frontend assets folder
+
+### Changed
+
+- **Challenge cards renamed** — "Daily Challenge" → "Bowler Challenge"; "Batting Daily/Challenge" → "Batter Challenge"
+- **Video aspect ratio** — game video player updated to `1:1` square ratio
+- **`VIDEO_BOWLERS` trimmed to 3** — only Anderson, Boult, and Shoaib Akhtar have video assets; Classic and Blitz queues adjusted accordingly
+- **Hero section simplified** — removed the full hero video preview block (video element, placeholder, CTA overlay, played overlay, pill label) from the landing page; card previews replace its purpose
+- **`loadHeroDailyVideo()` renamed to `loadCardPreviews()`** — function now only handles the two card banner previews
+
+### Performance
+
+- All video assets recompressed with ffmpeg (`crf 23`, `720×720`, `libx264`, `preset slow`, `-an`) — 93–96% size reduction across bowling and batting clips
+
+---
+
 ## [1.0.1] - 2026-04-14
 
 ### Fixed
