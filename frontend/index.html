@@ -286,12 +286,12 @@ video{width:100%;aspect-ratio:1/1;object-fit:cover;}
 .top5-row.me{background:rgba(200,242,48,0.04);}
 .top5-left{display:flex;align-items:center;gap:0.85rem;flex:1;min-width:0;}
 .top5-rank{font-family:'Bebas Neue',sans-serif;font-size:1.25rem;width:1.6rem;text-align:center;line-height:1;}
-.top5-name{font-size:0.83rem;color:var(--text2);}
+.top5-name{font-size:0.83rem;color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .top5-name.me{color:var(--text);font-weight:500;}
 .top5-you{font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--accent);background:var(--accent-dim);border:1px solid var(--border);border-radius:100px;padding:0.1rem 0.4rem;margin-left:0.4rem;vertical-align:middle;}
-.top5-right{display:flex;align-items:center;gap:1rem;}
+.top5-right{display:flex;align-items:center;gap:1rem;flex-shrink:0;}
 .top5-mode{font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--text3);text-transform:uppercase;}
-.top5-score{font-family:'Bebas Neue',sans-serif;font-size:1.25rem;color:var(--accent);letter-spacing:0.04em;min-width:4.5rem;text-align:right;}
+.top5-score{font-family:'Bebas Neue',sans-serif;font-size:1.25rem;color:var(--accent);letter-spacing:0.04em;min-width:4.5rem;text-align:right;flex-shrink:0;}
 .top5-empty{padding:1.4rem;text-align:center;font-family:'DM Mono',monospace;font-size:0.72rem;color:var(--text3);letter-spacing:0.06em;}
 .top5-loading{padding:1.4rem;display:flex;align-items:center;justify-content:center;gap:0.6rem;font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--text3);}
 .top5-spinner{width:14px;height:14px;border:2px solid var(--border2);border-top-color:var(--accent);border-radius:50%;animation:spin 0.7s linear infinite;}
@@ -305,8 +305,12 @@ video{width:100%;aspect-ratio:1/1;object-fit:cover;}
   .top5-row{padding:0.65rem 1rem;}
   .top5-mode{display:none;}
   .top5-subtext{display:none;}
-  .top5-score{min-width:3.2rem;font-size:1.1rem;}
-  .top5-header{padding:0.85rem 1rem;}
+  .top5-score{min-width:3rem;font-size:1.1rem;}
+  /* Wrap header to two rows: title on top, tabs below — prevents all items fighting for one line */
+  .top5-header{padding:0.75rem 1rem;flex-wrap:wrap;row-gap:0.55rem;}
+  .top5-title{flex:1 1 100%;}
+  /* Date is redundant on mobile — the section heading already says TODAY'S */
+  .top5-date{display:none;}
   .top5-stats-row{display:grid;grid-template-columns:1fr 1fr;gap:0.18rem 0.6rem;}
   .top5-stat{font-size:0.68rem;}
   .top5-stat:not(:last-child)::after{content:none;}
@@ -316,7 +320,7 @@ video{width:100%;aspect-ratio:1/1;object-fit:cover;}
 .top5-tab.active{background:var(--accent-dim);border-color:var(--border);color:var(--accent);}
 .top5-tab:hover:not(.active){border-color:var(--text3);color:var(--text2);}
 .top5-section-lbl{font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--text3);padding:0.6rem 0.9rem 0.25rem;}
-@media(max-width:520px){.top5-tab{font-size:0.56rem;padding:0.22rem 0.5rem;}}
+@media(max-width:520px){.top5-tab{font-size:0.58rem;padding:0.24rem 0.52rem;}}
 
 
 /* ── NAME MODAL ── */
