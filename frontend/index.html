@@ -1751,8 +1751,11 @@ async function loadLeaderboard(){
     const [data1,data2]=await Promise.all([res1.json(),res2.json()]);
     const catScores=data1.leaderboard||[];
     const otherScores=data2.leaderboard||[];
+    // Always identify bowling/batting regardless of which game was just played
+    const bowlingScores=cat==='bowling'?catScores:otherScores;
+    const battingScores=cat==='batting'?catScores:otherScores;
     const currentUserId=getCurrentUserId();
-    if(!catScores.length&&!otherScores.length){
+    if(!bowlingScores.length&&!battingScores.length){
       el.innerHTML='<p style="color:var(--text3);font-size:0.78rem;font-family:\'DM Mono\',monospace;padding:0.9rem;">No scores yet today. You might be #1!</p>';
       return;
     }
@@ -1767,45 +1770,50 @@ async function loadLeaderboard(){
       const youBadge=isMe?`<span style="font-family:'DM Mono',monospace;font-size:0.58rem;color:var(--accent);background:var(--accent-dim);border:1px solid var(--border);border-radius:100px;padding:0.1rem 0.45rem;margin-left:0.4rem;vertical-align:middle;">YOU</span>`:'';
       const avHtml=lbAvHtml(s,name,24,isMe);
       return`<div style="display:flex;align-items:center;justify-content:space-between;padding:0.65rem 0.9rem;border-bottom:1px solid var(--border2);${isMe?'background:rgba(200,242,48,0.04);':''}">
-        <div style="display:flex;align-items:center;gap:0.6rem;">
+        <div style="display:flex;align-items:center;gap:0.6rem;min-width:0;flex:1;">
           <span style="font-family:'Bebas Neue',sans-serif;font-size:1.1rem;color:${isMe?'var(--accent)':rankColor(i)};width:1.4rem;text-align:center;flex-shrink:0;">${i+1}</span>
           ${avHtml}
-          <span style="font-size:0.82rem;color:${isMe?'var(--text)':'var(--text2)'};font-weight:${isMe?500:400};">${name}${youBadge}</span>
+          <span style="font-size:0.82rem;color:${isMe?'var(--text)':'var(--text2)'};font-weight:${isMe?500:400};overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${name}${youBadge}</span>
         </div>
-        <div style="display:flex;align-items:center;gap:0.8rem;">
+        <div style="display:flex;align-items:center;gap:0.8rem;flex-shrink:0;">
           <span style="font-family:'DM Mono',monospace;font-size:0.68rem;color:var(--text3);">${s.gameMode||''}</span>
-          <span style="font-family:'Bebas Neue',sans-serif;font-size:1.1rem;color:var(--accent);">${s.score}</span>
+          <span style="font-family:'Bebas Neue',sans-serif;font-size:1.1rem;color:var(--accent);min-width:3rem;text-align:right;">${s.score}</span>
         </div>
       </div>`;
     }
-    const catLabel=cat==='bowling'?'🏏 Bowling':'🏃 Batting';
-    let html=`<p class="top5-section-lbl">${catLabel} Top 5</p>`;
-    if(catScores.length){
-      const top5=catScores.slice(0,5);
-      const myIdx=catScores.findIndex(s=>s.userId===currentUserId);
-      const myEntry=myIdx>=0?catScores[myIdx]:null;
-      const inTop5=myIdx>=0&&myIdx<5;
-      html+=top5.map((s,i)=>renderRow(s,i,s.userId===currentUserId)).join('');
-      if(!inTop5&&myEntry){
-        html+=`<div style="padding:0.38rem 0.9rem;border-bottom:1px solid var(--border2);"><span style="font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--text3);letter-spacing:0.12em;">· · ·</span></div>`;
-        html+=renderRow(myEntry,myIdx,true);
+    function renderSection(scores,label){
+      let h=`<p class="top5-section-lbl">${label}</p>`;
+      if(scores.length){
+        const top5=scores.slice(0,5);
+        const myIdx=scores.findIndex(s=>s.userId===currentUserId);
+        const myEntry=myIdx>=0?scores[myIdx]:null;
+        const inTop5=myIdx>=0&&myIdx<5;
+        h+=top5.map((s,i)=>renderRow(s,i,s.userId===currentUserId)).join('');
+        if(!inTop5&&myEntry){
+          h+=`<div style="padding:0.38rem 0.9rem;border-bottom:1px solid var(--border2);"><span style="font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--text3);letter-spacing:0.12em;">· · ·</span></div>`;
+          h+=renderRow(myEntry,myIdx,true);
+        }
+      }else{
+        h+=`<p style="color:var(--text3);font-size:0.78rem;font-family:'DM Mono',monospace;padding:0.3rem 0.9rem 0.65rem;">No scores yet today.</p>`;
       }
-    }else{
-      html+=`<p style="color:var(--text3);font-size:0.78rem;font-family:'DM Mono',monospace;padding:0.3rem 0.9rem 0.65rem;">No scores yet today.</p>`;
+      return h;
     }
-    // Combined section — merge both categories by userId
+    let html=renderSection(bowlingScores,'🏏 Bowling');
+    html+=`<div style="border-top:2px solid var(--border2);"></div>`;
+    html+=renderSection(battingScores,'🏃 Batting');
+    // Combined section — merge both categories by userId (same source as above)
     const map={};
-    for(const s of catScores){
+    for(const s of bowlingScores){
       if(!map[s.userId])map[s.userId]={...s,score:0};
       map[s.userId].score+=s.score||0;
     }
-    for(const s of otherScores){
+    for(const s of battingScores){
       if(!map[s.userId])map[s.userId]={...s,score:0};
       else{if(s.playerName)map[s.userId].playerName=s.playerName;if(s.pictureUrl)map[s.userId].pictureUrl=s.pictureUrl;}
       map[s.userId].score+=s.score||0;
     }
     const combined=Object.values(map).filter(s=>s.score>0).sort((a,b)=>b.score-a.score).slice(0,5);
-    if(combined.length&&otherScores.length){
+    if(combined.length){
       html+=`<div style="border-top:2px solid var(--border2);"></div>`;
       html+=`<p class="top5-section-lbl">⚡ Combined Today</p>`;
       html+=combined.map((s,i)=>renderRow(s,i,s.userId===currentUserId)).join('');
