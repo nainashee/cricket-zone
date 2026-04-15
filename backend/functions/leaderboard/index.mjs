@@ -118,11 +118,13 @@ export const handler = async (event) => {
         });
 
     } else {
-      // Daily: keep only the highest single score per userId for today
+      // Daily: keep only the highest single score per userId for today.
+      // Guests who explicitly saved their score are included here (they are
+      // excluded from all-time which requires a persistent #summary record).
       const best = {};
       for (const item of items) {
-        if (item.isGuest || item.userId?.startsWith('guest_')) continue;
         const uid = item.userId;
+        if (!uid) continue;
         if (!best[uid] || item.score > best[uid].score) {
           best[uid] = item;
         }
