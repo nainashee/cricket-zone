@@ -64,6 +64,12 @@ jobs:
             --function-name cricket-zone-avatar-upload \
             --zip-file fileb://../avatar-upload.zip
 
+          cd ../played-today
+          zip -r ../played-today.zip .
+          aws lambda update-function-code \
+            --function-name cricket-zone-played-today \
+            --zip-file fileb://../played-today.zip
+
       - name: Inject prod config into frontend
         run: |
           sed -i "s|__API_URL__|${{ secrets.PROD_API_URL }}|g" frontend/index.html
