@@ -15,11 +15,21 @@ Guess the cricketer from their silhouette video. Two daily challenges (Bowler + 
 | **Blitz** | 3 per category | 15 second timer per player, pure instinct |
 | **Daily** | 1 per category | Same player for everyone worldwide, resets at midnight UTC |
 
+### Scoring
+
+| Guess | Bowling | Batting |
+|-------|---------|---------|
+| 1st correct | 100 pts | 200 pts |
+| 2nd correct | 75 pts | 150 pts |
+| 3rd correct | 50 pts | 100 pts |
+| 4th correct | 25 pts | 50 pts |
+| 5th correct | 15 pts | 25 pts |
+
 ### Bowling Legends (15 total, 3 with video)
 Malinga · Bumrah · Warne · Muralitharan · Shoaib Akhtar · Wasim Akram · McGrath · Kumble · Starc · Steyn · Rabada · Boult · Anderson · Harbhajan · Waqar Younis
 
-### Batting Legends (2 with video)
-Babar Azam · Sachin Tendulkar
+### Batting Legends (3 with video)
+Babar Azam · Sachin Tendulkar · Kevin Pietersen
 
 ---
 
@@ -109,6 +119,7 @@ Players can play as a guest or create a free account.
 | Upload custom avatar | ❌ | ✅ |
 | Google Sign-In | ❌ | ✅ |
 | Cross-device played-today sync | ❌ | ✅ |
+| Daily streak tracking | ❌ | ✅ |
 
 **Authentication flow:**
 - Email/password sign-up with mandatory email verification before first sign-in
@@ -116,7 +127,20 @@ Players can play as a guest or create a free account.
 - Google profile picture shown automatically after sign-in
 - Custom avatar upload to S3 (overrides Google picture if uploaded)
 - Guest scores posted before sign-in are automatically migrated to the authenticated account
-- On sign-in, backend is queried to sync played-today state across devices
+- On sign-in, backend is queried to sync both bowling and batting played-today state across devices
+
+---
+
+## 📊 Leaderboard
+
+**Today's Top 5** — shown on the leaderboard page with three tabs:
+- **Bowl** — highest bowling score per player today
+- **Bat** — highest batting score per player today
+- **Total** — combined bowling + batting score per player today
+
+**Hall of Fame** — all-time rankings by cumulative total score. Each entry shows games played, best single score, current streak, and win rate.
+
+**Streak** — increments once per calendar day when the player wins (scores > 0). Playing multiple games in the same day does not multiply the streak. Missing a day resets it to 0.
 
 ---
 
@@ -139,19 +163,19 @@ cricket-zone/
 │   └── terraform.tfstate.backup
 ├── backend/
 │   └── functions/
-│       ├── daily-challenge/       # GET /daily — returns today's bowler
+│       ├── daily-challenge/       # GET /daily — returns today's player for a category
 │       ├── save-score/            # POST /score — saves game result to DynamoDB
 │       ├── leaderboard/           # GET /leaderboard — daily top 20 + all-time Hall of Fame
-│       ├── played-today/          # GET /played-today — checks if user played daily today
+│       ├── played-today/          # GET /played-today — checks bowling + batting played state
 │       ├── avatar-upload/         # GET /avatar/upload-url — presigned S3 upload URL
 │       └── delete-account/        # DELETE /account — removes Cognito user + scores
 ├── content/
-│   ├── bowling/                   # Silhouette videos and data for bowlers
-│   ├── batting/                   # Reserved for V2
+│   ├── bowling/                   # Silhouette videos for bowlers
+│   ├── batting/                   # Silhouette videos for batters
 │   └── celebrations/              # Reserved for V3
 ├── .github/
 │   └── workflows/
-│       └── deploy.yml             # CI/CD: S3 deploy + CloudFront invalidation
+│       └── deploy.yml             # CI/CD: Lambda deploys + S3 sync + CloudFront invalidation
 ├── CHANGELOG.md
 ├── CLAUDE.md
 ├── .gitignore
@@ -213,35 +237,32 @@ cricket-zone/
 Base URL: `https://h3laal38ta.execute-api.us-east-1.amazonaws.com`
 
 ### `GET /daily?category=bowling`
-Returns today's bowler for the daily challenge.
+Returns today's player for the given category (bowling or batting).
 ```json
-{ "category": "bowling", "date": "2026-04-13", "bowler": "harbhajan" }
+{ "category": "bowling", "date": "2026-04-15", "bowler": "harbhajan" }
 ```
 
 ### `POST /score`
 Saves a completed game score. Authenticated requests use `Authorization: Bearer <id_token>` — userId is taken from the JWT. Unauthenticated requests require `userId` and `playerName` in the body.
 ```json
 {
-  "score": 1000,
+  "score": 100,
   "gameMode": "daily",
   "category": "bowling",
-  "pictureUrl": "https://lh3.googleusercontent.com/...",
-  "streak": 3,
-  "wins": 5,
-  "gamesPlayed": 7
+  "pictureUrl": "https://lh3.googleusercontent.com/..."
 }
 ```
 
 ### `GET /leaderboard?category=bowling`
-Returns today's top 20 scores, deduplicated by user (highest score per user kept). Guest scores excluded.
+Returns today's top 20 scores, deduplicated by user (highest score per user kept).
 
 ### `GET /leaderboard?category=bowling&alltime=true`
 Returns the all-time Hall of Fame — top 20 players by cumulative total score. Each row includes `gamesPlayed`, `bestScore`, `streak`, `winRate`.
 
 ### `GET /played-today`
-Requires `Authorization: Bearer <id_token>`. Checks if the authenticated user has already played today's daily challenge.
+Requires `Authorization: Bearer <id_token>`. Checks if the authenticated user has already played today's daily challenge for both categories.
 ```json
-{ "played": true }
+{ "played": true, "bowlingPlayed": true, "battingPlayed": false }
 ```
 
 ### `GET /avatar/upload-url?contentType=image/jpeg`
@@ -256,11 +277,13 @@ Requires `Authorization: Bearer <id_token>`. Deletes the Cognito user account an
 
 Every push to `main` triggers a GitHub Actions workflow:
 
-1. Syncs `frontend/` to S3 bucket
-2. Creates a CloudFront invalidation (`/*`) to clear cache
-3. Live at playhowzat.com within ~60 seconds
+1. Deploys all six Lambda functions via `aws lambda update-function-code`
+2. Injects production config (API URL, Cognito IDs) into `frontend/index.html` via `sed`
+3. Syncs `frontend/` to S3 bucket
+4. Creates a CloudFront invalidation (`/*`) to clear cache
+5. Live at playhowzat.com within ~60 seconds
 
-Requires GitHub secrets: `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `S3_BUCKET`, `CF_DISTRIBUTION_ID`.
+Requires GitHub secrets: `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `S3_BUCKET`, `CF_DISTRIBUTION_ID`, `PROD_API_URL`, `PROD_COGNITO_USER_POOL_ID`, `PROD_COGNITO_CLIENT_ID`, `PROD_COGNITO_DOMAIN`.
 
 ---
 
@@ -272,7 +295,7 @@ Requires GitHub secrets: `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `S3_BUCKE
 - [x] **Phase 4** — Video silhouettes, player names, leaderboard (top 20, Hall of Fame), score deduplication
 - [x] **Phase 5** — User accounts (Cognito), Google Sign-In, email verification, avatar upload, guest score migration
 - [x] **Phase 6** — Hall of Fame cumulative stats, cross-device played-today sync, player stats (streak, win rate, best score)
-- [x] **Phase 7 (V2)** — Guess the Batter category (independent daily seed, double points, 277-name autocomplete)
+- [x] **Phase 7 (V2)** — Guess the Batter category (independent daily seed, dual leaderboard tabs, 277-name autocomplete)
 - [ ] **Phase 8 (V3)** — Guess the Celebration category
 
 ---
@@ -295,4 +318,4 @@ Requires GitHub secrets: `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `S3_BUCKE
 ---
 
 *Built by Hussain Ashfaque — AWS Solutions Architect Associate | Cloud Engineering Portfolio Project*
-*Live at [playhowzat.com](https://playhowzat.com) · [CHANGELOG](CHANGELOG.md) · v1.1.0*
+*Live at [playhowzat.com](https://playhowzat.com) · [CHANGELOG](CHANGELOG.md) · v1.2.0*
