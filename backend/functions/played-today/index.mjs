@@ -32,25 +32,31 @@ export const handler = async (event) => {
 
     const date = new Date().toISOString().split("T")[0];
 
-    // Query primary key directly — no GSI needed
-    // scoreId format: "bowling#<date>#<uuid>"; filter to daily mode only
-    // Note: no Limit here — Limit applies before FilterExpression in DynamoDB,
-    // so a Limit:1 with a filter could read 1 non-daily record and return played:false incorrectly
-    const result = await db.send(new QueryCommand({
-      TableName: SCORES_TABLE,
-      KeyConditionExpression: "userId = :uid AND begins_with(scoreId, :prefix)",
-      FilterExpression: "gameMode = :mode",
-      ExpressionAttributeValues: {
-        ":uid": claims.sub,
-        ":prefix": `bowling#${date}#`,
-        ":mode": "daily"
-      }
-    }));
+    // Query both bowling and batting in parallel
+    // scoreId format: "<category>#<date>#<uuid>"; filter to daily mode only
+    // Note: no Limit — Limit applies before FilterExpression so Limit:1 could return played:false incorrectly
+    const [bowlResult, batResult] = await Promise.all([
+      db.send(new QueryCommand({
+        TableName: SCORES_TABLE,
+        KeyConditionExpression: "userId = :uid AND begins_with(scoreId, :prefix)",
+        FilterExpression: "gameMode = :mode",
+        ExpressionAttributeValues: { ":uid": claims.sub, ":prefix": `bowling#${date}#`, ":mode": "daily" }
+      })),
+      db.send(new QueryCommand({
+        TableName: SCORES_TABLE,
+        KeyConditionExpression: "userId = :uid AND begins_with(scoreId, :prefix)",
+        FilterExpression: "gameMode = :mode",
+        ExpressionAttributeValues: { ":uid": claims.sub, ":prefix": `batting#${date}#`, ":mode": "daily" }
+      }))
+    ]);
+
+    const bowlingPlayed = (bowlResult.Count ?? 0) > 0;
+    const battingPlayed = (batResult.Count  ?? 0) > 0;
 
     return {
       statusCode: 200,
       headers,
-      body: JSON.stringify({ played: (result.Count ?? 0) > 0 })
+      body: JSON.stringify({ played: bowlingPlayed, bowlingPlayed, battingPlayed })
     };
 
   } catch (err) {

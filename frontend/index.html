@@ -782,8 +782,17 @@ async function boot(){
     updateHeaderUser();
     if(!handled){
       if(isTokenValid()){
-        // Returning user with valid token — sync stats from server
-        syncSummaryStats(getIdToken());
+        // Returning user with valid token — sync stats + played-today from server
+        const tok=getIdToken();
+        syncSummaryStats(tok);
+        fetch(`${API}/played-today`,{headers:{Authorization:`Bearer ${tok}`}})
+          .then(r=>r.json())
+          .then(d=>{
+            if(d.bowlingPlayed||d.played)localStorage.setItem('howzat_last_played',getTodayLocal());
+            if(d.battingPlayed)localStorage.setItem('howzat_batting_last_played',getTodayLocal());
+            applyDailyCardState();
+            applyBattingCardState();
+          }).catch(()=>{});
       }else{
         // Guest — no server stats, show whatever is cached locally
         statsReady=true;
@@ -1115,9 +1124,14 @@ async function storeAuth(idToken){
       syncSummaryStats(idToken),
       fetch(`${API}/played-today`,{headers:{Authorization:`Bearer ${idToken}`}})
     ]);
-    if(playedRes.ok){const d=await playedRes.json();if(d.played)localStorage.setItem('howzat_last_played',getTodayLocal());}
+    if(playedRes.ok){
+      const d=await playedRes.json();
+      if(d.bowlingPlayed||d.played)localStorage.setItem('howzat_last_played',getTodayLocal());
+      if(d.battingPlayed)localStorage.setItem('howzat_batting_last_played',getTodayLocal());
+    }
   }catch(e){console.warn('Auth sync failed',e);}
   applyDailyCardState();
+  applyBattingCardState();
 }
 
 async function syncSummaryStats(idToken){
