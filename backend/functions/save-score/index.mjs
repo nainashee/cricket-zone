@@ -107,6 +107,24 @@ export const handler = async (event) => {
       }));
 
       const isWin = score > 0;
+      const today     = new Date().toISOString().split("T")[0];
+      const yesterday = new Date(Date.now() - 86400000).toISOString().split("T")[0];
+      const lastDate  = existing?.lastPlayed ? existing.lastPlayed.split("T")[0] : null;
+
+      let newStreak;
+      if (!isWin) {
+        newStreak = 0;
+      } else if (lastDate === today) {
+        // Already played today — don't increment again
+        newStreak = existing?.streak || 1;
+      } else if (lastDate === yesterday) {
+        // Consecutive day — extend streak
+        newStreak = (existing?.streak || 0) + 1;
+      } else {
+        // First game ever, or streak broken
+        newStreak = 1;
+      }
+
       const summary = {
         userId,
         scoreId:     '#summary',
@@ -114,7 +132,7 @@ export const handler = async (event) => {
         gamesPlayed: (existing?.gamesPlayed || 0) + 1,
         wins:        (existing?.wins        || 0) + (isWin ? 1 : 0),
         bestScore:   Math.max(existing?.bestScore || 0, score),
-        streak:      isWin ? (existing?.streak || 0) + 1 : 0,
+        streak:      newStreak,
         lastPlayed:  new Date().toISOString(),
         playerName,
         ...(pictureUrl !== undefined && { pictureUrl }),
