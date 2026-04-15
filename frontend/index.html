@@ -311,6 +311,12 @@ video{width:100%;aspect-ratio:1/1;object-fit:cover;}
   .top5-stat{font-size:0.68rem;}
   .top5-stat:not(:last-child)::after{content:none;}
 }
+.top5-tabs{display:flex;gap:0.35rem;}
+.top5-tab{font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.07em;text-transform:uppercase;padding:0.26rem 0.6rem;border:1px solid var(--border2);border-radius:100px;background:none;color:var(--text3);cursor:pointer;transition:all 0.15s;}
+.top5-tab.active{background:var(--accent-dim);border-color:var(--border);color:var(--accent);}
+.top5-tab:hover:not(.active){border-color:var(--text3);color:var(--text2);}
+.top5-section-lbl{font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--text3);padding:0.6rem 0.9rem 0.25rem;}
+@media(max-width:520px){.top5-tab{font-size:0.56rem;padding:0.22rem 0.5rem;}}
 
 
 /* ── NAME MODAL ── */
@@ -569,7 +575,14 @@ video{width:100%;aspect-ratio:1/1;object-fit:cover;}
             <span class="top5-title-text">LEADERBOARD</span>
             <span class="top5-badge">Live</span>
           </div>
-          <span class="top5-date" id="top5Date"></span>
+          <div style="display:flex;align-items:center;gap:0.75rem;">
+            <div class="top5-tabs">
+              <button class="top5-tab" id="tabBowling" onclick="switchTop5Tab('bowling')">🏏 Bowl</button>
+              <button class="top5-tab" id="tabBatting" onclick="switchTop5Tab('batting')">🏃 Bat</button>
+              <button class="top5-tab active" id="tabCombined" onclick="switchTop5Tab('combined')">⚡ Total</button>
+            </div>
+            <span class="top5-date" id="top5Date"></span>
+          </div>
         </div>
         <div id="top5List">
           <div class="top5-loading">
@@ -691,7 +704,7 @@ video{width:100%;aspect-ratio:1/1;object-fit:cover;}
   <div class="fin-grid" id="finGrid"></div>
   <div class="share-card" id="finShare"></div>
   <div style="text-align:left;margin-bottom:1.4rem;">
-    <p style="font-family:'DM Mono',monospace;font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--text3);margin-bottom:0.7rem;">Today's Top Scores</p>
+    <p style="font-family:'DM Mono',monospace;font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--text3);margin-bottom:0.7rem;">Today's Leaderboard</p>
     <div style="background:var(--surface);border:1px solid var(--border2);border-radius:14px;overflow:hidden;" id="lbList">
       <p style="color:var(--text3);font-size:0.78rem;font-family:'DM Mono',monospace;padding:0.9rem;">Loading leaderboard...</p>
     </div>
@@ -1709,29 +1722,28 @@ async function saveScoreAsGuest(){
 
 async function loadLeaderboard(){
   try{
-    const res=await fetch(`${API}/leaderboard?category=bowling`);
-    const data=await res.json();
+    const cat=G.category||'bowling';
+    const otherCat=cat==='bowling'?'batting':'bowling';
     const el=document.getElementById('lbList');
     if(!el)return;
-    if(!data.leaderboard||!data.leaderboard.length){
+    const [res1,res2]=await Promise.all([
+      fetch(`${API}/leaderboard?category=${cat}`),
+      fetch(`${API}/leaderboard?category=${otherCat}`)
+    ]);
+    const [data1,data2]=await Promise.all([res1.json(),res2.json()]);
+    const catScores=data1.leaderboard||[];
+    const otherScores=data2.leaderboard||[];
+    const currentUserId=getCurrentUserId();
+    if(!catScores.length&&!otherScores.length){
       el.innerHTML='<p style="color:var(--text3);font-size:0.78rem;font-family:\'DM Mono\',monospace;padding:0.9rem;">No scores yet today. You might be #1!</p>';
       return;
     }
-
-    const currentUserId=getCurrentUserId();
-    const allScores=data.leaderboard;
-    const top5=allScores.slice(0,5);
-    const myIdx=allScores.findIndex(s=>s.userId===currentUserId);
-    const myEntry=myIdx>=0?allScores[myIdx]:null;
-    const inTop5=myIdx>=0&&myIdx<5;
-
     function rankColor(i){
       if(i===0)return'var(--gold)';
       if(i===1)return'#c0c0c0';
       if(i===2)return'#cd7f32';
       return'var(--text3)';
     }
-
     function renderRow(s,i,isMe){
       const name=s.playerName||s.userId;
       const youBadge=isMe?`<span style="font-family:'DM Mono',monospace;font-size:0.58rem;color:var(--accent);background:var(--accent-dim);border:1px solid var(--border);border-radius:100px;padding:0.1rem 0.45rem;margin-left:0.4rem;vertical-align:middle;">YOU</span>`:'';
@@ -1743,21 +1755,43 @@ async function loadLeaderboard(){
           <span style="font-size:0.82rem;color:${isMe?'var(--text)':'var(--text2)'};font-weight:${isMe?500:400};">${name}${youBadge}</span>
         </div>
         <div style="display:flex;align-items:center;gap:0.8rem;">
-          <span style="font-family:'DM Mono',monospace;font-size:0.68rem;color:var(--text3);">${s.gameMode}</span>
+          <span style="font-family:'DM Mono',monospace;font-size:0.68rem;color:var(--text3);">${s.gameMode||''}</span>
           <span style="font-family:'Bebas Neue',sans-serif;font-size:1.1rem;color:var(--accent);">${s.score}</span>
         </div>
       </div>`;
     }
-
-    let html=top5.map((s,i)=>renderRow(s,i,s.userId===currentUserId)).join('');
-
-    if(!inTop5&&myEntry){
-      html+=`<div style="padding:0.38rem 0.9rem;border-bottom:1px solid var(--border2);">
-        <span style="font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--text3);letter-spacing:0.12em;">· · ·</span>
-      </div>`;
-      html+=renderRow(myEntry,myIdx,true);
+    const catLabel=cat==='bowling'?'🏏 Bowling':'🏃 Batting';
+    let html=`<p class="top5-section-lbl">${catLabel} Top 5</p>`;
+    if(catScores.length){
+      const top5=catScores.slice(0,5);
+      const myIdx=catScores.findIndex(s=>s.userId===currentUserId);
+      const myEntry=myIdx>=0?catScores[myIdx]:null;
+      const inTop5=myIdx>=0&&myIdx<5;
+      html+=top5.map((s,i)=>renderRow(s,i,s.userId===currentUserId)).join('');
+      if(!inTop5&&myEntry){
+        html+=`<div style="padding:0.38rem 0.9rem;border-bottom:1px solid var(--border2);"><span style="font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--text3);letter-spacing:0.12em;">· · ·</span></div>`;
+        html+=renderRow(myEntry,myIdx,true);
+      }
+    }else{
+      html+=`<p style="color:var(--text3);font-size:0.78rem;font-family:'DM Mono',monospace;padding:0.3rem 0.9rem 0.65rem;">No scores yet today.</p>`;
     }
-
+    // Combined section — merge both categories by userId
+    const map={};
+    for(const s of catScores){
+      if(!map[s.userId])map[s.userId]={...s,score:0};
+      map[s.userId].score+=s.score||0;
+    }
+    for(const s of otherScores){
+      if(!map[s.userId])map[s.userId]={...s,score:0};
+      else{if(s.playerName)map[s.userId].playerName=s.playerName;if(s.pictureUrl)map[s.userId].pictureUrl=s.pictureUrl;}
+      map[s.userId].score+=s.score||0;
+    }
+    const combined=Object.values(map).filter(s=>s.score>0).sort((a,b)=>b.score-a.score).slice(0,5);
+    if(combined.length&&otherScores.length){
+      html+=`<div style="border-top:2px solid var(--border2);"></div>`;
+      html+=`<p class="top5-section-lbl">⚡ Combined Today</p>`;
+      html+=combined.map((s,i)=>renderRow(s,i,s.userId===currentUserId)).join('');
+    }
     if(isGuest()){
       html+=`<div style="padding:0.65rem 0.9rem;border-top:1px solid var(--border2);display:flex;align-items:center;justify-content:space-between;">
         <span style="font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--text3);">Sign up to appear on the leaderboard</span>
@@ -1872,56 +1906,97 @@ function copyShare(t){navigator.clipboard.writeText(buildSharePlainText(t==='d')
 function toast(msg,type=''){const el=document.createElement('div');el.className=`toast ${type}`;el.textContent=msg;document.getElementById('tdock').appendChild(el);setTimeout(()=>el.remove(),3200);}
 function confetti(){const cols=['#c8f230','#fff','#ffd166','#ff6b6b','#4db8ff'];for(let i=0;i<55;i++)setTimeout(()=>{const el=document.createElement('div');el.className='cf';el.style.cssText=`left:${Math.random()*100}vw;top:-10px;background:${cols[i%cols.length]};animation-duration:${1.4+Math.random()*1.4}s;border-radius:${Math.random()>.5?'50%':'2px'};`;document.body.appendChild(el);setTimeout(()=>el.remove(),3000);},i*28);}
 
+let _top5Cache={bowling:null,batting:null};
+let _top5Tab='combined';
+
 async function loadTop5(){
   const el=document.getElementById('top5List');
   const dateEl=document.getElementById('top5Date');
   if(!el)return;
-
-  // Set today's date label
-  if(dateEl) dateEl.textContent=new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
-
+  if(dateEl)dateEl.textContent=new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
   try{
-    const res=await fetch(`${API}/leaderboard?category=bowling`);
-    const data=await res.json();
-    const currentUserId=getCurrentUserId();
-
-    if(!data.leaderboard||!data.leaderboard.length){
-      el.innerHTML='<div class="top5-empty">No scores yet today — be the first! 🏏</div>';
-      return;
-    }
-
-    const top5=data.leaderboard.slice(0,5);
-
-    function rankColor(i){
-      if(i===0)return'var(--gold)';
-      if(i===1)return'#c0c0c0';
-      if(i===2)return'#cd7f32';
-      return'var(--text3)';
-    }
-
-    const html=top5.map((s,i)=>{
-      const isMe=s.userId===currentUserId;
-      const name=s.playerName||'Anonymous';
-      const youBadge=isMe?'<span class="top5-you">YOU</span>':'';
-      const medal=i===0?'🥇':i===1?'🥈':i===2?'🥉':'';
-      const avHtml=lbAvHtml(s,name,22,isMe);
-      return`<div class="top5-row${isMe?' me':''}">
-        <div class="top5-left">
-          <span class="top5-rank" style="color:${isMe?'var(--accent)':rankColor(i)}">${medal||i+1}</span>
-          ${avHtml}
-          <span class="top5-name${isMe?' me':''}">${name}${youBadge}</span>
-        </div>
-        <div class="top5-right">
-          <span class="top5-score">${s.score}</span>
-        </div>
-      </div>`;
-    }).join('');
-
-    el.innerHTML=html;
+    const [bowlRes,batRes]=await Promise.all([
+      fetch(`${API}/leaderboard?category=bowling`),
+      fetch(`${API}/leaderboard?category=batting`)
+    ]);
+    const [bowlData,batData]=await Promise.all([bowlRes.json(),batRes.json()]);
+    _top5Cache.bowling=bowlData.leaderboard||[];
+    _top5Cache.batting=batData.leaderboard||[];
+    renderTop5(_top5Tab);
   }catch(err){
     console.error('Top5 fetch failed:',err);
     el.innerHTML='<div class="top5-empty">Could not load leaderboard.</div>';
   }
+}
+
+function switchTop5Tab(tab){
+  _top5Tab=tab;
+  document.getElementById('tabBowling')?.classList.toggle('active',tab==='bowling');
+  document.getElementById('tabBatting')?.classList.toggle('active',tab==='batting');
+  document.getElementById('tabCombined')?.classList.toggle('active',tab==='combined');
+  renderTop5(tab);
+}
+
+function renderTop5(tab){
+  const el=document.getElementById('top5List');
+  if(!el)return;
+  const currentUserId=getCurrentUserId();
+  let scores=[];
+  if(tab==='combined'){
+    const map={};
+    for(const s of(_top5Cache.bowling||[])){
+      if(!map[s.userId])map[s.userId]={...s,bowlingScore:0,battingScore:0,score:0};
+      map[s.userId].bowlingScore=s.score||0;
+      map[s.userId].score+=s.score||0;
+    }
+    for(const s of(_top5Cache.batting||[])){
+      if(!map[s.userId]){map[s.userId]={...s,bowlingScore:0,battingScore:0,score:0};}
+      else{if(s.playerName)map[s.userId].playerName=s.playerName;if(s.pictureUrl)map[s.userId].pictureUrl=s.pictureUrl;}
+      map[s.userId].battingScore=s.score||0;
+      map[s.userId].score+=s.score||0;
+    }
+    scores=Object.values(map).sort((a,b)=>b.score-a.score).slice(0,5);
+  }else{
+    scores=(_top5Cache[tab]||[]).slice(0,5);
+  }
+  if(!scores.length){
+    el.innerHTML='<div class="top5-empty">No scores yet today — be the first! 🏏</div>';
+    return;
+  }
+  function rankColor(i){
+    if(i===0)return'var(--gold)';
+    if(i===1)return'#c0c0c0';
+    if(i===2)return'#cd7f32';
+    return'var(--text3)';
+  }
+  const html=scores.map((s,i)=>{
+    const isMe=s.userId===currentUserId;
+    const name=s.playerName||'Anonymous';
+    const youBadge=isMe?'<span class="top5-you">YOU</span>':'';
+    const medal=i===0?'🥇':i===1?'🥈':i===2?'🥉':'';
+    const avHtml=lbAvHtml(s,name,22,isMe);
+    let subtext='';
+    if(tab==='combined'&&(s.bowlingScore||s.battingScore)){
+      const parts=[];
+      if(s.bowlingScore)parts.push(`🏏 ${s.bowlingScore}`);
+      if(s.battingScore)parts.push(`🏃 ${s.battingScore}`);
+      if(parts.length>1)subtext=`<div class="top5-subtext" style="margin-top:0.1rem;">${parts.join(' + ')}</div>`;
+    }
+    return`<div class="top5-row${isMe?' me':''}">
+      <div class="top5-left">
+        <span class="top5-rank" style="color:${isMe?'var(--accent)':rankColor(i)}">${medal||i+1}</span>
+        ${avHtml}
+        <div style="display:flex;flex-direction:column;gap:0.08rem;min-width:0;">
+          <span class="top5-name${isMe?' me':''}">${name}${youBadge}</span>
+          ${subtext}
+        </div>
+      </div>
+      <div class="top5-right">
+        <span class="top5-score">${s.score}</span>
+      </div>
+    </div>`;
+  }).join('');
+  el.innerHTML=html;
 }
 
 function tickDailyCountdown(){
