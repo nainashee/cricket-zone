@@ -740,8 +740,9 @@ const VIDEO_BOWLERS=BOWLERS.filter(b=>['anderson','boult','shoaib'].includes(b.i
 const BATTERS=[
   {id:'azam',name:'Babar Azam',nation:'Pakistan',era:'2010–present',style:'Right-hand bat',clues:['Elegant cover drive specialist','Pakistan','Top-ranked ODI batter','Current Pakistan captain']},
   {id:'tendulkar',name:'Sachin Tendulkar',nation:'India',era:'1989–2013',style:'Right-hand bat',clues:['100 international centuries','India','Mumbai Indians legend','Retired 2013']},
+  {id:'pietersen',name:'Kevin Pietersen',nation:'England',era:'2004–2014',style:'Right-hand bat',clues:['Switch-hit pioneer','England','IPL with Delhi Daredevils','South Africa-born England legend']},
 ];
-const VIDEO_BATTERS=BATTERS.filter(b=>['azam','tendulkar'].includes(b.id));
+const VIDEO_BATTERS=BATTERS.filter(b=>['azam','tendulkar','pietersen'].includes(b.id));
 
 const MAX_G=5,BLITZ_T=15,PTS=[1000,750,500,250,100],PTS_BAT=[2000,1500,1000,500,200];
 const G={mode:'classic',category:'bowling',queue:[],idx:0,bowler:null,guesses:[],cluesLit:0,score:0,correct:0,results:[],timer:null,tLeft:BLITZ_T,pick:'',pickName:''};
