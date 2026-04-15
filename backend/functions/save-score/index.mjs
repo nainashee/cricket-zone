@@ -57,7 +57,7 @@ export const handler = async (event) => {
         };
       }
 
-      if (typeof score !== "number" || score < 0 || score > 10000) {
+      if (typeof score !== "number" || score < 0 || score > 2500) {
         return {
           statusCode: 400,
           headers,
