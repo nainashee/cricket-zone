@@ -98,10 +98,15 @@ export const handler = async (event) => {
             Key: { userId: uid, scoreId: '#summary' }
           }));
           if (summary) {
-            if (summary.wins   !== undefined) userMap[uid].wins   = summary.wins;
-            if (summary.streak !== undefined) userMap[uid].streak = summary.streak;
+            if (summary.wins        !== undefined) userMap[uid].wins        = summary.wins;
+            if (summary.streak      !== undefined) userMap[uid].streak      = summary.streak;
+            // Use summary as source of truth for cross-category totals — the GSI query
+            // only covers one category so its running sum would be incomplete.
+            if (summary.totalScore  !== undefined) userMap[uid].totalScore  = summary.totalScore;
+            if (summary.gamesPlayed !== undefined) userMap[uid].gamesPlayed = summary.gamesPlayed;
+            if (summary.bestScore   !== undefined) userMap[uid].bestScore   = summary.bestScore;
           }
-        } catch (_) { /* summary not yet created — leave wins/streak as null */ }
+        } catch (_) { /* summary not yet created — GSI-computed values remain as fallback */ }
       }));
 
       leaderboard = Object.values(userMap)
