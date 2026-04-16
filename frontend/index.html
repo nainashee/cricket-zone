@@ -857,6 +857,10 @@ const BATTERS=[
 const VIDEO_BATTERS=BATTERS.filter(b=>['azam','tendulkar','pietersen'].includes(b.id));
 
 const MAX_G=5,BLITZ_T=15,PTS=[100,75,50,25,15],PTS_BAT=[200,150,100,50,25];
+const TRIVIA_Q_COUNT=3;
+const TRIVIA_PTS_PER_Q=20;
+const TRIVIA_TIMER_SECS=20;
+const TRIVIA_LS_KEY='howzat_trivia_last_played';
 const G={mode:'classic',category:'bowling',queue:[],idx:0,bowler:null,guesses:[],cluesLit:0,score:0,correct:0,results:[],timer:null,tLeft:BLITZ_T,pick:'',pickName:'',triviaScore:0,triviaAnswers:[],triviaQuestions:[],triviaTimer:null,triviaTimeLeft:TRIVIA_TIMER_SECS};
 let allBowlers=[];
 let allBatters=[];
@@ -1836,11 +1840,6 @@ async function saveScoreAsGuest(){
 }
 
 // ── Trivia ────────────────────────────────────────────────────────────────
-
-const TRIVIA_Q_COUNT=3;
-const TRIVIA_PTS_PER_Q=20;
-const TRIVIA_TIMER_SECS=20;
-const TRIVIA_LS_KEY='howzat_trivia_last_played';
 
 const TRIVIA_FALLBACK=[
   {question:'How many players are in a cricket team?',options:['A. 9','B. 10','C. 11','D. 12'],answer:'C',explanation:'A cricket team consists of 11 players on each side.'},
