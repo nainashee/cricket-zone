@@ -86,6 +86,7 @@ main{position:relative;z-index:1;}
 .cat-card:nth-child(1){animation-delay:0.55s;}
 .cat-card:nth-child(2){animation-delay:0.65s;}
 .cat-card:nth-child(3){animation-delay:0.75s;}
+.cat-card:nth-child(4){animation-delay:0.85s;}
 .cat-card.live{cursor:pointer;}
 .cat-card.live:hover{border-color:var(--border);transform:translateY(-4px);box-shadow:0 20px 50px rgba(0,0,0,0.5),0 0 0 1px var(--border);}
 .cat-card.soon{opacity:0.4;filter:saturate(0.2);cursor:not-allowed;}
@@ -635,16 +636,6 @@ video{width:100%;aspect-ratio:1/1;object-fit:cover;}
         </div>
       </div>
 
-      <div class="cat-card soon">
-        <div class="cat-banner cb-cel"><div class="cb-glow"></div><span class="cb-icon">🎉</span></div>
-        <div class="cat-body">
-          <span class="cat-tag ct-soon">Coming Soon</span>
-          <span class="cat-name">GUESS THE<br>CELEBRATION</span>
-          <p class="cat-desc">Iconic wicket celebrations, century dances, and team moments. The most joyful cricket challenge.</p>
-          <div class="cat-foot"><span class="cat-meta">V3 · In Development</span></div>
-        </div>
-      </div>
-
       <div class="cat-card live trivia-card" id="triviaCard" onclick="tryStartTrivia()">
         <div class="cat-banner cb-trivia"><div class="cb-glow"></div><span class="cb-icon">🧠</span></div>
         <div class="cat-body">
@@ -657,6 +648,16 @@ video{width:100%;aspect-ratio:1/1;object-fit:cover;}
             <div class="cat-arr" id="triviaCardArr" style="background:#a855f7;">→</div>
           </div>
           <p class="cat-desc" id="triviaPlayedMsg" style="display:none;color:#a855f7;font-size:0.72rem;margin-top:0.5rem;">Come back tomorrow for new questions · Resets at midnight</p>
+        </div>
+      </div>
+
+      <div class="cat-card soon">
+        <div class="cat-banner cb-cel"><div class="cb-glow"></div><span class="cb-icon">🎉</span></div>
+        <div class="cat-body">
+          <span class="cat-tag ct-soon">Coming Soon</span>
+          <span class="cat-name">GUESS THE<br>CELEBRATION</span>
+          <p class="cat-desc">Iconic wicket celebrations, century dances, and team moments. The most joyful cricket challenge.</p>
+          <div class="cat-foot"><span class="cat-meta">V4 · In Development</span></div>
         </div>
       </div>
 
