@@ -237,6 +237,16 @@ video{width:100%;aspect-ratio:1/1;object-fit:cover;}
 
 /* ── TRIVIA ── */
 #triviaScreen,#triviaResultScreen{max-width:680px;margin:0 auto;padding:2rem 1.5rem 5rem;}
+/* trivia timer */
+.triv-timer-wrap{margin-bottom:1.4rem;}
+.triv-timer-bar{height:5px;background:var(--surface2);border-radius:100px;overflow:hidden;margin-bottom:0.38rem;}
+.triv-timer-fill{height:100%;border-radius:100px;background:var(--accent);transition:width 0.1s linear,background 0.4s;}
+.triv-timer-fill.urg{background:var(--red);}
+.triv-timer-num{font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--text3);text-align:right;}
+/* trivia card played state */
+.cat-card.trivia-card.played{cursor:default;opacity:0.55;filter:saturate(0.25);}
+.cat-card.trivia-card.played:hover{transform:none;box-shadow:0 0 28px rgba(168,85,247,0.06);border-color:rgba(168,85,247,0.2);}
+.triv-done-badge{background:rgba(168,85,247,0.1);border:1px solid rgba(168,85,247,0.28);color:#a855f7;border-radius:100px;padding:0.22rem 0.7rem;font-family:'DM Mono',monospace;font-size:0.65rem;letter-spacing:0.08em;display:none;align-items:center;gap:0.3rem;}
 .triv-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.8rem;}
 .triv-label{font-family:'DM Mono',monospace;font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--accent);}
 .triv-prog{display:flex;gap:6px;}
@@ -596,16 +606,18 @@ video{width:100%;aspect-ratio:1/1;object-fit:cover;}
         </div>
       </div>
 
-      <div class="cat-card live trivia-card" id="triviaCard" onclick="startTriviaGame()">
+      <div class="cat-card live trivia-card" id="triviaCard" onclick="tryStartTrivia()">
         <div class="cat-banner cb-trivia"><div class="cb-glow"></div><span class="cb-icon">🧠</span></div>
         <div class="cat-body">
           <span class="cat-tag ct-trivia">Quiz</span>
           <span class="cat-name">CRICKET<br>TRIVIA</span>
-          <p class="cat-desc">10 questions. Rules, records, history, legends — test how well you really know the game.</p>
+          <p class="cat-desc">3 daily questions. Rules, records, history, legends — test how well you really know the game.</p>
           <div class="cat-foot">
-            <span class="cat-meta">10 questions · 100 pts each</span>
-            <div class="cat-arr" style="background:#a855f7;">→</div>
+            <span class="cat-meta" id="triviaCardMeta">3 questions · 20 pts each · Daily</span>
+            <div class="triv-done-badge" id="triviaDoneBadge">✓ Done today</div>
+            <div class="cat-arr" id="triviaCardArr" style="background:#a855f7;">→</div>
           </div>
+          <p class="cat-desc" id="triviaPlayedMsg" style="display:none;color:#a855f7;font-size:0.72rem;margin-top:0.5rem;">Come back tomorrow for new questions · Resets at midnight</p>
         </div>
       </div>
 
@@ -760,6 +772,10 @@ video{width:100%;aspect-ratio:1/1;object-fit:cover;}
     <span class="triv-label">Cricket Trivia</span>
     <div class="triv-prog" id="trivProg"></div>
   </div>
+  <div class="triv-timer-wrap">
+    <div class="triv-timer-bar"><div class="triv-timer-fill" id="trivTimerFill"></div></div>
+    <div class="triv-timer-num" id="trivTimerNum">20s</div>
+  </div>
   <div class="triv-q" id="trivQuestion"></div>
   <div class="triv-opts" id="trivOpts"></div>
 </div>
@@ -841,7 +857,7 @@ const BATTERS=[
 const VIDEO_BATTERS=BATTERS.filter(b=>['azam','tendulkar','pietersen'].includes(b.id));
 
 const MAX_G=5,BLITZ_T=15,PTS=[100,75,50,25,15],PTS_BAT=[200,150,100,50,25];
-const G={mode:'classic',category:'bowling',queue:[],idx:0,bowler:null,guesses:[],cluesLit:0,score:0,correct:0,results:[],timer:null,tLeft:BLITZ_T,pick:'',pickName:'',triviaScore:0,triviaAnswers:[],triviaQuestions:[]};
+const G={mode:'classic',category:'bowling',queue:[],idx:0,bowler:null,guesses:[],cluesLit:0,score:0,correct:0,results:[],timer:null,tLeft:BLITZ_T,pick:'',pickName:'',triviaScore:0,triviaAnswers:[],triviaQuestions:[],triviaTimer:null,triviaTimeLeft:TRIVIA_TIMER_SECS};
 let allBowlers=[];
 let allBatters=[];
 let allTrivia=[];
@@ -855,6 +871,7 @@ async function boot(){
   refreshH();refreshLS();
   applyDailyCardState();
   applyBattingCardState();
+  applyTriviaCardState();
   tickDailyCountdown();
   setInterval(tickDailyCountdown,1000);
   loadCardPreviews();
@@ -953,7 +970,7 @@ function refreshLS(){
 }
 
 function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo({top:0,behavior:'smooth'});}
-function showLanding(){stopTimer();refreshLS();showScreen('landingScreen');loadTop5();loadAllTime();}
+function showLanding(){stopTimer();stopTriviaTimer();refreshLS();showScreen('landingScreen');loadTop5();loadAllTime();}
 function showAccount(){closeProfileDropdown();showScreen('accountScreen');loadAccountStats();}
 async function loadAccountStats(){
   const el=document.getElementById('accountContent');
@@ -1820,8 +1837,10 @@ async function saveScoreAsGuest(){
 
 // ── Trivia ────────────────────────────────────────────────────────────────
 
-const TRIVIA_Q_COUNT=10;
-const TRIVIA_PTS_PER_Q=100;
+const TRIVIA_Q_COUNT=3;
+const TRIVIA_PTS_PER_Q=20;
+const TRIVIA_TIMER_SECS=20;
+const TRIVIA_LS_KEY='howzat_trivia_last_played';
 
 const TRIVIA_FALLBACK=[
   {question:'How many players are in a cricket team?',options:['A. 9','B. 10','C. 11','D. 12'],answer:'C',explanation:'A cricket team consists of 11 players on each side.'},
@@ -1836,7 +1855,68 @@ const TRIVIA_FALLBACK=[
   {question:'Which country won the 2007 ICC T20 World Cup?',options:['A. Australia','B. Pakistan','C. India','D. West Indies'],answer:'C',explanation:'India won the inaugural ICC T20 World Cup in 2007, held in South Africa, defeating Pakistan in the final.'},
 ];
 
+function hasTriviaPlayed(){
+  const last=localStorage.getItem(TRIVIA_LS_KEY);
+  if(!last)return false;
+  return last===new Date().toISOString().split('T')[0];
+}
+function markTriviaPlayed(){
+  localStorage.setItem(TRIVIA_LS_KEY,new Date().toISOString().split('T')[0]);
+}
+function applyTriviaCardState(){
+  const card=document.getElementById('triviaCard');
+  const badge=document.getElementById('triviaDoneBadge');
+  const arr=document.getElementById('triviaCardArr');
+  const msg=document.getElementById('triviaPlayedMsg');
+  const meta=document.getElementById('triviaCardMeta');
+  if(hasTriviaPlayed()){
+    card.classList.add('played');
+    if(badge)badge.style.display='flex';
+    if(arr)arr.style.display='none';
+    if(msg)msg.style.display='block';
+    if(meta)meta.style.display='none';
+  }else{
+    card.classList.remove('played');
+    if(badge)badge.style.display='none';
+    if(arr)arr.style.display='flex';
+    if(msg)msg.style.display='none';
+    if(meta)meta.style.display='inline';
+  }
+}
+function tryStartTrivia(){
+  if(hasTriviaPlayed())return;
+  startTriviaGame();
+}
+
+function startTriviaTimer(){
+  stopTriviaTimer();
+  G.triviaTimeLeft=TRIVIA_TIMER_SECS;
+  _updateTriviaTimerUI();
+  G.triviaTimer=setInterval(tickTriviaTimer,100);
+}
+function stopTriviaTimer(){
+  if(G.triviaTimer){clearInterval(G.triviaTimer);G.triviaTimer=null;}
+}
+function tickTriviaTimer(){
+  G.triviaTimeLeft=Math.max(0,G.triviaTimeLeft-0.1);
+  _updateTriviaTimerUI();
+  if(G.triviaTimeLeft<=0){
+    stopTriviaTimer();
+    submitTriviaAnswer(null); // timeout — null answer
+  }
+}
+function _updateTriviaTimerUI(){
+  const fill=document.getElementById('trivTimerFill');
+  const num=document.getElementById('trivTimerNum');
+  if(!fill||!num)return;
+  const pct=(G.triviaTimeLeft/TRIVIA_TIMER_SECS)*100;
+  fill.style.width=pct+'%';
+  fill.classList.toggle('urg',G.triviaTimeLeft<=6);
+  num.textContent=Math.ceil(G.triviaTimeLeft)+'s';
+}
+
 function startTriviaGame(){
+  stopTriviaTimer();
   const pool=allTrivia.length>=TRIVIA_Q_COUNT?allTrivia:TRIVIA_FALLBACK;
   const shuffled=[...pool];
   for(let i=shuffled.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[shuffled[i],shuffled[j]]=[shuffled[j],shuffled[i]];}
@@ -1864,14 +1944,16 @@ function renderTriviaQuestion(){
       <span>${text}</span>
     </button>`;
   }).join('');
+  startTriviaTimer();
 }
 
 function submitTriviaAnswer(letter){
+  stopTriviaTimer();
   const idx=G.triviaAnswers.length;
   const q=G.triviaQuestions[idx];
   if(!q)return;
-  G.triviaAnswers.push(letter);
-  if(letter===q.answer)G.triviaScore+=TRIVIA_PTS_PER_Q;
+  G.triviaAnswers.push(letter); // null = timed out
+  if(letter!==null&&letter===q.answer)G.triviaScore+=TRIVIA_PTS_PER_Q;
   if(G.triviaAnswers.length<G.triviaQuestions.length){
     renderTriviaQuestion();
   }else{
@@ -1880,30 +1962,35 @@ function submitTriviaAnswer(letter){
 }
 
 function showTriviaResults(){
+  stopTriviaTimer();
+  markTriviaPlayed();
+  applyTriviaCardState();
   showScreen('triviaResultScreen');
   document.getElementById('trivResScore').textContent=G.triviaScore;
-  const correct=G.triviaAnswers.filter((a,i)=>a===G.triviaQuestions[i].answer).length;
+  const correct=G.triviaAnswers.filter((a,i)=>a!==null&&a===G.triviaQuestions[i].answer).length;
   document.getElementById('trivResLine').innerHTML=`You got <strong>${correct} of ${G.triviaQuestions.length}</strong> correct`;
   document.getElementById('trivResList').innerHTML=G.triviaQuestions.map((q,i)=>{
     const chosen=G.triviaAnswers[i];
-    const isRight=chosen===q.answer;
-    const chosenText=q.options.find(o=>o.startsWith(chosen+'.'))?.replace(/^[A-D]\.\s*/,'')||chosen;
+    const isRight=chosen!==null&&chosen===q.answer;
+    const timedOut=chosen===null;
+    const chosenText=timedOut?null:q.options.find(o=>o.startsWith(chosen+'.'))?.replace(/^[A-D]\.\s*/,'')||chosen;
     const correctText=q.options.find(o=>o.startsWith(q.answer+'.'))?.replace(/^[A-D]\.\s*/,'')||q.answer;
     return`<div class="triv-res-row ${isRight?'correct':'wrong'}">
       <div class="triv-res-header">
         <div class="triv-res-q">${q.question}</div>
-        <div class="triv-res-badge ${isRight?'ok':'no'}">${isRight?'+100':'0 pts'}</div>
+        <div class="triv-res-badge ${isRight?'ok':'no'}">${isRight?'+'+TRIVIA_PTS_PER_Q:'0 pts'}</div>
       </div>
-      ${isRight
-        ?`<div class="triv-res-ans">Your answer: <strong>${chosen}. ${chosenText}</strong> ✓</div>`
-        :`<div class="triv-res-ans">Your answer: <strong>${chosen}. ${chosenText}</strong> · Correct: <strong>${q.answer}. ${correctText}</strong></div>`
+      ${timedOut
+        ?`<div class="triv-res-ans" style="color:var(--red)">⏱ Time's up! · Correct: <strong>${q.answer}. ${correctText}</strong></div>`
+        :isRight
+          ?`<div class="triv-res-ans">Your answer: <strong>${chosen}. ${chosenText}</strong> ✓</div>`
+          :`<div class="triv-res-ans">Your answer: <strong>${chosen}. ${chosenText}</strong> · Correct: <strong>${q.answer}. ${correctText}</strong></div>`
       }
       <div class="triv-res-exp">${q.explanation}</div>
     </div>`;
   }).join('');
-  // Buttons
+  // Buttons — no Play Again since it's a daily limit
   document.getElementById('trivResActions').innerHTML=`
-    <button class="btn-p" onclick="startTriviaGame()">Play Again</button>
     <button class="btn-s" onclick="showLanding()">← Home</button>`;
   // Save + load leaderboard
   saveTriviaScore();
@@ -2267,6 +2354,7 @@ function tickDailyCountdown(){
     // New day — clear daily play records and any cached daily data, then reload
     localStorage.removeItem('howzat_last_played');
     localStorage.removeItem('howzat_batting_last_played');
+    localStorage.removeItem(TRIVIA_LS_KEY);
     Object.keys(localStorage).filter(k=>k.startsWith('howzat_daily_')).forEach(k=>localStorage.removeItem(k));
     location.reload();return;
   }
