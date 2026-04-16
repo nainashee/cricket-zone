@@ -2176,13 +2176,20 @@ async function loadLeaderboard(){
     let html=renderSection(bowlingScores,'🏏 Bowling');
     html+=`<div style="border-top:2px solid var(--border2);"></div>`;
     html+=renderSection(battingScores,'🏃 Batting');
-    // Combined section — merge both categories by userId (same source as above)
+    // Combined section — merge bowling + batting + trivia by userId
+    const [trivRes]=await Promise.all([fetch(`${API}/leaderboard?category=trivia`)]);
+    const trivScores=(await trivRes.json()).leaderboard||[];
     const map={};
     for(const s of bowlingScores){
       if(!map[s.userId])map[s.userId]={...s,score:0};
       map[s.userId].score+=s.score||0;
     }
     for(const s of battingScores){
+      if(!map[s.userId])map[s.userId]={...s,score:0};
+      else{if(s.playerName)map[s.userId].playerName=s.playerName;if(s.pictureUrl)map[s.userId].pictureUrl=s.pictureUrl;}
+      map[s.userId].score+=s.score||0;
+    }
+    for(const s of trivScores){
       if(!map[s.userId])map[s.userId]={...s,score:0};
       else{if(s.playerName)map[s.userId].playerName=s.playerName;if(s.pictureUrl)map[s.userId].pictureUrl=s.pictureUrl;}
       map[s.userId].score+=s.score||0;
@@ -2349,17 +2356,21 @@ function renderTop5(tab){
   if(tab==='combined'){
     const map={};
     for(const s of(_top5Cache.bowling||[])){
-      if(!map[s.userId])map[s.userId]={...s,bowlingScore:0,bowlingTrivia:0,battingScore:0,battingTrivia:0,score:0};
+      if(!map[s.userId])map[s.userId]={...s,bowlingScore:0,battingScore:0,triviaGameScore:0,score:0};
       map[s.userId].bowlingScore=s.score||0;
-      map[s.userId].bowlingTrivia=s.triviaScore||0;
-      map[s.userId].score+=(s.score||0)+(s.triviaScore||0);
+      map[s.userId].score+=s.score||0;
     }
     for(const s of(_top5Cache.batting||[])){
-      if(!map[s.userId]){map[s.userId]={...s,bowlingScore:0,bowlingTrivia:0,battingScore:0,battingTrivia:0,score:0};}
+      if(!map[s.userId]){map[s.userId]={...s,bowlingScore:0,battingScore:0,triviaGameScore:0,score:0};}
       else{if(s.playerName)map[s.userId].playerName=s.playerName;if(s.pictureUrl)map[s.userId].pictureUrl=s.pictureUrl;}
       map[s.userId].battingScore=s.score||0;
-      map[s.userId].battingTrivia=s.triviaScore||0;
-      map[s.userId].score+=(s.score||0)+(s.triviaScore||0);
+      map[s.userId].score+=s.score||0;
+    }
+    for(const s of(_top5Cache.trivia||[])){
+      if(!map[s.userId]){map[s.userId]={...s,bowlingScore:0,battingScore:0,triviaGameScore:0,score:0};}
+      else{if(s.playerName)map[s.userId].playerName=s.playerName;if(s.pictureUrl)map[s.userId].pictureUrl=s.pictureUrl;}
+      map[s.userId].triviaGameScore=s.score||0;
+      map[s.userId].score+=s.score||0;
     }
     scores=Object.values(map).sort((a,b)=>b.score-a.score).slice(0,5);
   }else if(tab==='trivia'){
@@ -2386,10 +2397,11 @@ function renderTop5(tab){
     let subtext='';
     const trivPts=s.triviaScore||0;
     const displayTotal=tab==='combined'?s.score:(s.score||0)+trivPts;
-    if(tab==='combined'&&(s.bowlingScore||s.battingScore)){
+    if(tab==='combined'&&(s.bowlingScore||s.battingScore||s.triviaGameScore)){
       const parts=[];
-      if(s.bowlingScore){const bt=s.bowlingTrivia||0;parts.push(`🏏 ${s.bowlingScore}${bt?` +${bt}T`:''}`);}
-      if(s.battingScore){const bt=s.battingTrivia||0;parts.push(`🏃 ${s.battingScore}${bt?` +${bt}T`:''}`);}
+      if(s.bowlingScore)parts.push(`🏏 ${s.bowlingScore}`);
+      if(s.battingScore)parts.push(`🏃 ${s.battingScore}`);
+      if(s.triviaGameScore)parts.push(`🧠 ${s.triviaGameScore}`);
       if(parts.length>1)subtext=`<div class="top5-subtext" style="margin-top:0.1rem;">${parts.join(' · ')}</div>`;
     }
     const scoreColor=tab==='trivia'?'#a855f7':'var(--accent)';
@@ -2436,14 +2448,31 @@ async function loadAllTime(){
   const el=document.getElementById('allTimeList');
   if(!el)return;
   try{
-    const res=await fetch(`${API}/leaderboard?category=bowling&alltime=true`);
-    const data=await res.json();
+    const [bowlRes,batRes,trivRes]=await Promise.all([
+      fetch(`${API}/leaderboard?category=bowling&alltime=true`),
+      fetch(`${API}/leaderboard?category=batting&alltime=true`),
+      fetch(`${API}/leaderboard?category=trivia&alltime=true`)
+    ]);
+    const [bowlData,batData,trivData]=await Promise.all([bowlRes.json(),batRes.json(),trivRes.json()]);
+    // Merge all categories by userId — each user's #summary is the source of truth for their total.
+    // Bowling/batting queries return summary data; trivia query surfaces trivia-only players.
+    const allMap={};
+    for(const s of(bowlData.leaderboard||[]))allMap[s.userId]=s;
+    for(const s of(batData.leaderboard||[])){
+      if(!allMap[s.userId])allMap[s.userId]=s;
+      // else bowling already has the authoritative #summary — skip
+    }
+    for(const s of(trivData.leaderboard||[])){
+      if(!allMap[s.userId])allMap[s.userId]=s; // trivia-only player
+    }
+    const merged=Object.values(allMap).sort((a,b)=>(b.score||0)-(a.score||0)).slice(0,20);
     const currentUserId=getCurrentUserId();
 
-    if(!data.leaderboard||!data.leaderboard.length){
+    if(!merged.length){
       el.innerHTML='<div class="top5-empty">No scores yet — be the first to register and play! 🏏</div>';
       return;
     }
+    const data={leaderboard:merged};
 
     function rankColor(i){
       if(i===0)return'var(--gold)';
@@ -2467,8 +2496,8 @@ async function loadAllTime(){
       const statsLine=statsParts.length
         ?`<div class="top5-stats-row">${statsParts.map(p=>`<span class="top5-stat">${p}</span>`).join('')}</div>`
         :'';
-      const atTriviaScore=s.triviaScore||0;
-      const atTotal=(s.score||0)+atTriviaScore;
+      // s.score = summary.totalScore (authoritative sum of all game types incl. trivia)
+      const atTotal=s.score||0;
       return`<div class="top5-row${isMe?' me':''}">
         <div class="top5-left">
           <span class="top5-rank" style="color:${isMe?'var(--accent)':rankColor(i)}">${medal||i+1}</span>
@@ -2480,7 +2509,6 @@ async function loadAllTime(){
         </div>
         <div class="top5-right">
           <div style="display:flex;flex-direction:column;align-items:flex-end;gap:0.05rem;">
-            ${atTriviaScore>0?`<span style="font-family:'DM Mono',monospace;font-size:0.6rem;color:#f59e0b;letter-spacing:0.06em;">+${atTriviaScore} trivia</span>`:''}
             <span style="font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--accent);letter-spacing:0.08em;line-height:1.2;">TOTAL</span>
             <span class="top5-score">${atTotal}</span>
           </div>
