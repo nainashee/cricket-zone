@@ -859,13 +859,13 @@ video{width:100%;aspect-ratio:1/1;object-fit:cover;}
   <div class="fin-score" id="finScore">0</div>
   <div class="fin-grid" id="finGrid"></div>
   <div class="share-card" id="finShare"></div>
+  <div id="finPlayNext"></div>
   <div style="text-align:left;margin-bottom:1.4rem;">
     <p style="font-family:'DM Mono',monospace;font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--text3);margin-bottom:0.7rem;">Today's Leaderboard</p>
     <div style="background:var(--surface);border:1px solid var(--border2);border-radius:14px;overflow:hidden;" id="lbList">
       <p style="color:var(--text3);font-size:0.78rem;font-family:'DM Mono',monospace;padding:0.9rem;">Loading leaderboard...</p>
     </div>
   </div>
-  <div id="finPlayNext"></div>
   <div class="fin-btns">
     <button class="btn-p" onclick="startGame(G.mode)">Play Again</button>
     <button class="btn-p" onclick="copyShare('f')">Share</button>
@@ -2019,7 +2019,8 @@ function renderTriviaQuestion(){
   ).join('');
   document.getElementById('trivQuestion').textContent=`${idx+1}. ${q.question}`;
   const letters=['A','B','C','D'];
-  document.getElementById('trivOpts').innerHTML=q.options.map((opt,i)=>{
+  const optsEl=document.getElementById('trivOpts');
+  optsEl.innerHTML=q.options.map((opt,i)=>{
     const letter=letters[i];
     const text=opt.replace(/^[A-D]\.\s*/,'');
     return`<button class="triv-opt" data-letter="${letter}" onclick="submitTriviaAnswer('${letter}')">
@@ -2027,6 +2028,10 @@ function renderTriviaQuestion(){
       <span>${text}</span>
     </button>`;
   }).join('');
+  // Briefly block pointer events so the cursor's resting position can't
+  // bleed hover state from the previous answer onto the fresh buttons
+  optsEl.style.pointerEvents='none';
+  setTimeout(()=>{optsEl.style.pointerEvents='';},180);
   startTriviaTimer();
 }
 
