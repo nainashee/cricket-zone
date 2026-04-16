@@ -1,13 +1,17 @@
 # 🏏 Howzat — Know Your Legends
 ### [playhowzat.com](https://playhowzat.com)
 
-A cricket trivia game where players identify legendary cricketers from their silhouette alone. Two daily challenges — bowlers and batters — with three game modes. Built as a full-stack AWS cloud engineering portfolio project.
+A cricket challenge platform where players identify legendary cricketers from silhouette videos and test their cricket knowledge in a rapid-fire trivia mode. Three daily challenges — Bowler, Batter, and Trivia — with multiple game modes. Built as a full-stack AWS cloud engineering portfolio project.
 
 ---
 
 ## 🎮 The Game
 
-Guess the cricketer from their silhouette video. Two daily challenges (Bowler + Batter), three game modes, and a 277-name autocomplete list spanning legends across every era.
+Three daily challenges — one resets at midnight, they're all gone for the day once played.
+
+### Silhouette Challenges (Bowling + Batting)
+
+Guess the cricketer from their silhouette video. Three game modes, autocomplete from 300+ legend names.
 
 | Mode | Players | Rules |
 |------|---------|-------|
@@ -15,7 +19,7 @@ Guess the cricketer from their silhouette video. Two daily challenges (Bowler + 
 | **Blitz** | 3 per category | 15 second timer per player, pure instinct |
 | **Daily** | 1 per category | Same player for everyone worldwide, resets at midnight UTC |
 
-### Scoring
+#### Scoring
 
 | Guess | Bowling | Batting |
 |-------|---------|---------|
@@ -25,11 +29,15 @@ Guess the cricketer from their silhouette video. Two daily challenges (Bowler + 
 | 4th correct | 25 pts | 50 pts |
 | 5th correct | 15 pts | 25 pts |
 
-### Bowling Legends (15 total, 3 with video)
+#### Bowling Legends (15 total, 3 with video)
 Malinga · Bumrah · Warne · Muralitharan · Shoaib Akhtar · Wasim Akram · McGrath · Kumble · Starc · Steyn · Rabada · Boult · Anderson · Harbhajan · Waqar Younis
 
-### Batting Legends (3 with video)
+#### Batting Legends (3 with video)
 Babar Azam · Sachin Tendulkar · Kevin Pietersen
+
+### Cricket Trivia
+
+Rapid-fire daily quiz. 3 questions, 20 seconds each, 20 points per correct answer (max 60/day). Questions drawn from a 360-question pool covering rules, records, history, and legends. Timer bar turns red in the final 6 seconds. Auto-advances on timeout — if you freeze, the round moves on without you.
 
 ---
 
@@ -98,7 +106,7 @@ GET      POST       GET          GET            GET          DELETE
 - **CloudWatch** — Lambda execution logging
 
 ### Design Principles
-- **Category-extensible** — All data keyed by `category` parameter. Bowling is V1. Batting (V2) and Celebrations (V3) slot in with zero infrastructure changes.
+- **Category-extensible** — All data keyed by `category` parameter. Bowling is V1. Batting (V2), Trivia (V3), and Celebrations (V4) slot in with zero infrastructure changes.
 - **Serverless** — No servers to manage. Scales to zero when idle, scales automatically under load.
 - **Infrastructure as Code** — All AWS resources provisioned via Terraform with local state.
 - **Automated deploys** — GitHub Actions pipeline: push to `main` → S3 sync → CloudFront cache invalidation.
@@ -133,12 +141,13 @@ Players can play as a guest or create a free account.
 
 ## 📊 Leaderboard
 
-**Today's Top 5** — shown on the leaderboard page with three tabs:
+**Today's Top 5** — shown on the landing page with four tabs:
 - **Bowl** — highest bowling score per player today
 - **Bat** — highest batting score per player today
-- **Total** — combined bowling + batting score per player today
+- **Trivia** — highest trivia score per player today
+- **Total** — combined bowling + batting + trivia score per player today; breakdown shows `🏏 / 🏃 / 🧠` contributions
 
-**Hall of Fame** — all-time rankings by cumulative total score. Each entry shows games played, best single score, current streak, and win rate.
+**Hall of Fame** — all-time rankings by cumulative total score across all game types. Each entry shows games played, best single score, current streak, and win rate.
 
 **Streak** — increments once per calendar day when the player wins (scores > 0). Playing multiple games in the same day does not multiply the streak. Missing a day resets it to 0.
 
@@ -296,7 +305,8 @@ Requires GitHub secrets: `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `S3_BUCKE
 - [x] **Phase 5** — User accounts (Cognito), Google Sign-In, email verification, avatar upload, guest score migration
 - [x] **Phase 6** — Hall of Fame cumulative stats, cross-device played-today sync, player stats (streak, win rate, best score)
 - [x] **Phase 7 (V2)** — Guess the Batter category (independent daily seed, dual leaderboard tabs, 277-name autocomplete)
-- [ ] **Phase 8 (V3)** — Guess the Celebration category
+- [x] **Phase 8 (V3)** — Cricket Trivia mode (360-question pool, 20s rapid-fire timer, daily 3-question limit, answer feedback animations, trivia leaderboard tab, play-next suggestions)
+- [ ] **Phase 9 (V4)** — Guess the Celebration category
 
 ---
 
@@ -318,4 +328,4 @@ Requires GitHub secrets: `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `S3_BUCKE
 ---
 
 *Built by Hussain Ashfaque — AWS Solutions Architect Associate | Cloud Engineering Portfolio Project*
-*Live at [playhowzat.com](https://playhowzat.com) · [CHANGELOG](CHANGELOG.md) · v1.2.0*
+*Live at [playhowzat.com](https://playhowzat.com) · [CHANGELOG](CHANGELOG.md) · v1.3.0*

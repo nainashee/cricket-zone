@@ -6,14 +6,58 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [1.3.0] - 2026-04-16
+
+### Added
+
+- **Cricket Trivia mode** — fourth game card on the landing page; 3 questions per day drawn from a 360-question pool covering rules, records, history, and legends
+- **Rapid-fire timer** — 20-second countdown bar per question; if time expires the round auto-advances and marks the question as "Time's up"
+- **Answer feedback** — correct answers trigger a green bounce animation and a floating `+20 pts` badge; wrong answers trigger a red shake, reveal the correct option in green, and show a `✗ Wrong` badge; timeouts show a `⏱ Time's up` badge
+- **Trivia intro screen** — shown before each trivia session; explains the rapid-fire format with stat pills (3 questions / 20s / 20 pts each) and a Start Quiz button
+- **Trivia daily gate** — `howzat_trivia_last_played` localStorage key; card dims and shows "✓ Done today" badge after playing; resets at midnight alongside bowling and batting
+- **Trivia leaderboard tab** — `🧠 Trivia` tab on the daily Top 5 leaderboard; standalone trivia scores tracked under `category: 'trivia'` in DynamoDB
+- **Play Next suggestions** — after completing any daily game, unplayed game cards appear above "Today's Leaderboard" so players can jump straight into the next challenge; section is hidden once all three daily games are played
+- **Trivia scores in Total tab** — combined daily leaderboard now merges bowling + batting + trivia game scores; breakdown subtext shows `🏏 / 🏃 / 🧠` contributions per player
+- **Trivia-only players in Hall of Fame** — all-time leaderboard now fetches bowling, batting, and trivia categories in parallel and merges by `userId`; players who have only played trivia are no longer invisible
+
+### Changed
+
+- **Leaderboard tab order** — reordered to Bowl → Bat → Trivia → Total (⚡ Total moved to end)
+- **Landing page card order** — Bowler → Batter → Trivia → Celebration (Coming Soon); Celebration moved to last since it is not yet playable
+- **Celebration card label** — updated from V3 to V4 in development
+- **Play Next placement** — section appears above "Today's Leaderboard" on the game-complete screen, not below it
+- **Hall of Fame total** — simplified to use `summary.totalScore` directly (already the authoritative sum across all game types); removed stale `+ totalTriviaScore` double-add
+
+### Fixed
+
+- **Trivia hover bleedthrough** — after answering a question, the mouse's resting position no longer bleeds hover styling onto the fresh buttons of the next question; pointer events are briefly suspended (180ms) after each render
+- **Script crash on boot** — `TRIVIA_TIMER_SECS` was referenced in the `G` object initialiser but declared ~1000 lines later; temporal dead zone caused a `ReferenceError` that killed the entire script before `boot()` ran, preventing the auth modal from appearing; constants moved above `G`
+- **Total tab missing trivia** — daily combined leaderboard was only summing bowling + batting; trivia game scores were entirely excluded from the Total tab
+
+---
+
+## [1.2.0] - 2026-04-15
+
+### Added
+
+- **Scoring rescaled** — bowling points table `[100, 75, 50, 25, 15]`; batting `[200, 150, 100, 50, 25]`; DynamoDB wiped for a fresh start on the new scale
+- **Forest green accent colour** — accent changed from teal to `#3a7d44`; saturation tuned across two follow-up commits
+
+### Fixed
+
+- **Streak increment** — streak now increments at most once per calendar day; previously incremented once per winning game, so playing multiple daily games on the same day could inflate the streak
+- **Accent colour saturation** — two rounds of desaturation after initial green switch
+
+---
+
 ## [1.1.0] - 2026-04-14
 
 ### Added
 
 - **Batter Challenge** — second daily challenge running independently from the Bowler Challenge; uses a separate date seed (`date + 'bat'`) so the two challenges never share the same player on any given day
-- **Double points for batting** — point table `[2000, 1500, 1000, 500, 200]` vs bowling's `[1000, 750, 500, 250, 100]`
+- **Double points for batting** — point table `[200, 150, 100, 50, 25]` vs bowling's `[100, 75, 50, 25, 15]`
 - **Batting played-today gate** — separate `howzat_batting_last_played` localStorage key; state syncs and resets independently at midnight UTC
-- **`BATTERS` / `VIDEO_BATTERS` arrays** — initial batting roster: Babar Azam, Sachin Tendulkar, with full clue sets and nation/era/style metadata
+- **`BATTERS` / `VIDEO_BATTERS` arrays** — initial batting roster: Babar Azam, Sachin Tendulkar, Kevin Pietersen with full clue sets and nation/era/style metadata
 - **`frontend/assets/batters.json`** — 277 famous international batter names across all eras used for autocomplete suggestions
 - **Live video previews on challenge cards** — both Bowler Challenge and Batter Challenge cards now show a blurred looping silhouette video of today's player instead of a static icon; loaded by `loadCardPreviews()` on boot
 - **303-name bowler autocomplete** — `frontend/assets/bowlers.json` added to the frontend assets folder
