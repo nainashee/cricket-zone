@@ -77,7 +77,7 @@ export const handler = async (event) => {
         if (item.isGuest || item.userId?.startsWith('guest_')) continue;
         const uid = item.userId;
         if (!userMap[uid]) {
-          userMap[uid] = { userId: uid, playerName: item.playerName, pictureUrl: item.pictureUrl, totalScore: 0, bestScore: 0, gamesPlayed: 0, wins: null, streak: null, latestDate: '' };
+          userMap[uid] = { userId: uid, playerName: item.playerName, pictureUrl: item.pictureUrl, totalScore: 0, totalTriviaScore: 0, bestScore: 0, gamesPlayed: 0, wins: null, streak: null, latestDate: '' };
         }
         const s = item.score || 0;
         userMap[uid].totalScore += s;
@@ -98,40 +98,58 @@ export const handler = async (event) => {
             Key: { userId: uid, scoreId: '#summary' }
           }));
           if (summary) {
-            if (summary.wins        !== undefined) userMap[uid].wins        = summary.wins;
-            if (summary.streak      !== undefined) userMap[uid].streak      = summary.streak;
+            if (summary.wins             !== undefined) userMap[uid].wins             = summary.wins;
+            if (summary.streak           !== undefined) userMap[uid].streak           = summary.streak;
             // Use summary as source of truth for cross-category totals — the GSI query
             // only covers one category so its running sum would be incomplete.
-            if (summary.totalScore  !== undefined) userMap[uid].totalScore  = summary.totalScore;
-            if (summary.gamesPlayed !== undefined) userMap[uid].gamesPlayed = summary.gamesPlayed;
-            if (summary.bestScore   !== undefined) userMap[uid].bestScore   = summary.bestScore;
+            if (summary.totalScore       !== undefined) userMap[uid].totalScore       = summary.totalScore;
+            if (summary.totalTriviaScore !== undefined) userMap[uid].totalTriviaScore = summary.totalTriviaScore;
+            if (summary.gamesPlayed      !== undefined) userMap[uid].gamesPlayed      = summary.gamesPlayed;
+            if (summary.bestScore        !== undefined) userMap[uid].bestScore        = summary.bestScore;
           }
         } catch (_) { /* summary not yet created — GSI-computed values remain as fallback */ }
       }));
 
       leaderboard = Object.values(userMap)
-        .sort((a, b) => b.totalScore - a.totalScore)
+        .sort((a, b) => {
+          const aTotal = (a.totalScore || 0) + (a.totalTriviaScore || 0);
+          const bTotal = (b.totalScore || 0) + (b.totalTriviaScore || 0);
+          return bTotal - aTotal;
+        })
         .slice(0, 20)
-        .map(({ userId, playerName, pictureUrl, totalScore, bestScore, gamesPlayed, wins, streak }) => {
+        .map(({ userId, playerName, pictureUrl, totalScore, totalTriviaScore, bestScore, gamesPlayed, wins, streak }) => {
           const winRate = (gamesPlayed > 0 && wins != null) ? Math.round(wins / gamesPlayed * 100) : null;
-          return { userId, playerName, pictureUrl, score: totalScore, bestScore, gamesPlayed, streak, winRate };
+          const triviaScore = totalTriviaScore || 0;
+          return { userId, playerName, pictureUrl, score: totalScore, triviaScore, bestScore, gamesPlayed, streak, winRate };
         });
 
     } else {
       // Daily: keep only the highest single score per userId for today.
       // Guests who explicitly saved their score are included here (they are
       // excluded from all-time which requires a persistent #summary record).
+      // Comparison uses score + triviaScore so trivia contribution is ranked.
       const best = {};
       for (const item of items) {
         const uid = item.userId;
         if (!uid) continue;
-        if (!best[uid] || item.score > best[uid].score) {
+        const itemTotal = (item.score || 0) + (item.triviaScore || 0);
+        const bestTotal = best[uid] ? (best[uid].score || 0) + (best[uid].triviaScore || 0) : -1;
+        if (itemTotal > bestTotal) {
           best[uid] = item;
         }
       }
       leaderboard = Object.values(best)
-        .sort((a, b) => b.score - a.score)
-        .slice(0, 20);
+        .sort((a, b) => {
+          const aTotal = (a.score || 0) + (a.triviaScore || 0);
+          const bTotal = (b.score || 0) + (b.triviaScore || 0);
+          return bTotal - aTotal;
+        })
+        .slice(0, 20)
+        .map(item => ({
+          ...item,
+          triviaScore: item.triviaScore || 0,
+          total: (item.score || 0) + (item.triviaScore || 0),
+        }));
     }
 
     return {

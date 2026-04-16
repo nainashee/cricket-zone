@@ -13,6 +13,9 @@ export const handler = async (event) => {
   try {
     const body = JSON.parse(event.body);
     const { score, category, gameMode } = body;
+    const triviaScore = (typeof body.triviaScore === 'number' && body.triviaScore >= 0 && body.triviaScore <= 300)
+      ? Math.round(body.triviaScore)
+      : 0;
 
     if (score === undefined || !category || !gameMode) {
       return {
@@ -61,7 +64,7 @@ export const handler = async (event) => {
         return {
           statusCode: 400,
           headers,
-          body: JSON.stringify({ error: "score must be a number between 0 and 10000" })
+          body: JSON.stringify({ error: "score must be a number between 0 and 2500" })
         };
       }
 
@@ -90,6 +93,7 @@ export const handler = async (event) => {
         scoreId,
         playerName,
         score,
+        ...(triviaScore > 0 && { triviaScore }),
         category,
         gameMode,
         date,
@@ -127,13 +131,14 @@ export const handler = async (event) => {
 
       const summary = {
         userId,
-        scoreId:     '#summary',
-        totalScore:  (existing?.totalScore  || 0) + score,
-        gamesPlayed: (existing?.gamesPlayed || 0) + 1,
-        wins:        (existing?.wins        || 0) + (isWin ? 1 : 0),
-        bestScore:   Math.max(existing?.bestScore || 0, score),
-        streak:      newStreak,
-        lastPlayed:  new Date().toISOString(),
+        scoreId:          '#summary',
+        totalScore:       (existing?.totalScore       || 0) + score,
+        totalTriviaScore: (existing?.totalTriviaScore || 0) + triviaScore,
+        gamesPlayed:      (existing?.gamesPlayed      || 0) + 1,
+        wins:             (existing?.wins             || 0) + (isWin ? 1 : 0),
+        bestScore:        Math.max(existing?.bestScore || 0, score),
+        streak:           newStreak,
+        lastPlayed:       new Date().toISOString(),
         playerName,
         ...(pictureUrl !== undefined && { pictureUrl }),
       };

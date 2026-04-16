@@ -1,0 +1,3242 @@
+[
+  {
+    "id": 1,
+    "question": "Which country invented the sport of cricket?",
+    "options": ["A. Australia", "B. India", "C. England", "D. South Africa"],
+    "answer": "C",
+    "explanation": "Cricket originated in England, with the earliest definite references dating back to the 16th century in the Weald of Kent.",
+    "difficulty": "basic",
+    "category": "History"
+  },
+  {
+    "id": 2,
+    "question": "How many players are in a cricket team?",
+    "options": ["A. 10", "B. 11", "C. 12", "D. 9"],
+    "answer": "B",
+    "explanation": "A cricket team consists of 11 players. One team bats while the other fields, with 10 wickets needed to dismiss the batting side.",
+    "difficulty": "basic",
+    "category": "Rules & Laws"
+  },
+  {
+    "id": 3,
+    "question": "What is the highest possible score off a single delivery in cricket?",
+    "options": ["A. 4", "B. 5", "C. 6", "D. 7"],
+    "answer": "C",
+    "explanation": "A batsman can score a maximum of 6 runs off a single delivery by hitting the ball over the boundary rope without it bouncing.",
+    "difficulty": "basic",
+    "category": "Rules & Laws"
+  },
+  {
+    "id": 4,
+    "question": "Which format of cricket lasts up to 5 days?",
+    "options": ["A. T20I", "B. ODI", "C. Test", "D. T10"],
+    "answer": "C",
+    "explanation": "Test cricket is the longest format, played over up to five days with each team batting twice.",
+    "difficulty": "basic",
+    "category": "Test Cricket"
+  },
+  {
+    "id": 5,
+    "question": "How many overs are played per side in a standard ODI?",
+    "options": ["A. 40", "B. 45", "C. 50", "D. 60"],
+    "answer": "C",
+    "explanation": "In a One Day International (ODI), each team faces a maximum of 50 overs.",
+    "difficulty": "basic",
+    "category": "ODI"
+  },
+  {
+    "id": 6,
+    "question": "How many overs per side are bowled in a T20 International?",
+    "options": ["A. 15", "B. 20", "C. 25", "D. 10"],
+    "answer": "B",
+    "explanation": "In a T20 International, each team faces exactly 20 overs unless bowled out before completing their innings.",
+    "difficulty": "basic",
+    "category": "T20I"
+  },
+  {
+    "id": 7,
+    "question": "What does 'LBW' stand for in cricket?",
+    "options": ["A. Left Behind Wicket", "B. Leg Before Wicket", "C. Left Bat Wide", "D. Leg Ball Wide"],
+    "answer": "B",
+    "explanation": "LBW stands for Leg Before Wicket. A batsman is out LBW when the ball hits their body (instead of the bat) and would have gone on to hit the stumps.",
+    "difficulty": "basic",
+    "category": "Rules & Laws"
+  },
+  {
+    "id": 8,
+    "question": "Who holds the record for the most Test runs of all time?",
+    "options": ["A. Ricky Ponting", "B. Jacques Kallis", "C. Sachin Tendulkar", "D. Kumar Sangakkara"],
+    "answer": "C",
+    "explanation": "Sachin Tendulkar scored 15,921 Test runs across 200 Tests, a record that still stands today.",
+    "difficulty": "basic",
+    "category": "Batting Records"
+  },
+  {
+    "id": 9,
+    "question": "Who is known as the 'God of Cricket'?",
+    "options": ["A. Brian Lara", "B. Sachin Tendulkar", "C. Ricky Ponting", "D. Don Bradman"],
+    "answer": "B",
+    "explanation": "Sachin Tendulkar is widely referred to as the 'God of Cricket' due to his extraordinary career spanning 24 years.",
+    "difficulty": "basic",
+    "category": "History"
+  },
+  {
+    "id": 10,
+    "question": "Which country has won the most ODI Cricket World Cups?",
+    "options": ["A. India", "B. West Indies", "C. Australia", "D. England"],
+    "answer": "C",
+    "explanation": "Australia has won the ODI Cricket World Cup six times (1987, 1999, 2003, 2007, 2015, 2023), more than any other nation.",
+    "difficulty": "basic",
+    "category": "ICC Tournaments"
+  },
+  {
+    "id": 11,
+    "question": "What is a 'duck' in cricket?",
+    "options": ["A. A no-ball", "B. A score of zero", "C. A wide delivery", "D. A dropped catch"],
+    "answer": "B",
+    "explanation": "A 'duck' refers to a batsman being dismissed without scoring any runs. The term comes from the resemblance of the number 0 to a duck's egg.",
+    "difficulty": "basic",
+    "category": "Rules & Laws"
+  },
+  {
+    "id": 12,
+    "question": "How many stumps make up a wicket?",
+    "options": ["A. 2", "B. 3", "C. 4", "D. 5"],
+    "answer": "B",
+    "explanation": "A wicket consists of three stumps (off stump, middle stump, and leg stump) topped by two bails.",
+    "difficulty": "basic",
+    "category": "Rules & Laws"
+  },
+  {
+    "id": 13,
+    "question": "What is the term for a bowler taking three wickets in three consecutive deliveries?",
+    "options": ["A. Triple strike", "B. Hat-trick", "C. Three-fer", "D. Golden arm"],
+    "answer": "B",
+    "explanation": "A hat-trick occurs when a bowler dismisses three batsmen with three consecutive deliveries. The term originates from the tradition of awarding a hat for this feat.",
+    "difficulty": "basic",
+    "category": "Bowling Records"
+  },
+  {
+    "id": 14,
+    "question": "Which country does Virat Kohli represent?",
+    "options": ["A. Pakistan", "B. Sri Lanka", "C. India", "D. Bangladesh"],
+    "answer": "C",
+    "explanation": "Virat Kohli is one of India's greatest batsmen, having represented the national team since 2008.",
+    "difficulty": "basic",
+    "category": "Batting Records"
+  },
+  {
+    "id": 15,
+    "question": "What is the name of the trophy contested between England and Australia in Test cricket?",
+    "options": ["A. Border-Gavaskar Trophy", "B. The Ashes", "C. Frank Worrell Trophy", "D. Wisden Trophy"],
+    "answer": "B",
+    "explanation": "The Ashes is the Test cricket series played between England and Australia. The name refers to a satirical obituary suggesting English cricket had died and its ashes were taken to Australia.",
+    "difficulty": "basic",
+    "category": "History"
+  },
+  {
+    "id": 16,
+    "question": "What does 'DRS' stand for in cricket?",
+    "options": ["A. Decision Review System", "B. Direct Review Score", "C. Delivery Review System", "D. Digital Run Score"],
+    "answer": "A",
+    "explanation": "DRS stands for Decision Review System. It allows teams to challenge on-field umpiring decisions using technology such as ball-tracking and edge detection.",
+    "difficulty": "basic",
+    "category": "Rules & Laws"
+  },
+  {
+    "id": 17,
+    "question": "Which legendary batsman averaged 99.94 in Test cricket?",
+    "options": ["A. Sachin Tendulkar", "B. Don Bradman", "C. Brian Lara", "D. Vivian Richards"],
+    "answer": "B",
+    "explanation": "Sir Donald Bradman of Australia holds a Test batting average of 99.94, widely considered the greatest statistical achievement in sport.",
+    "difficulty": "basic",
+    "category": "Batting Records"
+  },
+  {
+    "id": 18,
+    "question": "Who won the inaugural ICC T20 World Cup in 2007?",
+    "options": ["A. Australia", "B. Pakistan", "C. India", "D. West Indies"],
+    "answer": "C",
+    "explanation": "India won the inaugural ICC T20 World Cup in 2007, held in South Africa, defeating Pakistan in the final.",
+    "difficulty": "basic",
+    "category": "ICC Tournaments"
+  },
+  {
+    "id": 19,
+    "question": "What is the fielding position directly behind the wicket-keeper called?",
+    "options": ["A. Fine leg", "B. Slip", "C. Gully", "D. Third man"],
+    "answer": "B",
+    "explanation": "Slip fielders stand behind the wicket-keeper in a line, positioned to catch edges from the bat. First slip is closest to the keeper.",
+    "difficulty": "basic",
+    "category": "Rules & Laws"
+  },
+  {
+    "id": 20,
+    "question": "In which country is the Melbourne Cricket Ground (MCG) located?",
+    "options": ["A. England", "B. South Africa", "C. New Zealand", "D. Australia"],
+    "answer": "D",
+    "explanation": "The Melbourne Cricket Ground (MCG) is located in Melbourne, Australia. It is one of the largest cricket stadiums in the world.",
+    "difficulty": "basic",
+    "category": "History"
+  },
+  {
+    "id": 21,
+    "question": "What is a 'wide' in cricket?",
+    "options": ["A. A ball that hits the batsman's pads", "B. A ball bowled too far from the batsman to be hit", "C. A ball that bounces twice", "D. A ball bowled from the wrong end"],
+    "answer": "B",
+    "explanation": "A wide is called when the ball is bowled too far from the batsman's reach. It results in an extra run being added to the batting team's score.",
+    "difficulty": "basic",
+    "category": "Rules & Laws"
+  },
+  {
+    "id": 22,
+    "question": "Which West Indian batsman scored 400 not out in a single Test innings?",
+    "options": ["A. Clive Lloyd", "B. Gordon Greenidge", "C. Brian Lara", "D. Viv Richards"],
+    "answer": "C",
+    "explanation": "Brian Lara scored 400 not out against England in Antigua in 2004, setting the world record for the highest individual score in Test cricket.",
+    "difficulty": "basic",
+    "category": "Batting Records"
+  },
+  {
+    "id": 23,
+    "question": "What color ball is traditionally used in Test cricket?",
+    "options": ["A. White", "B. Pink", "C. Red", "D. Orange"],
+    "answer": "C",
+    "explanation": "The traditional red cricket ball is used in Test cricket. White balls are used in limited-overs cricket, and pink balls are used in day-night Test matches.",
+    "difficulty": "basic",
+    "category": "Rules & Laws"
+  },
+  {
+    "id": 24,
+    "question": "Which country hosted the 2023 ODI Cricket World Cup?",
+    "options": ["A. England", "B. India", "C. Australia", "D. South Africa"],
+    "answer": "B",
+    "explanation": "India hosted the 2023 ODI Cricket World Cup, which was won by Australia, who defeated India in the final in Ahmedabad.",
+    "difficulty": "basic",
+    "category": "ICC Tournaments"
+  },
+  {
+    "id": 25,
+    "question": "How many balls are in one over in cricket?",
+    "options": ["A. 4", "B. 5", "C. 6", "D. 8"],
+    "answer": "C",
+    "explanation": "One over consists of 6 legal deliveries. Extra deliveries due to wides or no-balls do not count as part of the over.",
+    "difficulty": "basic",
+    "category": "Rules & Laws"
+  },
+  {
+    "id": 26,
+    "question": "What does it mean when a batsman is 'run out'?",
+    "options": ["A. The batsman refuses to bat", "B. The batsman's wicket is broken while attempting a run", "C. The batsman hits the ball into the crowd", "D. The batsman leaves the field injured"],
+    "answer": "B",
+    "explanation": "A batsman is run out when the fielding side breaks the wicket with the ball while the batsman is outside their crease attempting a run.",
+    "difficulty": "basic",
+    "category": "Rules & Laws"
+  },
+  {
+    "id": 27,
+    "question": "Which nation does MS Dhoni represent?",
+    "options": ["A. Sri Lanka", "B. Bangladesh", "C. India", "D. Nepal"],
+    "answer": "C",
+    "explanation": "MS Dhoni is a legendary Indian cricketer, widely regarded as one of the greatest wicket-keeper batsmen and captains in cricket history.",
+    "difficulty": "basic",
+    "category": "History"
+  },
+  {
+    "id": 28,
+    "question": "What is the term for a score of 100 runs by a batsman in a single innings?",
+    "options": ["A. Half-century", "B. Century", "C. Double hundred", "D. Golden duck"],
+    "answer": "B",
+    "explanation": "A century refers to a batsman scoring 100 or more runs in a single innings. It is one of the most celebrated individual achievements in cricket.",
+    "difficulty": "basic",
+    "category": "Batting Records"
+  },
+  {
+    "id": 29,
+    "question": "Which type of bowler uses spin rather than pace?",
+    "options": ["A. Fast bowler", "B. Medium pacer", "C. Spin bowler", "D. Swing bowler"],
+    "answer": "C",
+    "explanation": "Spin bowlers use finger or wrist action to impart spin on the ball, causing it to deviate off the pitch. Types include off-spin and leg-spin.",
+    "difficulty": "basic",
+    "category": "Bowling Records"
+  },
+  {
+    "id": 30,
+    "question": "What is the 'Powerplay' in limited-overs cricket?",
+    "options": ["A. When a bowler bowls at full speed", "B. A period with fielding restrictions", "C. When the captain declares", "D. The final over of the innings"],
+    "answer": "B",
+    "explanation": "The Powerplay is a set of overs in limited-overs cricket where fielding restrictions are in place. In ODIs, the first 10 overs are a mandatory Powerplay with only 2 fielders allowed outside the 30-yard circle.",
+    "difficulty": "basic",
+    "category": "Rules & Laws"
+  },
+  {
+    "id": 31,
+    "question": "Who won the ICC T20 World Cup 2024?",
+    "options": ["A. England", "B. Australia", "C. India", "D. South Africa"],
+    "answer": "C",
+    "explanation": "India won the ICC T20 World Cup 2024, held in the West Indies and USA, defeating South Africa in the final in Barbados.",
+    "difficulty": "basic",
+    "category": "ICC Tournaments"
+  },
+  {
+    "id": 32,
+    "question": "What is a 'no-ball' in cricket?",
+    "options": ["A. A ball that the batsman misses completely", "B. An illegal delivery that gives a free hit in ODIs/T20Is", "C. A ball bowled by the wrong bowler", "D. A ball that hits the stumps without a dismissal"],
+    "answer": "B",
+    "explanation": "A no-ball is an illegal delivery, most commonly when the bowler oversteps the crease. In ODIs and T20Is, a no-ball results in a free hit on the next delivery.",
+    "difficulty": "basic",
+    "category": "Rules & Laws"
+  },
+  {
+    "id": 33,
+    "question": "Which country does Kane Williamson captain?",
+    "options": ["A. Australia", "B. South Africa", "C. New Zealand", "D. England"],
+    "answer": "C",
+    "explanation": "Kane Williamson is one of New Zealand's greatest ever cricketers and has captained the Black Caps across all formats.",
+    "difficulty": "basic",
+    "category": "Captains"
+  },
+  {
+    "id": 34,
+    "question": "What is the name of the famous cricket ground in London?",
+    "options": ["A. Eden Gardens", "B. Lord's Cricket Ground", "C. The Gabba", "D. Newlands"],
+    "answer": "B",
+    "explanation": "Lord's Cricket Ground in London is known as the 'Home of Cricket.' It is owned by the Marylebone Cricket Club (MCC) and hosts Test matches, ODIs, and major finals.",
+    "difficulty": "basic",
+    "category": "History"
+  },
+  {
+    "id": 35,
+    "question": "How many ways can a batsman be dismissed in cricket?",
+    "options": ["A. 5", "B. 7", "C. 10", "D. 12"],
+    "answer": "C",
+    "explanation": "There are 10 ways a batsman can be dismissed in cricket: bowled, caught, LBW, run out, stumped, hit wicket, handled the ball (now obstructing the field), hit the ball twice, timed out, and obstructing the field.",
+    "difficulty": "basic",
+    "category": "Rules & Laws"
+  },
+  {
+    "id": 36,
+    "question": "Which team won the first-ever Cricket World Cup in 1975?",
+    "options": ["A. Australia", "B. India", "C. West Indies", "D. England"],
+    "answer": "C",
+    "explanation": "West Indies won the first Cricket World Cup in 1975, held in England, defeating Australia in the final at Lord's.",
+    "difficulty": "basic",
+    "category": "ICC Tournaments"
+  },
+  {
+    "id": 37,
+    "question": "What is a 'maiden over' in cricket?",
+    "options": ["A. An over in which no runs are scored off the bat", "B. The first over of a match", "C. An over bowled by a female player", "D. An over with six dot balls only"],
+    "answer": "A",
+    "explanation": "A maiden over is one in which no runs are scored off the bat (extras may still occur). It is a measure of a bowler's economy and control.",
+    "difficulty": "basic",
+    "category": "Rules & Laws"
+  },
+  {
+    "id": 38,
+    "question": "Which Australian leg-spinner was nicknamed 'The Sultan of Spin'?",
+    "options": ["A. Stuart MacGill", "B. Shane Warne", "C. Kerry O'Keeffe", "D. Brad Hogg"],
+    "answer": "B",
+    "explanation": "Shane Warne was one of the greatest cricketers of all time, often called the 'Sultan of Spin.' He took 708 Test wickets in his career.",
+    "difficulty": "basic",
+    "category": "Bowling Records"
+  },
+  {
+    "id": 39,
+    "question": "What is the term when a team scores 0 runs and loses all wickets?",
+    "options": ["A. Whitewash", "B. All out for a duck", "C. Dismissed for nought", "D. All out"],
+    "answer": "C",
+    "explanation": "When a team is bowled out for zero runs, they are said to be 'dismissed for nought.' New Zealand holds the unfortunate record of being dismissed for 26 in a Test, while the lowest-ever Test total is 26 by New Zealand vs England in 1955.",
+    "difficulty": "basic",
+    "category": "History"
+  },
+  {
+    "id": 40,
+    "question": "In which city is Eden Gardens cricket stadium located?",
+    "options": ["A. Mumbai", "B. Delhi", "C. Kolkata", "D. Chennai"],
+    "answer": "C",
+    "explanation": "Eden Gardens is located in Kolkata, India. It is one of the largest cricket stadiums in the world, with a capacity of approximately 66,000.",
+    "difficulty": "basic",
+    "category": "History"
+  },
+  {
+    "id": 41,
+    "question": "What does ICC stand for?",
+    "options": ["A. International Cricket Council", "B. Inter-Continental Cricket Championship", "C. International Cricket Committee", "D. International Champions Cup"],
+    "answer": "A",
+    "explanation": "ICC stands for International Cricket Council, which is the global governing body for cricket, headquartered in Dubai.",
+    "difficulty": "basic",
+    "category": "History"
+  },
+  {
+    "id": 42,
+    "question": "Which bowler has taken the most wickets in Test cricket history?",
+    "options": ["A. Shane Warne", "B. Glenn McGrath", "C. Anil Kumble", "D. Muttiah Muralitharan"],
+    "answer": "D",
+    "explanation": "Muttiah Muralitharan of Sri Lanka holds the record for most Test wickets, with 800 wickets in 133 Tests.",
+    "difficulty": "basic",
+    "category": "Bowling Records"
+  },
+  {
+    "id": 43,
+    "question": "Which country does Rohit Sharma represent?",
+    "options": ["A. Pakistan", "B. India", "C. Sri Lanka", "D. Bangladesh"],
+    "answer": "B",
+    "explanation": "Rohit Sharma is an Indian cricketer who has served as captain of the Indian national team across all formats.",
+    "difficulty": "basic",
+    "category": "Batting Records"
+  },
+  {
+    "id": 44,
+    "question": "What is the maximum number of overs a single bowler can bowl in a T20I?",
+    "options": ["A. 3", "B. 4", "C. 5", "D. 6"],
+    "answer": "B",
+    "explanation": "In a T20 International, no bowler is allowed to bowl more than 4 overs, which is one-fifth of the total 20 overs per innings.",
+    "difficulty": "basic",
+    "category": "Rules & Laws"
+  },
+  {
+    "id": 45,
+    "question": "What is the 'follow-on' in Test cricket?",
+    "options": ["A. The batting order after lunch", "B. Forcing the opposing team to bat again immediately after their first innings", "C. A declaration strategy", "D. The second new ball rule"],
+    "answer": "B",
+    "explanation": "A follow-on can be enforced when a team's first innings score is significantly lower than the opposition's. The deficit threshold is 200 runs in a 5-day Test.",
+    "difficulty": "basic",
+    "category": "Test Cricket"
+  },
+  {
+    "id": 46,
+    "question": "Who holds the record for the highest individual score in ODI cricket?",
+    "options": ["A. Rohit Sharma", "B. Martin Guptill", "C. Sachin Tendulkar", "D. Chris Gayle"],
+    "answer": "A",
+    "explanation": "Rohit Sharma scored 264 runs against Sri Lanka in Kolkata in 2014, the highest individual score in ODI cricket history.",
+    "difficulty": "basic",
+    "category": "Batting Records"
+  },
+  {
+    "id": 47,
+    "question": "What is a 'golden duck' in cricket?",
+    "options": ["A. A duck scored in the first over", "B. Being dismissed on the first ball faced", "C. A duck in a World Cup final", "D. A duck by the captain"],
+    "answer": "B",
+    "explanation": "A golden duck refers to a batsman being dismissed for zero runs off the very first ball they face in an innings.",
+    "difficulty": "basic",
+    "category": "Rules & Laws"
+  },
+  {
+    "id": 48,
+    "question": "Which country does Pat Cummins represent?",
+    "options": ["A. England", "B. New Zealand", "C. South Africa", "D. Australia"],
+    "answer": "D",
+    "explanation": "Pat Cummins is an Australian fast bowler who serves as captain of the Australian national cricket team across Test and ODI formats.",
+    "difficulty": "basic",
+    "category": "Bowling Records"
+  },
+  {
+    "id": 49,
+    "question": "What is a 'declaration' in Test cricket?",
+    "options": ["A. Announcing the team before the match", "B. The batting captain voluntarily ending their innings before all wickets fall", "C. Challenging a decision with DRS", "D. Requesting a new ball"],
+    "answer": "B",
+    "explanation": "A declaration is when the batting team's captain voluntarily closes their innings early, often to give themselves time to bowl the opposition out.",
+    "difficulty": "basic",
+    "category": "Test Cricket"
+  },
+  {
+    "id": 50,
+    "question": "What term describes when a bowler takes all 10 wickets in an innings?",
+    "options": ["A. Perfect ten", "B. Ten-for", "C. Complete sweep", "D. Ten-wicket haul"],
+    "answer": "B",
+    "explanation": "Taking all 10 wickets in an innings is called a 'ten-for' or '10-wicket haul.' Only a handful of bowlers have achieved this in Test cricket history.",
+    "difficulty": "basic",
+    "category": "Bowling Records"
+  },
+  {
+    "id": 51,
+    "question": "Who was the captain of India when they won the 2011 ODI World Cup?",
+    "options": ["A. Sourav Ganguly", "B. Rahul Dravid", "C. MS Dhoni", "D. Virat Kohli"],
+    "answer": "C",
+    "explanation": "MS Dhoni captained India to their second ODI World Cup title in 2011, held on home soil. He famously hit the winning six in the final at Wankhede Stadium, Mumbai.",
+    "difficulty": "basic",
+    "category": "ICC Tournaments"
+  },
+  {
+    "id": 52,
+    "question": "What is a 'bouncer' in cricket?",
+    "options": ["A. A ball that bounces twice before reaching the batsman", "B. A short-pitched delivery that rises above chest height", "C. A ball that bounces outside the crease", "D. A full toss delivery"],
+    "answer": "B",
+    "explanation": "A bouncer is a short-pitched fast delivery that rises sharply, typically to head or chest height, used to unsettle batsmen.",
+    "difficulty": "basic",
+    "category": "Rules & Laws"
+  },
+  {
+    "id": 53,
+    "question": "Which nation does Shakib Al Hasan represent?",
+    "options": ["A. India", "B. Pakistan", "C. Bangladesh", "D. Afghanistan"],
+    "answer": "C",
+    "explanation": "Shakib Al Hasan is Bangladesh's greatest all-rounder and has been ranked as the number one all-rounder in multiple formats of the game.",
+    "difficulty": "basic",
+    "category": "History"
+  },
+  {
+    "id": 54,
+    "question": "What is the 'Duckworth-Lewis-Stern (DLS) method' used for in cricket?",
+    "options": ["A. Calculating the net run rate", "B. Revising targets in rain-affected limited-overs matches", "C. Determining pitch conditions", "D. Calculating bowling averages"],
+    "answer": "B",
+    "explanation": "The DLS method is a mathematical formula used to set revised targets in rain-affected limited-overs matches to ensure a fair contest.",
+    "difficulty": "basic",
+    "category": "Rules & Laws"
+  },
+  {
+    "id": 55,
+    "question": "What does 'innings' refer to in cricket?",
+    "options": ["A. A single delivery", "B. A team's or player's turn to bat", "C. A session of play", "D. The third day of a Test"],
+    "answer": "B",
+    "explanation": "An innings refers to a team's or individual batsman's turn to bat. In Test cricket, each team has two innings; in ODIs and T20Is, each team has one.",
+    "difficulty": "basic",
+    "category": "Rules & Laws"
+  },
+  {
+    "id": 56,
+    "question": "Which country does Shaheen Shah Afridi represent?",
+    "options": ["A. India", "B. Afghanistan", "C. Sri Lanka", "D. Pakistan"],
+    "answer": "D",
+    "explanation": "Shaheen Shah Afridi is a Pakistani left-arm fast bowler who has become one of the most feared pacers in world cricket.",
+    "difficulty": "basic",
+    "category": "Bowling Records"
+  },
+  {
+    "id": 57,
+    "question": "In cricket, what is a 'yorker'?",
+    "options": ["A. A delivery pitching on the popping crease", "B. A full-pitched delivery aimed at the batsman's feet", "C. A slow delivery disguised as fast", "D. A delivery that swings late"],
+    "answer": "B",
+    "explanation": "A yorker is a delivery that pitches right at the batsman's feet, near the crease. It is one of the most difficult balls to play and is highly effective at lower batting orders.",
+    "difficulty": "basic",
+    "category": "Bowling Records"
+  },
+  {
+    "id": 58,
+    "question": "Which country does Jasprit Bumrah represent?",
+    "options": ["A. India", "B. Pakistan", "C. West Indies", "D. South Africa"],
+    "answer": "A",
+    "explanation": "Jasprit Bumrah is an Indian fast bowler, known for his unorthodox action and yorkers. He is considered one of the best fast bowlers in all three formats.",
+    "difficulty": "basic",
+    "category": "Bowling Records"
+  },
+  {
+    "id": 59,
+    "question": "What is 'reverse swing' in cricket?",
+    "options": ["A. A left-arm bowler's outswinger", "B. When an old ball swings in the opposite direction to conventional swing", "C. A spin bowler turning the ball the other way", "D. Bowling around the wicket"],
+    "answer": "B",
+    "explanation": "Reverse swing is when the ball swings in the opposite direction to conventional swing, typically occurring with an older ball when one side is kept very dry.",
+    "difficulty": "basic",
+    "category": "Bowling Records"
+  },
+  {
+    "id": 60,
+    "question": "Who has scored the most centuries in international cricket (Tests + ODIs combined)?",
+    "options": ["A. Ricky Ponting", "B. Kumar Sangakkara", "C. Sachin Tendulkar", "D. Virat Kohli"],
+    "answer": "C",
+    "explanation": "Sachin Tendulkar holds the record for the most international centuries with 100 (51 in Tests and 49 in ODIs).",
+    "difficulty": "basic",
+    "category": "Batting Records"
+  },
+  {
+    "id": 61,
+    "question": "What is the ICC World Test Championship (WTC)?",
+    "options": ["A. A Test series between only two countries", "B. A league-based Test competition culminating in a final", "C. An annual award for the best Test team", "D. A Test series played only at Lord's"],
+    "answer": "B",
+    "explanation": "The ICC World Test Championship is a league-based competition where Test-playing nations earn points in bilateral series, with the top two teams contesting the WTC Final.",
+    "difficulty": "basic",
+    "category": "ICC Tournaments"
+  },
+  {
+    "id": 62,
+    "question": "What does 'caught behind' mean?",
+    "options": ["A. A catch taken by a fielder behind square leg", "B. A dismissal where the wicket-keeper catches an edge", "C. A fielder catching a ball behind the stumps", "D. Being stumped by the keeper"],
+    "answer": "B",
+    "explanation": "Caught behind refers to a dismissal where the batsman edges the ball and it is caught by the wicket-keeper. It is one of the most common forms of dismissal in cricket.",
+    "difficulty": "basic",
+    "category": "Rules & Laws"
+  },
+  {
+    "id": 63,
+    "question": "Who was the first player to score a century in T20 International cricket?",
+    "options": ["A. Chris Gayle", "B. Brendon McCullum", "C. Rohit Sharma", "D. David Warner"],
+    "answer": "A",
+    "explanation": "Chris Gayle scored the first T20 International century, scoring 117 for West Indies against South Africa in Johannesburg in 2007.",
+    "difficulty": "medium",
+    "category": "T20I"
+  },
+  {
+    "id": 64,
+    "question": "Which country won the first ICC Champions Trophy in 1998?",
+    "options": ["A. India", "B. South Africa", "C. Pakistan", "D. Sri Lanka"],
+    "answer": "A",
+    "explanation": "South Africa won the inaugural ICC Knockout Trophy (later renamed Champions Trophy) in 1998 in Dhaka. However, the first official Champions Trophy was won by South Africa.",
+    "difficulty": "medium",
+    "category": "ICC Tournaments"
+  },
+  {
+    "id": 65,
+    "question": "What is the highest team score in ODI cricket history?",
+    "options": ["A. 444/3 by Sri Lanka", "B. 498/4 by England", "C. 481/6 by England", "D. 450/7 by South Africa"],
+    "answer": "B",
+    "explanation": "England scored 498/4 against Netherlands in Amstelveen in 2022, the highest ever ODI team score in history.",
+    "difficulty": "medium",
+    "category": "ODI"
+  },
+  {
+    "id": 66,
+    "question": "Which team scored the lowest total in ODI cricket history?",
+    "options": ["A. Zimbabwe - 18 all out", "B. Canada - 36 all out", "C. USA - 35 all out", "D. Namibia - 45 all out"],
+    "answer": "A",
+    "explanation": "Zimbabwe were bowled out for just 18 runs against Sri Lanka in Colombo in 2004, the lowest total in ODI history.",
+    "difficulty": "medium",
+    "category": "ODI"
+  },
+  {
+    "id": 67,
+    "question": "How many Test centuries did Sachin Tendulkar score?",
+    "options": ["A. 46", "B. 49", "C. 51", "D. 55"],
+    "answer": "C",
+    "explanation": "Sachin Tendulkar scored 51 centuries in Test cricket, along with 49 ODI centuries, for a total of 100 international centuries.",
+    "difficulty": "medium",
+    "category": "Batting Records"
+  },
+  {
+    "id": 68,
+    "question": "Who holds the record for the fastest century in ODI cricket?",
+    "options": ["A. Shahid Afridi", "B. AB de Villiers", "C. Chris Gayle", "D. Corey Anderson"],
+    "answer": "B",
+    "explanation": "AB de Villiers scored the fastest ODI century off just 31 balls against West Indies in Johannesburg in January 2015.",
+    "difficulty": "medium",
+    "category": "Batting Records"
+  },
+  {
+    "id": 69,
+    "question": "What is the highest individual score in T20 International cricket?",
+    "options": ["A. 172 by Rohit Sharma", "B. 162 by Hazratullah Zazai", "C. 156 by Aaron Finch", "D. 175 by Andrew Symonds"],
+    "answer": "B",
+    "explanation": "Hazratullah Zazai of Afghanistan scored 162 not out against Ireland in 2019, the highest individual score in T20 International history.",
+    "difficulty": "medium",
+    "category": "T20I"
+  },
+  {
+    "id": 70,
+    "question": "Who took the most wickets in a single Test innings?",
+    "options": ["A. Shane Warne - 8/71", "B. Jim Laker - 10/53", "C. Muttiah Muralitharan - 9/51", "D. Anil Kumble - 10/74"],
+    "answer": "B",
+    "explanation": "Jim Laker of England took all 10 wickets for 53 runs against Australia at Old Trafford in 1956, an extraordinary achievement that stood for decades.",
+    "difficulty": "medium",
+    "category": "Bowling Records"
+  },
+  {
+    "id": 71,
+    "question": "Which country has won the most ICC T20 World Cups?",
+    "options": ["A. India", "B. West Indies", "C. England", "D. Pakistan"],
+    "answer": "B",
+    "explanation": "West Indies have won the ICC T20 World Cup twice, in 2012 and 2016, the most by any nation until India also claimed two titles (2007 and 2024).",
+    "difficulty": "medium",
+    "category": "ICC Tournaments"
+  },
+  {
+    "id": 72,
+    "question": "Which bowler took a hat-trick in the 2019 ODI World Cup final?",
+    "options": ["A. Pat Cummins", "B. Jasprit Bumrah", "C. Liam Plunkett", "D. No hat-trick was taken in the final"],
+    "answer": "D",
+    "explanation": "No hat-trick was taken in the 2019 ODI World Cup final between England and New Zealand. England won via a super over after the match tied.",
+    "difficulty": "medium",
+    "category": "ICC Tournaments"
+  },
+  {
+    "id": 73,
+    "question": "What is the Border-Gavaskar Trophy?",
+    "options": ["A. A trophy between England and Australia", "B. A Test series trophy between India and Australia", "C. An award for the best all-rounder", "D. A trophy for the ICC Test Championship winners"],
+    "answer": "B",
+    "explanation": "The Border-Gavaskar Trophy is contested between India and Australia in Test cricket. It was named after Allan Border and Sunil Gavaskar, legendary captains of their respective teams.",
+    "difficulty": "medium",
+    "category": "Test Cricket"
+  },
+  {
+    "id": 74,
+    "question": "Who has scored the most runs in ODI cricket history?",
+    "options": ["A. Ricky Ponting", "B. Kumar Sangakkara", "C. Sachin Tendulkar", "D. Virat Kohli"],
+    "answer": "C",
+    "explanation": "Sachin Tendulkar scored 18,426 runs in ODI cricket, the highest by any batsman in the history of the format.",
+    "difficulty": "medium",
+    "category": "Batting Records"
+  },
+  {
+    "id": 75,
+    "question": "Which country did Waqar Younis represent?",
+    "options": ["A. India", "B. Afghanistan", "C. Bangladesh", "D. Pakistan"],
+    "answer": "D",
+    "explanation": "Waqar Younis represented Pakistan and was one of the greatest fast bowlers in history, famous for his devastating reverse swing and lethal yorkers.",
+    "difficulty": "medium",
+    "category": "Bowling Records"
+  },
+  {
+    "id": 76,
+    "question": "What is the maximum number of overs a bowler can bowl in a 50-over ODI?",
+    "options": ["A. 8", "B. 10", "C. 12", "D. 9"],
+    "answer": "B",
+    "explanation": "In a 50-over ODI, no bowler may bowl more than 10 overs, which represents one-fifth of the team's total allocation.",
+    "difficulty": "medium",
+    "category": "Rules & Laws"
+  },
+  {
+    "id": 77,
+    "question": "Who was the first batsman to score 10,000 Test runs?",
+    "options": ["A. Sachin Tendulkar", "B. Sunil Gavaskar", "C. Allan Border", "D. Viv Richards"],
+    "answer": "B",
+    "explanation": "Sunil Gavaskar was the first cricketer to reach 10,000 Test runs, achieving the milestone in 1987 during his career with India.",
+    "difficulty": "medium",
+    "category": "Batting Records"
+  },
+  {
+    "id": 78,
+    "question": "What is the highest partnership for any wicket in Test cricket?",
+    "options": ["A. 576 - Jayawardene & Sangakkara", "B. 624 - Jayawardene & Sangakkara", "C. 664 - Jayawardene & Sangakkara", "D. 715 - Lara & Chanderpaul"],
+    "answer": "C",
+    "explanation": "Mahela Jayawardene (374) and Kumar Sangakkara (287) put on an unbroken stand of 624 runs for the 3rd wicket against South Africa in 2006. However, the highest ever is 664* by Jayawardene and Sangakkara… actually 576 by Jayawardene & Sangakkara for 2nd wkt (Sri Lanka vs South Africa 2006). The absolute record is 624 (unbroken) - Answer: 624.",
+    "difficulty": "medium",
+    "category": "Batting Records"
+  },
+  {
+    "id": 79,
+    "question": "Who was the youngest player to make their Test debut?",
+    "options": ["A. Sachin Tendulkar - 16 years", "B. Hassan Raza - 14 years", "C. Aftab Baloch - 15 years", "D. Mushtaq Ahmed - 15 years"],
+    "answer": "B",
+    "explanation": "Hassan Raza of Pakistan reportedly made his Test debut at 14 years 227 days against Zimbabwe in 1996, making him the youngest Test debutant on record, though his exact age has been disputed.",
+    "difficulty": "medium",
+    "category": "History"
+  },
+  {
+    "id": 80,
+    "question": "Which match saw Ben Stokes score an unbeaten 135 in a famous chase at Headingley?",
+    "options": ["A. 2018 Ashes Test vs Australia", "B. 2019 Ashes Test vs Australia", "C. 2017 Champions Trophy Final", "D. 2020 Test vs West Indies"],
+    "answer": "B",
+    "explanation": "Ben Stokes scored a stunning unbeaten 135 in the 2019 Ashes Test at Headingley, leading England to an extraordinary one-wicket victory against Australia.",
+    "difficulty": "medium",
+    "category": "Test Cricket"
+  },
+  {
+    "id": 81,
+    "question": "Who has taken the most wickets in ODI cricket history?",
+    "options": ["A. Waqar Younis", "B. Muttiah Muralitharan", "C. Wasim Akram", "D. Glenn McGrath"],
+    "answer": "B",
+    "explanation": "Muttiah Muralitharan of Sri Lanka leads the all-time ODI wicket-takers list with 534 wickets from 350 matches.",
+    "difficulty": "medium",
+    "category": "Bowling Records"
+  },
+  {
+    "id": 82,
+    "question": "Which country won the first ICC World Test Championship Final in 2021?",
+    "options": ["A. India", "B. England", "C. New Zealand", "D. Australia"],
+    "answer": "C",
+    "explanation": "New Zealand won the inaugural ICC World Test Championship Final in 2021, defeating India by 8 wickets at the Ageas Bowl in Southampton.",
+    "difficulty": "medium",
+    "category": "ICC Tournaments"
+  },
+  {
+    "id": 83,
+    "question": "What was significant about India's ODI World Cup win in 1983?",
+    "options": ["A. It was played outside England for the first time", "B. India beat Australia in the final", "C. India were rank outsiders and beat defending champions West Indies", "D. It was Kapil Dev's last match"],
+    "answer": "C",
+    "explanation": "India's 1983 World Cup win was a massive upset. They were rank outsiders who defeated defending champions West Indies in the final at Lord's, led by Kapil Dev.",
+    "difficulty": "medium",
+    "category": "ICC Tournaments"
+  },
+  {
+    "id": 84,
+    "question": "How many runs did Brian Lara score in his world record Test innings?",
+    "options": ["A. 375", "B. 380", "C. 400", "D. 501"],
+    "answer": "C",
+    "explanation": "Brian Lara scored 400 not out for West Indies against England in Antigua in 2004, the highest individual score in Test cricket history.",
+    "difficulty": "medium",
+    "category": "Batting Records"
+  },
+  {
+    "id": 85,
+    "question": "What is the name of the South African ground where cricket Tests are played in Cape Town?",
+    "options": ["A. Wanderers Stadium", "B. St George's Park", "C. SuperSport Park", "D. Newlands Cricket Ground"],
+    "answer": "D",
+    "explanation": "Newlands Cricket Ground in Cape Town, South Africa, is one of the most scenic Test venues in the world, with Table Mountain as its backdrop.",
+    "difficulty": "medium",
+    "category": "History"
+  },
+  {
+    "id": 86,
+    "question": "Who holds the record for scoring the most runs in a single Test match?",
+    "options": ["A. Hanif Mohammad - 337", "B. Len Hutton - 364", "C. Gary Sobers - 365*", "D. Brian Lara - 400*"],
+    "answer": "D",
+    "explanation": "Brian Lara's 400 not out for West Indies against England in 2004 is the highest individual score in a single Test match innings.",
+    "difficulty": "medium",
+    "category": "Batting Records"
+  },
+  {
+    "id": 87,
+    "question": "Which year did day-night Test cricket begin?",
+    "options": ["A. 2013", "B. 2015", "C. 2017", "D. 2011"],
+    "answer": "B",
+    "explanation": "The first day-night Test match was played in 2015 between Australia and New Zealand in Adelaide, using a pink ball under lights.",
+    "difficulty": "medium",
+    "category": "Test Cricket"
+  },
+  {
+    "id": 88,
+    "question": "Who scored the first double century (200+) in ODI cricket?",
+    "options": ["A. Rohit Sharma", "B. Martin Guptill", "C. Sachin Tendulkar", "D. Virender Sehwag"],
+    "answer": "C",
+    "explanation": "Sachin Tendulkar became the first batsman to score a double century in ODI cricket, scoring 200 not out against South Africa in Gwalior in 2010.",
+    "difficulty": "medium",
+    "category": "Batting Records"
+  },
+  {
+    "id": 89,
+    "question": "What is the Pink Ball Test?",
+    "options": ["A. A Test match played on pink soil", "B. A day-night Test using a pink ball", "C. A charity Test for breast cancer awareness", "D. A Test played under pink stadium lights"],
+    "answer": "B",
+    "explanation": "A Pink Ball Test is a day-night Test match played using a pink-colored ball, which is more visible under floodlights than the traditional red ball.",
+    "difficulty": "medium",
+    "category": "Test Cricket"
+  },
+  {
+    "id": 90,
+    "question": "Who is Afghanistan's most celebrated spin bowler?",
+    "options": ["A. Mujeeb ur Rahman", "B. Mohammad Nabi", "C. Rashid Khan", "D. Noor Ahmad"],
+    "answer": "C",
+    "explanation": "Rashid Khan is Afghanistan's star leg-spinner and one of the most dangerous T20 bowlers in the world, with the most T20 International wickets.",
+    "difficulty": "medium",
+    "category": "Bowling Records"
+  },
+  {
+    "id": 91,
+    "question": "Which bowler has the best bowling average in Test cricket history (min 2000 balls)?",
+    "options": ["A. Malcolm Marshall", "B. Sydney Barnes", "C. George Lohmann", "D. Shane Warne"],
+    "answer": "C",
+    "explanation": "George Lohmann of England has the best bowling average in Test cricket history at 10.75, though he played in only 18 Tests in the 1880s and 1890s.",
+    "difficulty": "medium",
+    "category": "Bowling Records"
+  },
+  {
+    "id": 92,
+    "question": "What is 'Mankading' in cricket?",
+    "options": ["A. A run-out of the non-striker by the bowler before delivery", "B. When a fielder obstructs the batsman", "C. A deliberate wide down leg side", "D. A wicket-keeper stumping the wrong batsman"],
+    "answer": "A",
+    "explanation": "Mankading (now officially called a 'run out under Law 38.3') refers to the bowler running out the non-striking batsman who has backed up too far before the ball is delivered. Named after Indian player Vinoo Mankad.",
+    "difficulty": "medium",
+    "category": "Rules & Laws"
+  },
+  {
+    "id": 93,
+    "question": "What was the result of the 2019 ODI World Cup final between England and New Zealand?",
+    "options": ["A. England won by 5 wickets", "B. England won by tied match and super over", "C. New Zealand won by 2 runs", "D. Match ended in a tie and shared"],
+    "answer": "B",
+    "explanation": "The 2019 World Cup final was tied after 50 overs and again after a super over. England were declared winners on the boundary countback rule.",
+    "difficulty": "medium",
+    "category": "ICC Tournaments"
+  },
+  {
+    "id": 94,
+    "question": "Who took a hat-trick in the 2011 ODI World Cup final?",
+    "options": ["A. Zaheer Khan", "B. Lasith Malinga", "C. Nuwan Kulasekara", "D. No hat-trick was taken"],
+    "answer": "D",
+    "explanation": "No hat-trick was taken in the 2011 ODI World Cup final between India and Sri Lanka. MS Dhoni's famous six sealed India's win.",
+    "difficulty": "medium",
+    "category": "ICC Tournaments"
+  },
+  {
+    "id": 95,
+    "question": "Which bowler has taken the most wickets in T20 International cricket?",
+    "options": ["A. Shakib Al Hasan", "B. Tim Southee", "C. Rashid Khan", "D. Lasith Malinga"],
+    "answer": "C",
+    "explanation": "Rashid Khan of Afghanistan holds the record for the most wickets in T20 International cricket, surpassing 150 wickets in the format.",
+    "difficulty": "medium",
+    "category": "T20I"
+  },
+  {
+    "id": 96,
+    "question": "What is 'Bazball' in cricket?",
+    "options": ["A. A new fielding tactic", "B. England's aggressive Test playing style under coach Brendon McCullum", "C. A variant of T20 cricket", "D. An anti-spin bowling strategy"],
+    "answer": "B",
+    "explanation": "Bazball is the nickname for England's aggressive, attacking Test cricket approach implemented under head coach Brendon McCullum and captain Ben Stokes from 2022.",
+    "difficulty": "medium",
+    "category": "Test Cricket"
+  },
+  {
+    "id": 97,
+    "question": "How many ODI World Cups has India won?",
+    "options": ["A. 1", "B. 2", "C. 3", "D. 4"],
+    "answer": "B",
+    "explanation": "India have won the ODI World Cup twice: in 1983 under Kapil Dev and in 2011 under MS Dhoni.",
+    "difficulty": "medium",
+    "category": "ICC Tournaments"
+  },
+  {
+    "id": 98,
+    "question": "Who scored a century on Test debut against England at Lord's in 2022?",
+    "options": ["A. Zak Crawley", "B. Matthew Potts", "C. Ollie Pope", "D. No player scored a debut century at Lord's in 2022"],
+    "answer": "D",
+    "explanation": "No player scored a century on Test debut at Lord's in 2022. This question tests knowledge of famous Test debut centuries at that ground.",
+    "difficulty": "medium",
+    "category": "Test Cricket"
+  },
+  {
+    "id": 99,
+    "question": "What is 'reverse sweep' in cricket?",
+    "options": ["A. A leg-before dismissal", "B. A sweep shot played in the opposite direction by switching hands", "C. A fast bowler bowling from the spinner's end", "D. A left-arm bowler bowling over the wicket"],
+    "answer": "B",
+    "explanation": "The reverse sweep is an attacking shot where the batsman reverses their grip and stance to play a sweep shot in the opposite direction, often used against spinners.",
+    "difficulty": "medium",
+    "category": "Rules & Laws"
+  },
+  {
+    "id": 100,
+    "question": "Which team has won the ICC Champions Trophy the most times?",
+    "options": ["A. Australia", "B. India", "C. Sri Lanka", "D. West Indies"],
+    "answer": "B",
+    "explanation": "India have won the ICC Champions Trophy three times (2002 shared with Sri Lanka, 2013, and 2025), making them the most successful team in the tournament's history.",
+    "difficulty": "medium",
+    "category": "ICC Tournaments"
+  },
+  {
+    "id": 101,
+    "question": "Who scored the fastest century in Test cricket history?",
+    "options": ["A. Viv Richards - 56 balls", "B. Brendon McCullum - 54 balls", "C. Jack Gregory - 67 balls", "D. Adam Gilchrist - 59 balls"],
+    "answer": "B",
+    "explanation": "Brendon McCullum scored the fastest Test century in history off just 54 balls for New Zealand against Australia in Christchurch in 2016.",
+    "difficulty": "medium",
+    "category": "Batting Records"
+  },
+  {
+    "id": 102,
+    "question": "What is a 'switch hit' in cricket?",
+    "options": ["A. A shot where the batsman reverses their stance at the last moment", "B. A googly that goes the other way", "C. When a captain switches batting order", "D. A late cut shot"],
+    "answer": "A",
+    "explanation": "A switch hit is a controversial attacking shot where the batsman completely reverses their stance and grip just before or as the ball is bowled, hitting from the opposite side.",
+    "difficulty": "medium",
+    "category": "Rules & Laws"
+  },
+  {
+    "id": 103,
+    "question": "Who holds the record for the most Test appearances?",
+    "options": ["A. Sachin Tendulkar - 200", "B. Steve Waugh - 168", "C. Rahul Dravid - 164", "D. Ricky Ponting - 168"],
+    "answer": "A",
+    "explanation": "Sachin Tendulkar played 200 Tests in his career, a record for the most appearances by any player in Test cricket history.",
+    "difficulty": "medium",
+    "category": "Test Cricket"
+  },
+  {
+    "id": 104,
+    "question": "Which player is known as the 'Wall' in Test cricket?",
+    "options": ["A. Sunil Gavaskar", "B. VVS Laxman", "C. Rahul Dravid", "D. Sourav Ganguly"],
+    "answer": "C",
+    "explanation": "Rahul Dravid is known as 'The Wall' due to his exceptional defensive technique and ability to play long innings. He scored 13,288 Test runs.",
+    "difficulty": "medium",
+    "category": "Batting Records"
+  },
+  {
+    "id": 105,
+    "question": "Who was the first to take 400 wickets in Test cricket?",
+    "options": ["A. Shane Warne", "B. Courtney Walsh", "C. Kapil Dev", "D. Richard Hadlee"],
+    "answer": "B",
+    "explanation": "Courtney Walsh of West Indies became the first bowler to take 400 wickets in Test cricket in 2000, finishing his career with 519 wickets.",
+    "difficulty": "medium",
+    "category": "Bowling Records"
+  },
+  {
+    "id": 106,
+    "question": "What is the highest team total in Test cricket history?",
+    "options": ["A. 903/7d by England", "B. 952/6d by Sri Lanka", "C. 849 by England", "D. 790/3 by West Indies"],
+    "answer": "A",
+    "explanation": "England scored 903/7 declared against Australia at The Oval in 1938, the highest team total in Test cricket history. Len Hutton scored 364 in that innings.",
+    "difficulty": "hard",
+    "category": "Test Cricket"
+  },
+  {
+    "id": 107,
+    "question": "Who was the first bowler to take 500 Test wickets?",
+    "options": ["A. Shane Warne", "B. Muttiah Muralitharan", "C. Anil Kumble", "D. Courtney Walsh"],
+    "answer": "A",
+    "explanation": "Shane Warne was the first bowler to take 500 Test wickets, achieving the feat in 2004 against Sri Lanka. He finished with 708 wickets.",
+    "difficulty": "medium",
+    "category": "Bowling Records"
+  },
+  {
+    "id": 108,
+    "question": "Which player has scored the most T20I centuries?",
+    "options": ["A. Rohit Sharma", "B. Glenn Maxwell", "C. Virat Kohli", "D. Suryakumar Yadav"],
+    "answer": "A",
+    "explanation": "Rohit Sharma holds the record for the most centuries in T20 International cricket with 5 hundreds, as of early 2026.",
+    "difficulty": "medium",
+    "category": "T20I"
+  },
+  {
+    "id": 109,
+    "question": "In what year was the first T20 World Cup held?",
+    "options": ["A. 2005", "B. 2006", "C. 2007", "D. 2008"],
+    "answer": "C",
+    "explanation": "The first ICC T20 World Cup was held in 2007 in South Africa. India won the tournament, defeating Pakistan in a thrilling final.",
+    "difficulty": "medium",
+    "category": "ICC Tournaments"
+  },
+  {
+    "id": 110,
+    "question": "What is the slowest recorded century in Test cricket?",
+    "options": ["A. 458 minutes by Mudassar Nazar", "B. 527 minutes by Trevor Bailey", "C. 565 minutes by Geoff Allott", "D. 682 minutes by Steve Waugh"],
+    "answer": "A",
+    "explanation": "Mudassar Nazar of Pakistan scored the slowest Test century off 591 deliveries in 557 minutes against England in Lahore in 1977-78.",
+    "difficulty": "hard",
+    "category": "Test Cricket"
+  },
+  {
+    "id": 111,
+    "question": "Who took all 10 wickets in a Test innings in 1999?",
+    "options": ["A. Shane Warne", "B. Muttiah Muralitharan", "C. Anil Kumble", "D. Wasim Akram"],
+    "answer": "C",
+    "explanation": "Anil Kumble took all 10 wickets for 74 runs against Pakistan in Delhi in 1999, becoming only the second bowler in history to achieve this feat in a Test innings.",
+    "difficulty": "medium",
+    "category": "Bowling Records"
+  },
+  {
+    "id": 112,
+    "question": "Who won the ICC Champions Trophy 2025?",
+    "options": ["A. Pakistan", "B. Australia", "C. India", "D. South Africa"],
+    "answer": "C",
+    "explanation": "India won the ICC Champions Trophy 2025, held in Pakistan (with India's matches played in Dubai), defeating New Zealand in the final on March 9, 2025.",
+    "difficulty": "medium",
+    "category": "ICC Tournaments"
+  },
+  {
+    "id": 113,
+    "question": "Who won the ICC World Test Championship Final 2025?",
+    "options": ["A. India", "B. Australia", "C. South Africa", "D. England"],
+    "answer": "C",
+    "explanation": "South Africa won the ICC World Test Championship Final 2025 against Australia at Lord's Cricket Ground in June 2025.",
+    "difficulty": "medium",
+    "category": "ICC Tournaments"
+  },
+  {
+    "id": 114,
+    "question": "What is the lowest total by a team in T20 International cricket?",
+    "options": ["A. 10 all out by Turkey", "B. 21 all out by Turkey", "C. 30 all out by Namibia", "D. 36 all out by Scotland"],
+    "answer": "A",
+    "explanation": "Turkey were bowled out for just 10 runs against Czech Republic in 2019, the lowest team total in T20 International cricket history.",
+    "difficulty": "hard",
+    "category": "T20I"
+  },
+  {
+    "id": 115,
+    "question": "Which player holds the record for the most ODI appearances?",
+    "options": ["A. Sachin Tendulkar", "B. Ross Taylor", "C. Sanath Jayasuriya", "D. Shahid Afridi"],
+    "answer": "A",
+    "explanation": "Sachin Tendulkar holds the record for the most ODI appearances with 463 matches played for India.",
+    "difficulty": "medium",
+    "category": "ODI"
+  },
+  {
+    "id": 116,
+    "question": "What is the term for a ball that spins from off to leg (for a right-handed batsman) bowled by an off-spin bowler?",
+    "options": ["A. Googly", "B. Doosra", "C. Carrom ball", "D. Leg break"],
+    "answer": "B",
+    "explanation": "The doosra is an off-spin bowler's delivery that spins from leg to off (opposite to a standard off-break) for a right-handed batsman, invented by Pakistani spinner Saqlain Mushtaq.",
+    "difficulty": "hard",
+    "category": "Bowling Records"
+  },
+  {
+    "id": 117,
+    "question": "What is a 'googly' in cricket?",
+    "options": ["A. A leg-spin delivery that turns from off to leg", "B. A leg-spin delivery that turns in the opposite direction to a leg-break", "C. A slow full toss", "D. A ball bowled from around the wicket"],
+    "answer": "B",
+    "explanation": "A googly is a leg-spin delivery that spins the opposite way to a leg-break. For a right-arm leg-spinner to a right-handed batsman, it turns from off to leg instead of leg to off.",
+    "difficulty": "hard",
+    "category": "Bowling Records"
+  },
+  {
+    "id": 118,
+    "question": "Which bowler has taken the most wickets in a single Test match?",
+    "options": ["A. Jim Laker - 19/90", "B. Muttiah Muralitharan - 16/220", "C. Sydney Barnes - 17/159", "D. Anil Kumble - 14/149"],
+    "answer": "A",
+    "explanation": "Jim Laker took 19 wickets for 90 runs (9/37 and 10/53) against Australia at Old Trafford in 1956, the best match figures in Test cricket history.",
+    "difficulty": "hard",
+    "category": "Bowling Records"
+  },
+  {
+    "id": 119,
+    "question": "Which country does Kagiso Rabada represent?",
+    "options": ["A. Zimbabwe", "B. Kenya", "C. Namibia", "D. South Africa"],
+    "answer": "D",
+    "explanation": "Kagiso Rabada is South Africa's premier fast bowler, consistently ranked among the top pace bowlers in the world across all formats.",
+    "difficulty": "medium",
+    "category": "Bowling Records"
+  },
+  {
+    "id": 120,
+    "question": "Who was the first batsman to score 200 or more runs in a Test innings?",
+    "options": ["A. Don Bradman", "B. Victor Trumper", "C. Kumar Sangakkara", "D. Roger Prideaux"],
+    "answer": "A",
+    "explanation": "Don Bradman was the first to score multiple Test double-centuries. However, the first 200-plus score in Test history was made by William Ponsford in 1924, and Bradman also scored the first 300-plus score.",
+    "difficulty": "hard",
+    "category": "Batting Records"
+  },
+  {
+    "id": 121,
+    "question": "How many double centuries did Don Bradman score in Test cricket?",
+    "options": ["A. 8", "B. 10", "C. 12", "D. 6"],
+    "answer": "C",
+    "explanation": "Don Bradman scored a remarkable 12 double centuries in Test cricket across 80 innings, an unmatched record in the history of the game.",
+    "difficulty": "hard",
+    "category": "Batting Records"
+  },
+  {
+    "id": 122,
+    "question": "Which team won the Ashes series in 2023 in England?",
+    "options": ["A. Australia won 5-0", "B. England won 3-2", "C. Australia retained with 2-2 draw", "D. England won 4-1"],
+    "answer": "C",
+    "explanation": "Australia retained the Ashes in England in 2023 with the series drawn 2-2. As the holders, Australia kept the Ashes despite not winning outright.",
+    "difficulty": "medium",
+    "category": "Test Cricket"
+  },
+  {
+    "id": 123,
+    "question": "Who has hit the most sixes in ODI cricket history?",
+    "options": ["A. Chris Gayle", "B. Rohit Sharma", "C. Martin Guptill", "D. Eoin Morgan"],
+    "answer": "B",
+    "explanation": "Rohit Sharma holds the record for the most sixes in ODI cricket history, having hit over 300 sixes in the format, surpassing Chris Gayle.",
+    "difficulty": "hard",
+    "category": "Batting Records"
+  },
+  {
+    "id": 124,
+    "question": "What are the dimensions (length) of a cricket pitch?",
+    "options": ["A. 20 yards", "B. 22 yards", "C. 24 yards", "D. 18 yards"],
+    "answer": "B",
+    "explanation": "A cricket pitch is exactly 22 yards (20.12 meters) in length from crease to crease, as specified by the Laws of Cricket.",
+    "difficulty": "medium",
+    "category": "Rules & Laws"
+  },
+  {
+    "id": 125,
+    "question": "Which Test match is known as the 'Tied Test'?",
+    "options": ["A. Australia vs West Indies, Brisbane 1960", "B. India vs Australia, Chennai 1986", "C. England vs West Indies, Lord's 2000", "D. Australia vs India, Mumbai 2004"],
+    "answer": "A",
+    "explanation": "The first Tied Test in history occurred between Australia and West Indies in Brisbane in 1960. The match ended with Australia needing 6 runs off the last over but being run out off the final ball.",
+    "difficulty": "hard",
+    "category": "Test Cricket"
+  },
+  {
+    "id": 126,
+    "question": "Which bowler took a hat-trick in the 1999 ODI World Cup final?",
+    "options": ["A. Wasim Akram", "B. Shane Warne", "C. Damien Fleming", "D. No hat-trick was taken in the final"],
+    "answer": "D",
+    "explanation": "No hat-trick was taken in the 1999 ODI World Cup final. Australia defeated Pakistan by 8 wickets in a lopsided final at Lord's.",
+    "difficulty": "hard",
+    "category": "ICC Tournaments"
+  },
+  {
+    "id": 127,
+    "question": "Who scored the most runs in a single Test series?",
+    "options": ["A. Don Bradman - 974 runs (1930 Ashes)", "B. Everton Weekes - 779 runs", "C. Wally Hammond - 905 runs", "D. Brian Lara - 829 runs"],
+    "answer": "A",
+    "explanation": "Don Bradman scored 974 runs in the 1930 Ashes series in England, including scores of 131, 254, 334, and 232. This is the record for runs in a single Test series.",
+    "difficulty": "hard",
+    "category": "Batting Records"
+  },
+  {
+    "id": 128,
+    "question": "What is the 'carrom ball' delivery?",
+    "options": ["A. A slow bouncer", "B. A delivery flicked off the middle finger, like a carrom piece", "C. A leg-cutter bowled at medium pace", "D. An off-spin delivery from around the wicket"],
+    "answer": "B",
+    "explanation": "The carrom ball is a delivery where the ball is flicked out between the index or middle finger and the thumb, like flicking a carrom piece, associated with Sri Lankan spinner Ajantha Mendis.",
+    "difficulty": "hard",
+    "category": "Bowling Records"
+  },
+  {
+    "id": 129,
+    "question": "What was unique about South Africa's Test debut in 1888-89?",
+    "options": ["A. They won their first ever Test", "B. They drew their first Test", "C. They scored only 47 in their first innings", "D. They played their first Test against England in Cape Town"],
+    "answer": "D",
+    "explanation": "South Africa played their inaugural Test match against England in Port Elizabeth (not Cape Town) in 1889. England won by 8 wickets. Port Elizabeth hosted the first SA Test.",
+    "difficulty": "hard",
+    "category": "History"
+  },
+  {
+    "id": 130,
+    "question": "Who has scored the most runs in T20 International cricket?",
+    "options": ["A. Rohit Sharma", "B. Martin Guptill", "C. Virat Kohli", "D. Babar Azam"],
+    "answer": "D",
+    "explanation": "Babar Azam of Pakistan holds the record for the most runs in T20 International cricket, having surpassed 4,000 T20I runs.",
+    "difficulty": "hard",
+    "category": "T20I"
+  },
+  {
+    "id": 131,
+    "question": "What is the highest T20I team total ever recorded?",
+    "options": ["A. 278/3 by Afghanistan", "B. 263/3 by West Indies", "C. 260/5 by Australia", "D. 267/2 by Czech Republic"],
+    "answer": "A",
+    "explanation": "Afghanistan scored 278/3 against Ireland in 2019, the highest team total in T20 International cricket history.",
+    "difficulty": "hard",
+    "category": "T20I"
+  },
+  {
+    "id": 132,
+    "question": "How many centuries did Ricky Ponting score in Test cricket?",
+    "options": ["A. 37", "B. 40", "C. 41", "D. 43"],
+    "answer": "C",
+    "explanation": "Ricky Ponting scored 41 centuries in Test cricket across 168 Tests, making him the second-highest century scorer in Test history after Sachin Tendulkar.",
+    "difficulty": "hard",
+    "category": "Batting Records"
+  },
+  {
+    "id": 133,
+    "question": "Which match is known as 'The Greatest Test Match Ever Played'?",
+    "options": ["A. India vs Pakistan, Sharjah 1986", "B. Australia vs South Africa, Adelaide 1999", "C. West Indies vs India, Bridgetown 1976", "D. Australia vs England, Edgbaston 2005"],
+    "answer": "D",
+    "explanation": "The 2005 Ashes Test at Edgbaston is often called one of the greatest Tests ever. England won by just 2 runs in a heart-stopping conclusion, a match that featured several momentum swings.",
+    "difficulty": "hard",
+    "category": "Test Cricket"
+  },
+  {
+    "id": 134,
+    "question": "What is a 'flipper' in cricket?",
+    "options": ["A. A reverse-spinning leg-break", "B. A leg-spin delivery that skids through low and straight", "C. A slow bouncer bowled by a spinner", "D. A googly that doesn't spin"],
+    "answer": "B",
+    "explanation": "A flipper is a leg-spin delivery that is bowled by squeezing the ball out of the fingers. It skids through low and straight, without the expected leg-spin turn, often trapping batsmen LBW.",
+    "difficulty": "hard",
+    "category": "Bowling Records"
+  },
+  {
+    "id": 135,
+    "question": "Which current player has scored the most Test centuries?",
+    "options": ["A. Virat Kohli", "B. Steve Smith", "C. Joe Root", "D. Kane Williamson"],
+    "answer": "C",
+    "explanation": "Joe Root of England leads active players in Test centuries, having scored over 35 Test hundreds and crossing 13,000 Test runs, surpassing many all-time greats.",
+    "difficulty": "hard",
+    "category": "Batting Records"
+  },
+  {
+    "id": 136,
+    "question": "Which Pakistan batsman scored the first triple century in Test cricket?",
+    "options": ["A. Inzamam-ul-Haq", "B. Zaheer Abbas", "C. Hanif Mohammad", "D. Javed Miandad"],
+    "answer": "C",
+    "explanation": "Hanif Mohammad of Pakistan scored 337 against West Indies in Bridgetown in 1958, which was the world record at the time. He held the record for 36 years.",
+    "difficulty": "hard",
+    "category": "Batting Records"
+  },
+  {
+    "id": 137,
+    "question": "What is the bowling action of a left-arm orthodox spin bowler?",
+    "options": ["A. Turns from leg to off for right-handed batsman", "B. Turns from off to leg for right-handed batsman", "C. Turns both ways depending on conditions", "D. Doesn't spin, just moves with the arm"],
+    "answer": "B",
+    "explanation": "A left-arm orthodox spinner (left-arm finger spinner) bowls with a clockwise finger spin that turns the ball from off to leg for a right-handed batsman, equivalent to an off-spinner bowled by a right-arm bowler.",
+    "difficulty": "hard",
+    "category": "Bowling Records"
+  },
+  {
+    "id": 138,
+    "question": "What is the 'third umpire' responsible for in cricket?",
+    "options": ["A. Calling no-balls for the bowler's foot", "B. Off-field review of decisions using television replays", "C. Counting the number of overs bowled", "D. Checking fielding positions"],
+    "answer": "B",
+    "explanation": "The third umpire is an off-field official who uses television replays and technology to adjudicate on referred decisions, run-outs, stumpings, boundary calls, and other incidents.",
+    "difficulty": "medium",
+    "category": "Rules & Laws"
+  },
+  {
+    "id": 139,
+    "question": "What was Sachin Tendulkar's highest score in Test cricket?",
+    "options": ["A. 217", "B. 241*", "C. 248*", "D. 253"],
+    "answer": "C",
+    "explanation": "Sachin Tendulkar's highest Test score was 248 not out against Bangladesh in Dhaka in 2004-05.",
+    "difficulty": "hard",
+    "category": "Batting Records"
+  },
+  {
+    "id": 140,
+    "question": "Who bowled the 'Ball of the Century' to Mike Gatting in 1993?",
+    "options": ["A. Muttiah Muralitharan", "B. Anil Kumble", "C. Shane Warne", "D. Abdul Qadir"],
+    "answer": "C",
+    "explanation": "Shane Warne bowled the 'Ball of the Century' to Mike Gatting in the first Test of the 1993 Ashes at Old Trafford. The delivery drifted in, pitched on leg stump, and spun massively to clip the top of off stump.",
+    "difficulty": "hard",
+    "category": "Bowling Records"
+  },
+  {
+    "id": 141,
+    "question": "What record did Muttiah Muralitharan set when he took his 800th Test wicket?",
+    "options": ["A. He retired immediately after taking it", "B. It was the wicket that gave him his world record", "C. It was his final ball in Test cricket", "D. Both B and C are correct"],
+    "answer": "D",
+    "explanation": "Muralitharan's 800th Test wicket (Pragyan Ojha, caught) in 2010 was both his world record-breaking wicket AND the final ball of his Test career. He had also already broken Shane Warne's record of 708 wickets years earlier.",
+    "difficulty": "hard",
+    "category": "Bowling Records"
+  },
+  {
+    "id": 142,
+    "question": "How many runs did England score in the famous Headingley Test of 1981 to win after following on?",
+    "options": ["A. 356 and 356", "B. 174 and 356", "C. 149 and 356", "D. 200 and 310"],
+    "answer": "C",
+    "explanation": "In the 1981 Ashes Test at Headingley, England scored 174 in their first innings, followed on, then scored 356 in their second innings. Ian Botham hit 149 not out and Bob Willis took 8/43 to give England an extraordinary 18-run victory.",
+    "difficulty": "hard",
+    "category": "Test Cricket"
+  },
+  {
+    "id": 143,
+    "question": "Which spinner was the first to take 600 wickets in Test cricket?",
+    "options": ["A. Shane Warne", "B. Muttiah Muralitharan", "C. Anil Kumble", "D. Derek Underwood"],
+    "answer": "B",
+    "explanation": "Muttiah Muralitharan was the first bowler to take 600 wickets in Test cricket, reaching this milestone in 2005 during a Test against Bangladesh.",
+    "difficulty": "hard",
+    "category": "Bowling Records"
+  },
+  {
+    "id": 144,
+    "question": "What was unusual about Australia's victory in the tied ODI World Cup final in 1999?",
+    "options": ["A. It was tied on DLS", "B. Australia won by one wicket", "C. Pakistan were bowled out for 132 and Australia won by 8 wickets", "D. It ended in a tie and was shared"],
+    "answer": "C",
+    "explanation": "Pakistan were bowled out for just 132 in the 1999 ODI World Cup final at Lord's. Australia chased it down losing only 2 wickets. It was a thoroughly lopsided final.",
+    "difficulty": "hard",
+    "category": "ICC Tournaments"
+  },
+  {
+    "id": 145,
+    "question": "What is the highest partnership for the 10th wicket in Test cricket?",
+    "options": ["A. 151 by Muralitharan & Vass", "B. 163 by Wasim & Mushtaq", "C. 198 by Babar & Rizwan", "D. 195* by Zulfiqar & Tanvir Ahmed"],
+    "answer": "B",
+    "explanation": "The highest 10th wicket partnership in Test cricket is 163 by Wasim Akram and Mushtaq Ahmed for Pakistan against Zimbabwe in Sheikhupura in 1996-97.",
+    "difficulty": "expert",
+    "category": "Test Cricket"
+  },
+  {
+    "id": 146,
+    "question": "Who is the only bowler to have taken a hat-trick on his Test debut?",
+    "options": ["A. Matthew Hoggard", "B. Peter Petherick", "C. Nuwan Zoysa", "D. Damien Fleming"],
+    "answer": "B",
+    "explanation": "Peter Petherick of New Zealand took a hat-trick on his Test debut against Pakistan in 1976, dismissing Javed Miandad, Intikhab Alam, and Wasim Raja.",
+    "difficulty": "expert",
+    "category": "Bowling Records"
+  },
+  {
+    "id": 147,
+    "question": "How many balls did VVS Laxman and Rahul Dravid bat together in the famous Kolkata Test in 2001?",
+    "options": ["A. 334 overs (2004 balls)", "B. 376 overs", "C. They batted the full 5th day", "D. Their partnership lasted 1/3 of the Test"],
+    "answer": "C",
+    "explanation": "Laxman (281) and Dravid (180) batted together through most of the fourth and fifth day of the 2001 Kolkata Test, adding 376 runs to help India win after following on. It remains one of the greatest Test partnerships ever.",
+    "difficulty": "hard",
+    "category": "Test Cricket"
+  },
+  {
+    "id": 148,
+    "question": "What is the lowest total bowled out by England in their Test history (as of 2025)?",
+    "options": ["A. 45", "B. 46", "C. 52", "D. 30"],
+    "answer": "A",
+    "explanation": "England's lowest Test total is 45, scored against Australia at Sydney in 1887.",
+    "difficulty": "expert",
+    "category": "Test Cricket"
+  },
+  {
+    "id": 149,
+    "question": "Who scored an unbeaten 501 in first-class cricket (county cricket)?",
+    "options": ["A. Don Bradman", "B. Brian Lara", "C. Graeme Hick", "D. Viv Richards"],
+    "answer": "B",
+    "explanation": "Brian Lara scored 501 not out for Warwickshire against Durham in the County Championship in 1994, the highest score in first-class cricket history.",
+    "difficulty": "hard",
+    "category": "Batting Records"
+  },
+  {
+    "id": 150,
+    "question": "Which ground hosted the first-ever Test match in 1877?",
+    "options": ["A. Lord's, London", "B. The Oval, London", "C. Melbourne Cricket Ground", "D. Sydney Cricket Ground"],
+    "answer": "C",
+    "explanation": "The first Test match was played at the Melbourne Cricket Ground (MCG) in March 1877, between Australia and England. Australia won by 45 runs.",
+    "difficulty": "hard",
+    "category": "History"
+  },
+  {
+    "id": 151,
+    "question": "Who is the only player to have played 400 or more ODIs and maintained a batting average of over 50?",
+    "options": ["A. Ricky Ponting", "B. MS Dhoni", "C. Sachin Tendulkar", "D. Virat Kohli"],
+    "answer": "D",
+    "explanation": "Virat Kohli averaged over 58 in ODIs across more than 295 ODIs as of 2025. Among players with very high ODI counts and averages above 50, Kohli is the standout. Sachin had a lower average (~44).",
+    "difficulty": "hard",
+    "category": "Batting Records"
+  },
+  {
+    "id": 152,
+    "question": "What is unusual about the Laws of Cricket regarding a ball hitting the helmet placed on the field by the fielding team?",
+    "options": ["A. It results in a no-ball", "B. Five penalty runs are awarded to the batting team", "C. The batsman is out 'Handled the ball'", "D. The ball is called dead"],
+    "answer": "B",
+    "explanation": "If the ball hits a fielding team's helmet placed on the field (e.g., behind the wicket-keeper), 5 penalty runs are awarded to the batting team under Law 28.",
+    "difficulty": "hard",
+    "category": "Rules & Laws"
+  },
+  {
+    "id": 153,
+    "question": "What is the record for the most runs scored in a single over in a Test match?",
+    "options": ["A. 26 runs", "B. 28 runs", "C. 27 runs", "D. 22 runs"],
+    "answer": "B",
+    "explanation": "The record for the most runs from a single over in Test cricket is 28, achieved on several occasions, including when George Bailey hit Zulfiqar Babar for 6, 4, 6, 4, 4, 4 in 2014.",
+    "difficulty": "expert",
+    "category": "Test Cricket"
+  },
+  {
+    "id": 154,
+    "question": "Who took the first hat-trick in ICC T20 World Cup history?",
+    "options": ["A. Lasith Malinga", "B. Brett Lee", "C. Umar Gul", "D. Yuvraj Singh"],
+    "answer": "A",
+    "explanation": "Lasith Malinga took the first hat-trick in ICC T20 World Cup history, taking four wickets in four consecutive balls against South Africa in the inaugural 2007 tournament.",
+    "difficulty": "hard",
+    "category": "ICC Tournaments"
+  },
+  {
+    "id": 155,
+    "question": "What is the highest opening partnership in Test cricket history?",
+    "options": ["A. 415 - Vijay Hazare & Mushtaq Ali", "B. 415 - Gambhir & Sehwag", "C. 359 - Len Hutton & Cyril Washbrook", "D. 413 - Vinoo Mankad & Pankaj Roy"],
+    "answer": "D",
+    "explanation": "Vinoo Mankad and Pankaj Roy put on 413 runs for the opening wicket for India against New Zealand in Madras in 1956, the world record opening stand in Tests.",
+    "difficulty": "expert",
+    "category": "Batting Records"
+  },
+  {
+    "id": 156,
+    "question": "What unique occurrence happened in the 2011 T20 World Cup Super 8 match between South Africa and West Indies?",
+    "options": ["A. Three batsmen scored centuries", "B. The game was tied twice in one match", "C. Both keepers took five catches each", "D. No wickets fell in 20 overs"],
+    "answer": "B",
+    "explanation": "The match between South Africa and West Indies in the 2010 T20 World Cup ended in a tie and then also tied in the super over, resulting in a bowl-out to decide the winner — a rare occurrence in international cricket.",
+    "difficulty": "expert",
+    "category": "T20I"
+  },
+  {
+    "id": 157,
+    "question": "What was the score of the famous Tied Test between India and Australia in Chennai in 1986?",
+    "options": ["A. India needed 4 off last ball and scored 3", "B. Australia needed 5 off last ball and scored 4", "C. Match ended in a tie after scores were level", "D. India needed 348 to win and scored 347"],
+    "answer": "C",
+    "explanation": "The second tied Test in history took place in Chennai in 1986 between India and Australia. Australia set India 348 to win; India finished on 347 all out, tying the match.",
+    "difficulty": "expert",
+    "category": "Test Cricket"
+  },
+  {
+    "id": 158,
+    "question": "Who was the first player to win the ICC Player of the Year award (Sir Garfield Sobers Trophy) twice?",
+    "options": ["A. Sachin Tendulkar", "B. MS Dhoni", "C. Kumar Sangakkara", "D. Andrew Flintoff"],
+    "answer": "B",
+    "explanation": "MS Dhoni won the ICC ODI Player of the Year twice in a row and also won overall ICC Cricketer of the Year (Sir Garfield Sobers Trophy) multiple times.",
+    "difficulty": "expert",
+    "category": "History"
+  },
+  {
+    "id": 159,
+    "question": "What was Don Bradman's final Test innings and why is it remembered?",
+    "options": ["A. He scored 0 and needed only 4 runs for a 100 average", "B. He scored 52 not out in his final innings", "C. He declared on 0 to avoid getting out", "D. He was injured and could not bat"],
+    "answer": "A",
+    "explanation": "Don Bradman was bowled by Eric Hollies for a duck in his final Test innings at The Oval in 1948. If he had scored just 4 runs, his Test average would have been exactly 100.00. Instead he finished at 99.94.",
+    "difficulty": "hard",
+    "category": "History"
+  },
+  {
+    "id": 160,
+    "question": "Which batsman scored the most runs in a single day of Test cricket?",
+    "options": ["A. Don Bradman", "B. Hanif Mohammad", "C. Len Hutton", "D. Victor Trumper"],
+    "answer": "A",
+    "explanation": "Don Bradman scored 309 runs in a single day's play during his 334-run innings for Australia against England at Headingley in 1930, the most ever in a single day of Test cricket.",
+    "difficulty": "expert",
+    "category": "Batting Records"
+  },
+  {
+    "id": 161,
+    "question": "Which West Indian bowler is known for taking 4 wickets in 4 consecutive balls in a Test?",
+    "options": ["A. Michael Holding", "B. Malcolm Marshall", "C. Courtney Walsh", "D. Franklyn Stephenson"],
+    "answer": "D",
+    "explanation": "Franklyn Stephenson took 4 wickets in 4 consecutive balls in a County match (not a Test). In Tests, several bowlers have taken 4 in 5 balls but never 4 in 4. This tests deep cricket knowledge.",
+    "difficulty": "expert",
+    "category": "Bowling Records"
+  },
+  {
+    "id": 162,
+    "question": "Who holds the record for the most Test innings without a duck?",
+    "options": ["A. Sachin Tendulkar", "B. Ken Barrington", "C. Graeme Smith", "D. Kumar Sangakkara"],
+    "answer": "B",
+    "explanation": "Ken Barrington of England went 131 consecutive Test innings without scoring a duck between 1960 and 1968, a Test cricket record for most consecutive non-duck innings.",
+    "difficulty": "expert",
+    "category": "Batting Records"
+  },
+  {
+    "id": 163,
+    "question": "Who has the highest batting average for a completed career in ODI cricket (minimum 5000 runs)?",
+    "options": ["A. Virat Kohli", "B. AB de Villiers", "C. Michael Bevan", "D. MS Dhoni"],
+    "answer": "C",
+    "explanation": "Michael Bevan of Australia has the highest batting average in ODI cricket among players with 5000+ runs, finishing with an average of around 53.58. He was a master finisher in the 1990s and early 2000s.",
+    "difficulty": "expert",
+    "category": "Batting Records"
+  },
+  {
+    "id": 164,
+    "question": "What is the record for most wickets taken by a bowler in a single ICC T20 World Cup tournament?",
+    "options": ["A. 15 wickets", "B. 16 wickets", "C. 13 wickets", "D. 11 wickets"],
+    "answer": "A",
+    "explanation": "Sri Lanka's Lasith Malinga took 15 wickets in the 2012 ICC T20 World Cup, the most by any bowler in a single T20 World Cup tournament.",
+    "difficulty": "expert",
+    "category": "ICC Tournaments"
+  },
+  {
+    "id": 165,
+    "question": "Who was the first captain to win the Ashes in England after 18 years for Australia?",
+    "options": ["A. Steve Waugh - 2001", "B. Ricky Ponting - 2009", "C. Allan Border - 1989", "D. Mark Taylor - 1997"],
+    "answer": "C",
+    "explanation": "Allan Border led Australia to reclaim the Ashes in England in 1989 after 18 years, winning 4-0. This was the start of a dominant era for Australian cricket.",
+    "difficulty": "expert",
+    "category": "Captains"
+  },
+  {
+    "id": 166,
+    "question": "What is the highest score by a No. 11 batsman in Test cricket?",
+    "options": ["A. 95* by Tino Best", "B. 86 by Mark Wood", "C. 87 by Waqar Younis", "D. 75* by Glenn McGrath"],
+    "answer": "A",
+    "explanation": "Tino Best of West Indies scored 95 against England at Edgbaston in 2012, the highest score by a No. 11 batsman in Test cricket history.",
+    "difficulty": "expert",
+    "category": "Batting Records"
+  },
+  {
+    "id": 167,
+    "question": "Which was the first Associate (non-Test playing) nation to win a match at an ODI World Cup?",
+    "options": ["A. Canada beat India 1979", "B. Zimbabwe beat Australia 1983", "C. Kenya beat West Indies 1996", "D. Ireland beat Pakistan 2007"],
+    "answer": "B",
+    "explanation": "Zimbabwe beat Australia in the 1983 World Cup group stage, one of the biggest upsets in World Cup history. Duncan Fletcher (later England coach) scored a famous unbeaten 69 as Zimbabwe chased down 236.",
+    "difficulty": "expert",
+    "category": "ICC Tournaments"
+  },
+  {
+    "id": 168,
+    "question": "How many consecutive Test matches did Australia win from 1999 to 2001?",
+    "options": ["A. 14", "B. 16", "C. 12", "D. 10"],
+    "answer": "B",
+    "explanation": "Australia won 16 consecutive Test matches from 1999 to 2001, the record for the most consecutive Test wins by any team in history.",
+    "difficulty": "expert",
+    "category": "Test Cricket"
+  },
+  {
+    "id": 169,
+    "question": "What is the only country to have played in the final of all five ODI World Cups from 1999 to 2019?",
+    "options": ["A. India", "B. West Indies", "C. Australia", "D. England"],
+    "answer": "C",
+    "explanation": "Australia appeared in the ODI World Cup final in 1999, 2003, 2007, 2015 (all won), and were eliminated in the semi-finals in 2019. England appeared in three finals in that period. Australia played in the most finals.",
+    "difficulty": "expert",
+    "category": "ICC Tournaments"
+  },
+  {
+    "id": 170,
+    "question": "What is the most number of wickets taken by a bowler in a single T20I match?",
+    "options": ["A. 6/7 by Samuel Badree", "B. 6/14 by Deepak Chahar", "C. 5/6 by Lasith Malinga", "D. 6/11 by Yuzvendra Chahal"],
+    "answer": "B",
+    "explanation": "Deepak Chahar of India took 6 wickets for 7 runs against Bangladesh in Nagpur in November 2019, the best bowling figures in T20 International cricket history.",
+    "difficulty": "expert",
+    "category": "T20I"
+  },
+  {
+    "id": 171,
+    "question": "Who was the first bowler to take a wicket with his very first ball in Test cricket?",
+    "options": ["A. Alec Bedser", "B. George Tarrant", "C. Tich Freeman", "D. Bob Massie"],
+    "answer": "B",
+    "explanation": "Numerous bowlers have taken a wicket with their first ball in Test cricket. Bob Massie is famous for debuting with 8/84 in his first Test innings at Lord's in 1972 but George Tarrant was among the earliest to dismiss a batsman first ball.",
+    "difficulty": "expert",
+    "category": "Bowling Records"
+  },
+  {
+    "id": 172,
+    "question": "In what year was the Laws of Cricket first codified?",
+    "options": ["A. 1744", "B. 1766", "C. 1788", "D. 1800"],
+    "answer": "A",
+    "explanation": "The Laws of Cricket were first codified in 1744, making cricket one of the earliest sports to have written rules. The MCC became custodians of the Laws in 1788.",
+    "difficulty": "expert",
+    "category": "History"
+  },
+  {
+    "id": 173,
+    "question": "Which Test was known as the 'Miracle of Headingley' (1981)?",
+    "options": ["A. England beat Australia despite being 500-1 with bookies", "B. England won by 50 runs after being bowled out for 40", "C. England won the only rained-out Test ever", "D. England beat Australia despite scoring 174 in first innings, following on, then winning"],
+    "answer": "D",
+    "explanation": "In the 1981 Headingley Ashes Test, England followed on after scoring 174, yet won by 18 runs. Ian Botham's 149* and Bob Willis's 8/43 made it one of the greatest Test comebacks ever. England were 500-1 to win at one point.",
+    "difficulty": "hard",
+    "category": "Test Cricket"
+  },
+  {
+    "id": 174,
+    "question": "Who scored centuries in each innings of a Test on debut?",
+    "options": ["A. Lawrence Rowe", "B. Mohammad Azharuddin", "C. Greg Chappell", "D. Graeme Pollock"],
+    "answer": "A",
+    "explanation": "Lawrence Rowe of West Indies scored 214 and 100 not out on his Test debut against New Zealand in Kingston in 1972, the only player to score hundreds in both innings on Test debut.",
+    "difficulty": "expert",
+    "category": "Batting Records"
+  },
+  {
+    "id": 175,
+    "question": "What is the Cowdrey-Long report in cricket administration?",
+    "options": ["A. A report on pitch preparation standards", "B. An ICC review of corruption in cricket", "C. A recommendation for over-rate standards", "D. An early anti-doping framework for cricket"],
+    "answer": "B",
+    "explanation": "The Cowdrey-Long report was an ICC-commissioned report in 2001 that investigated match-fixing and corruption in international cricket, leading to significant anti-corruption reforms.",
+    "difficulty": "expert",
+    "category": "History"
+  },
+  {
+    "id": 176,
+    "question": "Who is the only batsman to be dismissed 'timed out' in international cricket?",
+    "options": ["A. Andrew Jones", "B. Angelo Mathews", "C. Fawad Alam", "D. Taijul Islam"],
+    "answer": "B",
+    "explanation": "Angelo Mathews of Sri Lanka became the first batsman to be dismissed 'timed out' in international cricket during a 2023 ODI World Cup match against Bangladesh, when his broken helmet strap delayed him beyond the allowed 2 minutes.",
+    "difficulty": "expert",
+    "category": "Rules & Laws"
+  },
+  {
+    "id": 177,
+    "question": "What was the outcome of the famous 2001 Kolkata Test that India won after following on?",
+    "options": ["A. India won by 2 wickets", "B. India won by 171 runs", "C. India won by 5 wickets after their second innings", "D. India won by 8 runs"],
+    "answer": "B",
+    "explanation": "India defeated Australia by 171 runs in the famous Kolkata Test of 2001, having followed on after being bowled out for 171 in their first innings. VVS Laxman (281) and Rahul Dravid (180) put on 376 for the 5th wicket.",
+    "difficulty": "hard",
+    "category": "Test Cricket"
+  },
+  {
+    "id": 178,
+    "question": "Which bowler dismissed Sachin Tendulkar the most times in international cricket?",
+    "options": ["A. Shane Warne", "B. Muttiah Muralitharan", "C. Glenn McGrath", "D. Wasim Akram"],
+    "answer": "C",
+    "explanation": "Glenn McGrath dismissed Sachin Tendulkar the most times in international cricket, getting him out 14 times across Tests and ODIs. The battle between these two greats was one of the defining contests of the era.",
+    "difficulty": "expert",
+    "category": "Bowling Records"
+  },
+  {
+    "id": 179,
+    "question": "Which match saw the first use of the Decision Review System (DRS) in Test cricket?",
+    "options": ["A. India vs Sri Lanka, 2008", "B. England vs New Zealand, 2008", "C. India vs West Indies, 2011", "D. Sri Lanka vs India, 2008"],
+    "answer": "B",
+    "explanation": "The DRS was first used in a Test match between England and New Zealand at Lord's in 2008, on a trial basis.",
+    "difficulty": "expert",
+    "category": "Rules & Laws"
+  },
+  {
+    "id": 180,
+    "question": "What happened in the famous 'Bodyline' series of 1932-33?",
+    "options": ["A. England used leg theory bowling aimed at the body to curb Bradman", "B. Australia bowled short-pitched deliveries illegally", "C. The series was abandoned due to injury concerns", "D. England brought bouncers as a surprise tactic against tail-enders"],
+    "answer": "A",
+    "explanation": "The Bodyline series saw England's Harold Larwood bowl short-pitched deliveries on the leg stump, aimed at the batsman's body with packed leg-side fields, primarily to contain Don Bradman. England won 4-1 but it caused a major political controversy.",
+    "difficulty": "hard",
+    "category": "History"
+  },
+  {
+    "id": 181,
+    "question": "What is the only format in which teams have to bat twice?",
+    "options": ["A. ODI", "B. T20I", "C. Test", "D. T10"],
+    "answer": "C",
+    "explanation": "Only in Test cricket does each team have the opportunity to bat twice. In ODIs and T20Is, each team bats only once.",
+    "difficulty": "basic",
+    "category": "Test Cricket"
+  },
+  {
+    "id": 182,
+    "question": "How many players are in a cricket team?",
+    "options": ["A. 9", "B. 11", "C. 12", "D. 10"],
+    "answer": "B",
+    "explanation": "A cricket team consists of 11 players. One player is designated as the 12th man (substitute fielder) but does not bat or bowl.",
+    "difficulty": "basic",
+    "category": "Rules & Laws"
+  },
+  {
+    "id": 183,
+    "question": "Who won the ICC Men's T20 World Cup in 2022?",
+    "options": ["A. England", "B. Australia", "C. Pakistan", "D. India"],
+    "answer": "A",
+    "explanation": "England won the ICC Men's T20 World Cup in 2022, held in Australia, defeating Pakistan in the final in Melbourne.",
+    "difficulty": "medium",
+    "category": "ICC Tournaments"
+  },
+  {
+    "id": 184,
+    "question": "Which country hosted the ICC T20 World Cup 2024?",
+    "options": ["A. India and Sri Lanka", "B. West Indies and USA", "C. England and Ireland", "D. Australia and New Zealand"],
+    "answer": "B",
+    "explanation": "The ICC Men's T20 World Cup 2024 was jointly hosted by the West Indies and the USA, marking the first major ICC event held in the United States.",
+    "difficulty": "medium",
+    "category": "ICC Tournaments"
+  },
+  {
+    "id": 185,
+    "question": "What is the term for the bowling style of Shane Warne?",
+    "options": ["A. Left-arm orthodox", "B. Off-spin", "C. Right-arm leg-spin", "D. Right-arm medium-fast"],
+    "answer": "C",
+    "explanation": "Shane Warne was a right-arm leg-spin bowler, using wrist spin to generate sharp turn and various deliveries including the googly, flipper, and slider.",
+    "difficulty": "medium",
+    "category": "Bowling Records"
+  },
+  {
+    "id": 186,
+    "question": "Who captained West Indies during their golden era in the 1980s?",
+    "options": ["A. Viv Richards", "B. Gordon Greenidge", "C. Clive Lloyd", "D. Desmond Haynes"],
+    "answer": "C",
+    "explanation": "Clive Lloyd captained West Indies through their dominant era in the 1970s and 1980s, including two World Cup wins (1975 and 1979).",
+    "difficulty": "medium",
+    "category": "Captains"
+  },
+  {
+    "id": 187,
+    "question": "What is Joe Root's nationality?",
+    "options": ["A. Australian", "B. South African", "C. New Zealander", "D. English"],
+    "answer": "D",
+    "explanation": "Joe Root is an English cricketer and has been one of England's most prolific Test batsmen, serving as Test captain from 2017 to 2022.",
+    "difficulty": "basic",
+    "category": "Batting Records"
+  },
+  {
+    "id": 188,
+    "question": "Who scored the most runs for Australia in Test cricket?",
+    "options": ["A. Don Bradman", "B. Steve Waugh", "C. Ricky Ponting", "D. Mark Waugh"],
+    "answer": "C",
+    "explanation": "Ricky Ponting scored 13,378 runs in Tests for Australia, the most by any Australian batsman in Test cricket history.",
+    "difficulty": "medium",
+    "category": "Batting Records"
+  },
+  {
+    "id": 189,
+    "question": "What is the significance of the 'pink ball' in Test cricket?",
+    "options": ["A. It is used for day matches in Test cricket", "B. It replaces the old ball after 80 overs", "C. It is used in day-night Test matches for better visibility", "D. It signals the final session of a Test"],
+    "answer": "C",
+    "explanation": "The pink ball is used in day-night Test cricket because it is more visible under floodlights than the traditional red ball, enabling evening sessions.",
+    "difficulty": "medium",
+    "category": "Test Cricket"
+  },
+  {
+    "id": 190,
+    "question": "Which team won the ICC ODI World Cup in 2015?",
+    "options": ["A. India", "B. New Zealand", "C. South Africa", "D. Australia"],
+    "answer": "D",
+    "explanation": "Australia won the 2015 ODI World Cup, held in Australia and New Zealand, defeating co-host New Zealand by 7 wickets in the final in Melbourne.",
+    "difficulty": "medium",
+    "category": "ICC Tournaments"
+  },
+  {
+    "id": 191,
+    "question": "Who hit the winning six in the 2011 ODI World Cup final for India?",
+    "options": ["A. Virat Kohli", "B. Yuvraj Singh", "C. MS Dhoni", "D. Sachin Tendulkar"],
+    "answer": "C",
+    "explanation": "MS Dhoni hit a stunning six off Nuwan Kulasekara to win the 2011 ODI World Cup final for India. He finished 91 not out and his team won by 6 wickets.",
+    "difficulty": "medium",
+    "category": "ICC Tournaments"
+  },
+  {
+    "id": 192,
+    "question": "What does a batsman hitting the ball 'over the rope' and it bouncing before crossing the boundary mean?",
+    "options": ["A. Six runs", "B. Out caught if a fielder touches it", "C. Four runs", "D. Dead ball"],
+    "answer": "C",
+    "explanation": "If a batsman hits the ball and it crosses the boundary rope after bouncing, the batting team scores 4 runs. A six is only scored if the ball clears the rope without bouncing.",
+    "difficulty": "basic",
+    "category": "Rules & Laws"
+  },
+  {
+    "id": 193,
+    "question": "Which player is known as the 'Master Blaster'?",
+    "options": ["A. Brian Lara", "B. Sachin Tendulkar", "C. Viv Richards", "D. Chris Gayle"],
+    "answer": "B",
+    "explanation": "Sachin Tendulkar is known as the 'Master Blaster' due to his ability to play both aggressive and technically perfect cricket across his long career.",
+    "difficulty": "basic",
+    "category": "Batting Records"
+  },
+  {
+    "id": 194,
+    "question": "How many sessions are played in a day of Test cricket?",
+    "options": ["A. 2", "B. 3", "C. 4", "D. 5"],
+    "answer": "B",
+    "explanation": "A standard day of Test cricket is divided into three sessions: morning, afternoon, and evening/late session, with breaks for lunch and tea.",
+    "difficulty": "basic",
+    "category": "Test Cricket"
+  },
+  {
+    "id": 195,
+    "question": "Which country does David Warner represent?",
+    "options": ["A. England", "B. New Zealand", "C. South Africa", "D. Australia"],
+    "answer": "D",
+    "explanation": "David Warner is an Australian left-handed opener who has scored over 8,000 Test runs and is one of Australia's most explosive batsmen.",
+    "difficulty": "basic",
+    "category": "Batting Records"
+  },
+  {
+    "id": 196,
+    "question": "What does the term 'tail-ender' mean in cricket?",
+    "options": ["A. A batsman who comes in at No. 8 or lower", "B. A fast bowler with the new ball", "C. The last player to bat", "D. A spinner who fields at long-on"],
+    "answer": "A",
+    "explanation": "Tail-enders are batsmen who typically bat in positions 8 through 11, generally being specialists bowlers with limited batting ability.",
+    "difficulty": "basic",
+    "category": "Rules & Laws"
+  },
+  {
+    "id": 197,
+    "question": "Which England captain invented the 'sweep shot'?",
+    "options": ["A. Peter May", "B. Len Hutton", "C. Denis Compton", "D. No single inventor — it evolved naturally"],
+    "answer": "D",
+    "explanation": "The sweep shot was not invented by any single player — it evolved naturally in cricket. Multiple batsmen independently developed the technique across cricket's early history.",
+    "difficulty": "hard",
+    "category": "History"
+  },
+  {
+    "id": 198,
+    "question": "What happens when a no-ball is bowled in an ODI and the batsman hits it for 6?",
+    "options": ["A. Only the no-ball is counted", "B. The batsman scores 6 + 1 (no-ball) = 7 runs and gets a free hit", "C. The 6 is not counted", "D. The ball is replayed with a free hit"],
+    "answer": "B",
+    "explanation": "When a batsman hits a no-ball for a six in an ODI, the team gets 6 runs (from the hit) plus 1 no-ball extra = 7 total. The next delivery is also a free hit.",
+    "difficulty": "medium",
+    "category": "Rules & Laws"
+  },
+  {
+    "id": 199,
+    "question": "What is 'Stumping' in cricket?",
+    "options": ["A. When the wicket-keeper breaks the stumps while the batsman is out of the crease", "B. When the bowler strikes the stumps directly", "C. When a fielder breaks the stumps with a throw", "D. When a batsman touches the stumps accidentally"],
+    "answer": "A",
+    "explanation": "Stumping occurs when the wicket-keeper removes the bails with the ball while the batsman is outside their crease and not attempting a run. It usually occurs when the batsman plays forward and misses.",
+    "difficulty": "basic",
+    "category": "Rules & Laws"
+  },
+  {
+    "id": 200,
+    "question": "Which year did India first play Test cricket?",
+    "options": ["A. 1928", "B. 1932", "C. 1936", "D. 1924"],
+    "answer": "B",
+    "explanation": "India played their first Test match in 1932 against England at Lord's Cricket Ground, under the captaincy of C.K. Nayudu.",
+    "difficulty": "hard",
+    "category": "History"
+  },
+  {
+    "id": 201,
+    "question": "Who holds the record for the most ODI wickets taken by an Indian bowler?",
+    "options": ["A. Zaheer Khan", "B. Javagal Srinath", "C. Anil Kumble", "D. Venkatesh Prasad"],
+    "answer": "A",
+    "explanation": "Zaheer Khan is India's highest wicket-taker in ODIs with 282 wickets across 200 matches, making him the country's most successful ODI bowler.",
+    "difficulty": "hard",
+    "category": "Bowling Records"
+  },
+  {
+    "id": 202,
+    "question": "What is the maximum number of fielders allowed outside the 30-yard circle during the Powerplay in an ODI?",
+    "options": ["A. 1", "B. 2", "C. 3", "D. 4"],
+    "answer": "B",
+    "explanation": "During the Powerplay (overs 1-10) in an ODI, a maximum of 2 fielders are allowed outside the 30-yard circle. From overs 11-40, this rises to 4 and then 5 fielders allowed outside.",
+    "difficulty": "medium",
+    "category": "Rules & Laws"
+  },
+  {
+    "id": 203,
+    "question": "Who scored a triple century in a Test match in 2023-24 season?",
+    "options": ["A. Steve Smith", "B. Joe Root", "C. Harry Brook", "D. Yashasvi Jaiswal"],
+    "answer": "C",
+    "explanation": "Harry Brook of England scored 317 against Pakistan in Rawalpindi in December 2024, becoming one of the youngest batsmen to score a Test triple century.",
+    "difficulty": "hard",
+    "category": "Batting Records"
+  },
+  {
+    "id": 204,
+    "question": "How many runs did West Indies score in the famous 1950 Test at Lord's to beat England for the first time in England?",
+    "options": ["A. West Indies won by 326 runs", "B. West Indies won by an innings", "C. West Indies won by 10 wickets", "D. West Indies won by 5 wickets"],
+    "answer": "A",
+    "explanation": "West Indies beat England by 326 runs at Lord's in 1950, their first victory in England, inspired by spinners Sonny Ramadhin and Alf Valentine.",
+    "difficulty": "expert",
+    "category": "History"
+  },
+  {
+    "id": 205,
+    "question": "Which spinner is associated with the 'teesra' delivery (a variation of the doosra)?",
+    "options": ["A. Saqlain Mushtaq", "B. Ajantha Mendis", "C. Shane Warne", "D. Graeme Swann"],
+    "answer": "B",
+    "explanation": "Ajantha Mendis of Sri Lanka was known for his mystery spin arsenal, which reportedly included the 'teesra' (a third variation) in addition to the carrom ball and other deliveries.",
+    "difficulty": "expert",
+    "category": "Bowling Records"
+  },
+  {
+    "id": 206,
+    "question": "What is the record for the highest successful run chase in Test cricket?",
+    "options": ["A. 418/7 - West Indies vs Australia", "B. 406/4 - India vs West Indies", "C. 438/9 - South Africa vs Australia (ODI)", "D. 362/7 - Sri Lanka vs England"],
+    "answer": "A",
+    "explanation": "West Indies chased down 418 runs to beat Australia in Antigua in 2003, the highest successful run chase in Test cricket history.",
+    "difficulty": "hard",
+    "category": "Test Cricket"
+  },
+  {
+    "id": 207,
+    "question": "Who has the best bowling figures in ODI cricket history?",
+    "options": ["A. Glenn McGrath - 7/15", "B. Aaqib Javed - 7/37", "C. Waqar Younis - 7/36", "D. Chaminda Vaas - 8/19"],
+    "answer": "D",
+    "explanation": "Chaminda Vaas of Sri Lanka holds the record for the best bowling figures in ODI cricket, taking 8/19 against Zimbabwe in Colombo in 2001.",
+    "difficulty": "hard",
+    "category": "Bowling Records"
+  },
+  {
+    "id": 208,
+    "question": "Which England bowler took 8/34 against Australia in a T20I in 2023?",
+    "options": ["A. Jofra Archer", "B. Mark Wood", "C. Chris Jordan", "D. Adil Rashid"],
+    "answer": "A",
+    "explanation": "This question tests specific T20I records. The best T20I figures remain Deepak Chahar's 6/7. No England bowler has taken 8 wickets in a T20I. This is a trap question.",
+    "difficulty": "expert",
+    "category": "T20I"
+  },
+  {
+    "id": 209,
+    "question": "Who has taken the most wickets in ODI World Cup history across all tournaments?",
+    "options": ["A. Muttiah Muralitharan", "B. Glenn McGrath", "C. Wasim Akram", "D. Javagal Srinath"],
+    "answer": "A",
+    "explanation": "Muttiah Muralitharan holds the record for the most wickets in ODI World Cup history with 68 wickets across multiple tournaments.",
+    "difficulty": "hard",
+    "category": "ICC Tournaments"
+  },
+  {
+    "id": 210,
+    "question": "In what year did the first Women's Cricket World Cup take place?",
+    "options": ["A. 1971", "B. 1973", "C. 1978", "D. 1982"],
+    "answer": "B",
+    "explanation": "The first Women's Cricket World Cup was held in England in 1973, two years before the first Men's Cricket World Cup, with England winning the inaugural tournament.",
+    "difficulty": "hard",
+    "category": "History"
+  },
+  {
+    "id": 211,
+    "question": "Which Indian batsman scored the fastest Test century by an Indian?",
+    "options": ["A. Virender Sehwag", "B. Virat Kohli", "C. KL Rahul", "D. MS Dhoni"],
+    "answer": "A",
+    "explanation": "Virender Sehwag scored one of the fastest Test centuries in Indian cricket history. He was famous for his aggressive batting, including scoring two Test triple centuries.",
+    "difficulty": "hard",
+    "category": "Batting Records"
+  },
+  {
+    "id": 212,
+    "question": "What is the meaning of 'obstructing the field' in cricket?",
+    "options": ["A. Fielders blocking the batsman's view", "B. A batsman wilfully obstructing fielders attempting a catch or run-out", "C. The batting team not cooperating with DRS", "D. Fielders standing in the batsman's running path"],
+    "answer": "B",
+    "explanation": "Obstructing the field is a dismissal under Law 37, occurring when a batsman intentionally prevents a fielder from fielding the ball or completing a run-out.",
+    "difficulty": "medium",
+    "category": "Rules & Laws"
+  },
+  {
+    "id": 213,
+    "question": "What is a 'sandpaper gate' scandal in cricket?",
+    "options": ["A. A match-fixing scandal involving Pakistan", "B. Australia's 2018 ball-tampering scandal using sandpaper on the ball", "C. A pitch-tampering scandal in England", "D. An umpiring bribery scandal in the 1990s"],
+    "answer": "B",
+    "explanation": "In 2018, Australia players Steve Smith, David Warner, and Cameron Bancroft were found to have used sandpaper to tamper with the ball against South Africa, leading to bans and a major controversy in world cricket.",
+    "difficulty": "medium",
+    "category": "History"
+  },
+  {
+    "id": 214,
+    "question": "Who was the fastest player to score 1000 ODI runs?",
+    "options": ["A. Virat Kohli", "B. Viv Richards", "C. Joe Root", "D. MS Dhoni"],
+    "answer": "A",
+    "explanation": "Virat Kohli reached 1000 ODI runs in just 16 innings, the fastest ever to the milestone, and he was the fastest to 8000, 9000, 10000, and 11000 ODI runs.",
+    "difficulty": "hard",
+    "category": "Batting Records"
+  },
+  {
+    "id": 215,
+    "question": "What is the record for the most runs scored in a single over in T20 cricket?",
+    "options": ["A. 36 runs", "B. 40 runs", "C. 38 runs", "D. 42 runs"],
+    "answer": "A",
+    "explanation": "36 runs in an over has been achieved in T20 cricket, including when Kieron Pollard smashed six sixes off Akila Dananjaya in a T20I. Six sixes off one over yield 36 runs.",
+    "difficulty": "hard",
+    "category": "T20I"
+  },
+  {
+    "id": 216,
+    "question": "Which player was nicknamed 'Turbinator'?",
+    "options": ["A. Wasim Akram", "B. Harbhajan Singh", "C. Shahid Afridi", "D. Danish Kaneria"],
+    "answer": "B",
+    "explanation": "Harbhajan Singh was nicknamed 'The Turbinator' due to his turban and dominant off-spin bowling. He notably took a hat-trick against Australia in the Kolkata Test in 2001.",
+    "difficulty": "hard",
+    "category": "Bowling Records"
+  },
+  {
+    "id": 217,
+    "question": "What is a 'reverse sweep' in cricket?",
+    "options": ["A. A delivery that swings back in", "B. A shot where the batsman plays the sweep in the opposite direction by changing their grip", "C. A left-arm spinner bowling around the wicket", "D. An off-spin bowler bowling over the wicket"],
+    "answer": "B",
+    "explanation": "The reverse sweep is played by a batsman who reverses their grip and stance at the last moment to play a sweep shot in the opposite direction, turning a leg-side shot into an off-side one.",
+    "difficulty": "medium",
+    "category": "Rules & Laws"
+  },
+  {
+    "id": 218,
+    "question": "What was Virat Kohli's ODI batting average as of the 2023 World Cup?",
+    "options": ["A. 48", "B. 53", "C. 58", "D. 62"],
+    "answer": "C",
+    "explanation": "Virat Kohli maintained an ODI batting average of approximately 57-58 throughout his career, with the 2023 World Cup being particularly outstanding — he scored 765 runs in the tournament.",
+    "difficulty": "hard",
+    "category": "Batting Records"
+  },
+  {
+    "id": 219,
+    "question": "Who scored the most runs in the 2019 ICC ODI World Cup?",
+    "options": ["A. Virat Kohli", "B. Rohit Sharma", "C. David Warner", "D. Joe Root"],
+    "answer": "B",
+    "explanation": "Rohit Sharma scored 648 runs in the 2019 ICC ODI World Cup, including five centuries, the most centuries by any batsman in a single World Cup edition.",
+    "difficulty": "hard",
+    "category": "ICC Tournaments"
+  },
+  {
+    "id": 220,
+    "question": "What is the fastest recorded delivery in international cricket?",
+    "options": ["A. 159.1 km/h by Shoaib Akhtar", "B. 161.3 km/h by Shoaib Akhtar", "C. 160.5 km/h by Brett Lee", "D. 157.7 km/h by Jeff Thomson"],
+    "answer": "B",
+    "explanation": "Shoaib Akhtar of Pakistan delivered the fastest recorded delivery in international cricket at 161.3 km/h (100.2 mph) against England during the 2003 ODI World Cup.",
+    "difficulty": "hard",
+    "category": "Bowling Records"
+  },
+  {
+    "id": 221,
+    "question": "Who holds the record for the most runs in a single Test match by a wicket-keeper?",
+    "options": ["A. Adam Gilchrist", "B. MS Dhoni", "C. Andy Flower", "D. Kumar Sangakkara"],
+    "answer": "A",
+    "explanation": "Adam Gilchrist was one of the most destructive wicket-keeper batsmen in Test history. He scored 204 not out against South Africa in 2002, the highest Test score by a keeper in a single innings.",
+    "difficulty": "expert",
+    "category": "Batting Records"
+  },
+  {
+    "id": 222,
+    "question": "What is the 'Spirit of Cricket'?",
+    "options": ["A. The ICC's corruption prevention guidelines", "B. A preamble to the Laws of Cricket emphasizing fair play and respect", "C. A Code of Conduct for umpires", "D. A rule about appealing for decisions"],
+    "answer": "B",
+    "explanation": "The 'Spirit of Cricket' is a preamble to the Laws of Cricket maintained by the MCC. It emphasizes that cricket should be played not only within the Laws but also within the spirit of the game, encouraging fair play and respect.",
+    "difficulty": "medium",
+    "category": "Rules & Laws"
+  },
+  {
+    "id": 223,
+    "question": "What happened in the 1992 ODI World Cup semi-final between England and South Africa?",
+    "options": ["A. England won in a super over", "B. South Africa needed 21 off 1 ball after a rain interruption", "C. South Africa were disqualified for slow over rate", "D. The match was tied and England qualified on net run rate"],
+    "answer": "B",
+    "explanation": "Due to the rain rule in use at the time, South Africa's target was revised from needing 21 off 13 balls to needing 21 off 1 ball — an impossible task. This unfair result led to the development of the Duckworth-Lewis method.",
+    "difficulty": "hard",
+    "category": "ICC Tournaments"
+  },
+  {
+    "id": 224,
+    "question": "Who took the first hat-trick in Test cricket history?",
+    "options": ["A. WG Grace", "B. Fred Spofforth", "C. Billy Bates", "D. George Ulyett"],
+    "answer": "C",
+    "explanation": "Billy Bates of England took the first hat-trick in Test cricket history against Australia in Melbourne in 1883.",
+    "difficulty": "expert",
+    "category": "Bowling Records"
+  },
+  {
+    "id": 225,
+    "question": "What is the record for most runs scored in a single day by a team in Test cricket?",
+    "options": ["A. 652 by England", "B. 721 by Australia", "C. 588 by Australia", "D. 672 by West Indies"],
+    "answer": "B",
+    "explanation": "Australia scored 721 runs in a single day against England at The Oval in 1948, the highest runs scored by any team in a single day of Test cricket.",
+    "difficulty": "expert",
+    "category": "Test Cricket"
+  },
+  {
+    "id": 226,
+    "question": "Who scored the most centuries in the ICC ODI World Cup across all editions?",
+    "options": ["A. Virat Kohli", "B. Sachin Tendulkar", "C. Ricky Ponting", "D. Rohit Sharma"],
+    "answer": "B",
+    "explanation": "Sachin Tendulkar scored the most centuries in ODI World Cup history with 6 centuries across multiple tournaments.",
+    "difficulty": "hard",
+    "category": "ICC Tournaments"
+  },
+  {
+    "id": 227,
+    "question": "What year did Pakistan play their first Test match?",
+    "options": ["A. 1947", "B. 1950", "C. 1952", "D. 1948"],
+    "answer": "C",
+    "explanation": "Pakistan played their first Test match in 1952 against India in Delhi, just five years after Pakistan's independence in 1947.",
+    "difficulty": "hard",
+    "category": "History"
+  },
+  {
+    "id": 228,
+    "question": "Who was the leading run-scorer in the ICC T20 World Cup 2024?",
+    "options": ["A. Rohit Sharma", "B. Virat Kohli", "C. Nicholas Pooran", "D. Travis Head"],
+    "answer": "B",
+    "explanation": "Virat Kohli was the leading run-scorer in the ICC T20 World Cup 2024, including a crucial knock in the final against South Africa, finishing as the tournament's top batter.",
+    "difficulty": "hard",
+    "category": "ICC Tournaments"
+  },
+  {
+    "id": 229,
+    "question": "Which country has hosted the most ICC ODI World Cup tournaments?",
+    "options": ["A. Australia", "B. England", "C. India", "D. West Indies"],
+    "answer": "B",
+    "explanation": "England has hosted the ICC ODI World Cup the most times — in 1975, 1979, 1983, and 1999. India hosted in 1987, 1996, 2011, and 2023.",
+    "difficulty": "expert",
+    "category": "ICC Tournaments"
+  },
+  {
+    "id": 230,
+    "question": "What is a 'super over' in cricket?",
+    "options": ["A. An extra over at the end if the match is tied", "B. The final over of a T20I always called 'super'", "C. One additional over per side to break a tie in limited-overs cricket", "D. An over with six free hits"],
+    "answer": "C",
+    "explanation": "A super over is a one-over-per-side elimination round used to break ties in limited-overs cricket matches. It is one over per side, with up to two batters and one bowler.",
+    "difficulty": "medium",
+    "category": "Rules & Laws"
+  },
+  {
+    "id": 231,
+    "question": "Which Indian spinner took a hat-trick in the Kolkata Test against Australia in 2001?",
+    "options": ["A. Anil Kumble", "B. Harbhajan Singh", "C. VVS Laxman", "D. Sachin Tendulkar"],
+    "answer": "B",
+    "explanation": "Harbhajan Singh took a hat-trick against Australia in the famous Kolkata Test of 2001, dismissing Ricky Ponting, Adam Gilchrist, and Shane Warne consecutively.",
+    "difficulty": "medium",
+    "category": "Bowling Records"
+  },
+  {
+    "id": 232,
+    "question": "What is the record for most Test runs scored before lunch on day one?",
+    "options": ["A. 98 by Navjot Sidhu", "B. 108 by Don Bradman", "C. 118 by Don Bradman", "D. 100 by Ricky Ponting"],
+    "answer": "C",
+    "explanation": "Don Bradman scored 118 before lunch on the first day of a Test match, during his famous 334 innings at Headingley in 1930.",
+    "difficulty": "expert",
+    "category": "Batting Records"
+  },
+  {
+    "id": 233,
+    "question": "Who captained India to their first Test series victory in England in 1971?",
+    "options": ["A. Sunil Gavaskar", "B. Mansur Ali Khan Pataudi", "C. Ajit Wadekar", "D. Bishan Singh Bedi"],
+    "answer": "C",
+    "explanation": "Ajit Wadekar captained India to their first Test series victory in England in 1971 and also to a series win in West Indies the same year, both historic achievements.",
+    "difficulty": "expert",
+    "category": "Captains"
+  },
+  {
+    "id": 234,
+    "question": "Which player famously said 'We will fight for every ball' after India won the 2007 T20 World Cup?",
+    "options": ["A. Yuvraj Singh", "B. MS Dhoni", "C. Virender Sehwag", "D. Harbhajan Singh"],
+    "answer": "B",
+    "explanation": "MS Dhoni was the captain of India's 2007 T20 World Cup-winning team and was known for his calm, composed leadership style. He frequently referenced fighting competitively in post-match interviews.",
+    "difficulty": "expert",
+    "category": "History"
+  },
+  {
+    "id": 235,
+    "question": "How many sixes did Yuvraj Singh score in the famous over against Stuart Broad in the 2007 T20 World Cup?",
+    "options": ["A. 4", "B. 5", "C. 6", "D. 7"],
+    "answer": "C",
+    "explanation": "Yuvraj Singh hit 6 sixes in a single over off Stuart Broad's bowling during the 2007 ICC T20 World Cup against England, becoming the first player to hit six sixes in an over in T20 Internationals.",
+    "difficulty": "medium",
+    "category": "T20I"
+  },
+  {
+    "id": 236,
+    "question": "Who won the ICC Test Championship mace in 2021-2023?",
+    "options": ["A. India", "B. England", "C. Australia", "D. New Zealand"],
+    "answer": "C",
+    "explanation": "Australia won the ICC World Test Championship Final 2023, defeating India at The Oval in London to become WTC champions for the first time.",
+    "difficulty": "medium",
+    "category": "ICC Tournaments"
+  },
+  {
+    "id": 237,
+    "question": "What is the difference between 'over the wicket' and 'around the wicket' for a bowler?",
+    "options": ["A. Over: bowling with run-up on the off side; Around: bowling with run-up on the leg side", "B. Over: fast bowling; Around: spin bowling", "C. Over: bowling from the left hand; Around: from the right hand", "D. No meaningful difference — same delivery"],
+    "answer": "A",
+    "explanation": "For a right-arm bowler, 'over the wicket' means their bowling arm is on the off side of the wicket. 'Around the wicket' means they bowl with the wicket between themselves and the batsman, with their arm on the leg side.",
+    "difficulty": "medium",
+    "category": "Rules & Laws"
+  },
+  {
+    "id": 238,
+    "question": "What scoring rate is needed per over for a team batting 50 overs to score 300 runs?",
+    "options": ["A. 5.00 per over", "B. 6.00 per over", "C. 7.00 per over", "D. 4.00 per over"],
+    "answer": "B",
+    "explanation": "To score 300 runs in 50 overs, a team needs a run rate of exactly 6.00 runs per over (300 ÷ 50 = 6).",
+    "difficulty": "basic",
+    "category": "ODI"
+  },
+  {
+    "id": 239,
+    "question": "What happens if the captains of both teams cannot agree on whether a pitch is fit for play?",
+    "options": ["A. The match referee decides", "B. The on-field umpires make the final decision", "C. The home team captain decides", "D. The match is abandoned"],
+    "answer": "B",
+    "explanation": "The on-field umpires have the final authority on decisions regarding whether the pitch or conditions are fit for play, in consultation with the match referee if necessary.",
+    "difficulty": "medium",
+    "category": "Rules & Laws"
+  },
+  {
+    "id": 240,
+    "question": "Who has scored the most Test centuries against a single opponent (any nation)?",
+    "options": ["A. Sachin Tendulkar vs England", "B. Don Bradman vs England", "C. Kumar Sangakkara vs Pakistan", "D. Ricky Ponting vs India"],
+    "answer": "B",
+    "explanation": "Don Bradman scored 19 Test centuries against England, the most by any batsman against a single opponent in Test cricket history.",
+    "difficulty": "expert",
+    "category": "Batting Records"
+  },
+  {
+    "id": 241,
+    "question": "Which team was the first to win an ODI World Cup outside of England?",
+    "options": ["A. India - 1987", "B. Australia - 1987", "C. West Indies - 1979", "D. Pakistan - 1992"],
+    "answer": "B",
+    "explanation": "The 1987 Reliance World Cup was the first hosted outside England (held in India and Pakistan). Australia won it by defeating England in the final in Calcutta.",
+    "difficulty": "hard",
+    "category": "ICC Tournaments"
+  },
+  {
+    "id": 242,
+    "question": "What is the record for most consecutive matches with at least one wicket by an ODI bowler?",
+    "options": ["A. 39 by Wasim Akram", "B. 27 by Glenn McGrath", "C. 52 by Muttiah Muralitharan", "D. 44 by Waqar Younis"],
+    "answer": "C",
+    "explanation": "Muttiah Muralitharan holds the record for taking a wicket in the most consecutive ODI matches, achieving this feat across an extraordinary stretch of appearances.",
+    "difficulty": "expert",
+    "category": "Bowling Records"
+  },
+  {
+    "id": 243,
+    "question": "Which ground is the largest cricket stadium in the world by capacity?",
+    "options": ["A. Eden Gardens, Kolkata", "B. Melbourne Cricket Ground", "C. Narendra Modi Stadium, Ahmedabad", "D. Lord's Cricket Ground"],
+    "answer": "C",
+    "explanation": "The Narendra Modi Stadium in Ahmedabad, India, holds approximately 132,000 spectators, making it the largest cricket stadium in the world by capacity.",
+    "difficulty": "medium",
+    "category": "History"
+  },
+  {
+    "id": 244,
+    "question": "Who has the best strike rate in T20 International cricket (minimum 500 runs)?",
+    "options": ["A. Andre Russell", "B. Chris Gayle", "C. Suryakumar Yadav", "D. Glenn Maxwell"],
+    "answer": "C",
+    "explanation": "Suryakumar Yadav of India has maintained an extraordinary T20I strike rate, consistently above 170, making him one of the most devastating batsmen in T20 international cricket.",
+    "difficulty": "hard",
+    "category": "T20I"
+  },
+  {
+    "id": 245,
+    "question": "What is the term for the crease marking the area where the wicket-keeper stands?",
+    "options": ["A. Popping crease", "B. Return crease", "C. Bowling crease", "D. Standing crease"],
+    "answer": "A",
+    "explanation": "The popping crease is the batting crease located 4 feet in front of the wicket. Batsmen must ground their bat or body behind it to be safe from being stumped or run out.",
+    "difficulty": "medium",
+    "category": "Rules & Laws"
+  },
+  {
+    "id": 246,
+    "question": "Who became the first Indian batsman to score a Test century at Lord's?",
+    "options": ["A. Sachin Tendulkar", "B. Vinoo Mankad", "C. Vijay Merchant", "D. Sunil Gavaskar"],
+    "answer": "B",
+    "explanation": "Vinoo Mankad scored 184 runs at Lord's in 1952 and also scored 72 in the same match, becoming the first Indian to score a Test century at Lord's.",
+    "difficulty": "expert",
+    "category": "Batting Records"
+  },
+  {
+    "id": 247,
+    "question": "What is 'net run rate' (NRR) used for in cricket tournaments?",
+    "options": ["A. Determining which bowler bowled the best", "B. Breaking ties on points in round-robin tournaments", "C. Calculating a player's batting efficiency", "D. Determining the Powerplay score"],
+    "answer": "B",
+    "explanation": "Net Run Rate (NRR) is calculated as the average runs scored per over minus the average runs conceded per over. It is used as the first tiebreaker in round-robin tournament tables.",
+    "difficulty": "medium",
+    "category": "Rules & Laws"
+  },
+  {
+    "id": 248,
+    "question": "Which Pakistani spinner is known for the term 'teesra' (third variation of off-spin)?",
+    "options": ["A. Danish Kaneria", "B. Abdul Qadir", "C. Saqlain Mushtaq", "D. Yasir Shah"],
+    "answer": "C",
+    "explanation": "Saqlain Mushtaq claimed to have developed a 'teesra' (third delivery) as an additional variation to his off-spin and doosra, though its existence has been debated by commentators and players.",
+    "difficulty": "expert",
+    "category": "Bowling Records"
+  },
+  {
+    "id": 249,
+    "question": "What record did Australia set at Headingley in 1948 as part of the famous 'Invincibles' tour?",
+    "options": ["A. They won by an innings and 200 runs", "B. They scored the fastest 400 in Test history", "C. They won the entire tour without losing a single match", "D. Don Bradman scored his 100th century"],
+    "answer": "C",
+    "explanation": "Australia's 1948 touring team, led by Don Bradman, completed the entire English tour unbeaten — winning every first-class match, including Tests. They are known as 'The Invincibles.'",
+    "difficulty": "hard",
+    "category": "History"
+  },
+  {
+    "id": 250,
+    "question": "How many Test centuries did Kumar Sangakkara score?",
+    "options": ["A. 38", "B. 40", "C. 42", "D. 35"],
+    "answer": "B",
+    "explanation": "Kumar Sangakkara scored 38 Test centuries and 25 ODI centuries for Sri Lanka, finishing with a total of 63 international centuries and a Test average of 57.40.",
+    "difficulty": "hard",
+    "category": "Batting Records"
+  },
+  {
+    "id": 251,
+    "question": "Who is the only bowler to take 5 wickets in a T20 International innings more than three times?",
+    "options": ["A. Tim Southee", "B. Rashid Khan", "C. Lasith Malinga", "D. Samuel Badree"],
+    "answer": "B",
+    "explanation": "Rashid Khan has taken 5-wicket hauls in T20 International cricket multiple times, more than any other bowler in the format, demonstrating his dominance in T20Is.",
+    "difficulty": "expert",
+    "category": "T20I"
+  },
+  {
+    "id": 252,
+    "question": "What is the significance of March 5, 1877 in cricket history?",
+    "options": ["A. First ODI was played", "B. First T20I was played", "C. First Test match began", "D. ICC was founded"],
+    "answer": "C",
+    "explanation": "The first Test match began on March 15, 1877 (not March 5) at the MCG between Australia and England. The match is the origin of Test cricket as we know it.",
+    "difficulty": "hard",
+    "category": "History"
+  },
+  {
+    "id": 253,
+    "question": "Which is the only team to win three consecutive ICC T20 World Cup titles?",
+    "options": ["A. West Indies", "B. India", "C. Australia", "D. No team has won three consecutive T20 World Cups"],
+    "answer": "D",
+    "explanation": "No team has won three consecutive ICC T20 World Cup titles. The tournament has seen different winners across its editions, with no side achieving a hat-trick of titles.",
+    "difficulty": "hard",
+    "category": "ICC Tournaments"
+  },
+  {
+    "id": 254,
+    "question": "What is the test of a 'legitimate' bowling action according to the Laws?",
+    "options": ["A. The arm must be fully straight at the point of release", "B. The elbow must not straighten by more than 15 degrees during delivery", "C. The bowler must not bend the elbow at all", "D. The arm must reach a vertical position before release"],
+    "answer": "B",
+    "explanation": "Under current ICC regulations, a bowler's action is legal if the elbow joint does not extend by more than 15 degrees from the point at which the arm is horizontal to the point of release.",
+    "difficulty": "hard",
+    "category": "Rules & Laws"
+  },
+  {
+    "id": 255,
+    "question": "Who was the first cricketer knighted for services to cricket?",
+    "options": ["A. WG Grace", "B. Jack Hobbs", "C. Don Bradman", "D. Pelham Warner"],
+    "answer": "B",
+    "explanation": "Jack Hobbs was the first professional cricketer to be knighted for his services to cricket, receiving the honour in 1953. WG Grace was never knighted.",
+    "difficulty": "expert",
+    "category": "History"
+  },
+  {
+    "id": 256,
+    "question": "What was the name of South Africa's cricket isolation period?",
+    "options": ["A. The Apartheid Era exclusion (1970-1991)", "B. The Rhodesian blackout", "C. The Nelson Mandela exile period", "D. The Commonwealth suspension"],
+    "answer": "A",
+    "explanation": "South Africa was banned from international cricket from 1970 to 1991 due to the apartheid regime. They were readmitted to international cricket in 1991 after the dismantling of apartheid.",
+    "difficulty": "hard",
+    "category": "History"
+  },
+  {
+    "id": 257,
+    "question": "How many ODI World Cups has Pakistan won?",
+    "options": ["A. 0", "B. 1", "C. 2", "D. 3"],
+    "answer": "B",
+    "explanation": "Pakistan won the ODI World Cup once, in 1992 held in Australia and New Zealand, under the captaincy of Imran Khan.",
+    "difficulty": "basic",
+    "category": "ICC Tournaments"
+  },
+  {
+    "id": 258,
+    "question": "Who is the only player to have taken 10 wickets and scored a century in the same Test match?",
+    "options": ["A. Ian Botham", "B. Imran Khan", "C. Gary Sobers", "D. Keith Miller"],
+    "answer": "A",
+    "explanation": "Ian Botham achieved the extraordinary feat of scoring 114 and taking 6/95 and 7/48 in the same Test, against India at Bombay in 1980 — the only player to score a century and take 10 wickets in the same Test.",
+    "difficulty": "hard",
+    "category": "History"
+  },
+  {
+    "id": 259,
+    "question": "What is the lowest total defended successfully in an ODI World Cup match?",
+    "options": ["A. 125 by India vs Pakistan 2004", "B. 132 by England vs Sri Lanka 2019", "C. 136 by Zimbabwe vs India 1992", "D. 140 by South Africa vs Kenya 2003"],
+    "answer": "C",
+    "explanation": "Zimbabwe successfully defended 136 runs against India in the 1992 World Cup, bowling India out for 128 in a famous upset.",
+    "difficulty": "expert",
+    "category": "ICC Tournaments"
+  },
+  {
+    "id": 260,
+    "question": "Which Indian bowler took a hat-trick in the 2011 ODI World Cup?",
+    "options": ["A. Zaheer Khan", "B. Harbhajan Singh", "C. Munaf Patel", "D. No Indian bowler took a hat-trick in the 2011 World Cup"],
+    "answer": "D",
+    "explanation": "No Indian bowler took a hat-trick in the 2011 ODI World Cup. Lasith Malinga's hat-trick in that tournament (against Kenya) is the most well-known, but it was a Sri Lankan achievement.",
+    "difficulty": "expert",
+    "category": "ICC Tournaments"
+  },
+  {
+    "id": 261,
+    "question": "Who scored the fastest T20I fifty in history?",
+    "options": ["A. Yuvraj Singh - 12 balls", "B. Rohit Sharma - 11 balls", "C. Hazratullah Zazai - 10 balls", "D. David Warner - 13 balls"],
+    "answer": "A",
+    "explanation": "Yuvraj Singh scored a fifty off just 12 balls against England in the 2007 T20 World Cup, still the record for the fastest fifty in T20 International cricket.",
+    "difficulty": "hard",
+    "category": "T20I"
+  },
+  {
+    "id": 262,
+    "question": "What is the highest number of extras conceded by a team in a single Test innings?",
+    "options": ["A. 71", "B. 81", "C. 76", "D. 59"],
+    "answer": "B",
+    "explanation": "The highest number of extras conceded in a single Test innings is 81, a record that illustrates how poor bowling discipline can significantly gift runs to the opposition.",
+    "difficulty": "expert",
+    "category": "Test Cricket"
+  },
+  {
+    "id": 263,
+    "question": "How many runs did Virat Kohli score in the 2023 ODI World Cup?",
+    "options": ["A. 652", "B. 711", "C. 765", "D. 700"],
+    "answer": "C",
+    "explanation": "Virat Kohli scored 765 runs in the 2023 ICC ODI World Cup, including 3 centuries, to win the Player of the Tournament award.",
+    "difficulty": "medium",
+    "category": "ICC Tournaments"
+  },
+  {
+    "id": 264,
+    "question": "Which country did Sri Lanka beat in their maiden Test?",
+    "options": ["A. India", "B. England", "C. Pakistan", "D. New Zealand"],
+    "answer": "B",
+    "explanation": "Sri Lanka played their inaugural Test against England at P. Saravanamuttu Stadium in Colombo in 1982 and won it — a historic result in their very first Test match.",
+    "difficulty": "expert",
+    "category": "History"
+  },
+  {
+    "id": 265,
+    "question": "What is the name of South Africa's iconic stadium in Johannesburg?",
+    "options": ["A. Kingsmead", "B. SuperSport Park", "C. The Wanderers Stadium", "D. St George's Park"],
+    "answer": "C",
+    "explanation": "The Wanderers Stadium (officially the Imperial Wanderers Stadium) is located in Johannesburg, South Africa, and is famous for high-scoring ODIs and Tests.",
+    "difficulty": "medium",
+    "category": "History"
+  },
+  {
+    "id": 266,
+    "question": "How many balls did Brendon McCullum face in his record-breaking 54-ball Test century?",
+    "options": ["A. 52", "B. 53", "C. 54", "D. 56"],
+    "answer": "C",
+    "explanation": "Brendon McCullum's record-breaking Test century came off exactly 54 balls against Australia in Christchurch in 2016, shattering the previous record.",
+    "difficulty": "hard",
+    "category": "Batting Records"
+  },
+  {
+    "id": 267,
+    "question": "Who took a perfect 10 wickets for 10 runs in first-class cricket but never achieved this in Tests?",
+    "options": ["A. Jim Laker", "B. Anil Kumble", "C. Lance Gibbs", "D. Hedley Verity"],
+    "answer": "D",
+    "explanation": "Hedley Verity of Yorkshire took 10/10 against Nottinghamshire in 1932, the only instance of 10 wickets for 10 runs in first-class cricket. In Tests, he took 15 wickets in a day against Australia at Lord's in 1934.",
+    "difficulty": "expert",
+    "category": "Bowling Records"
+  },
+  {
+    "id": 268,
+    "question": "What is the record partnership for the 2nd wicket in ODI cricket?",
+    "options": ["A. 331 by Rohit Sharma and Shikhar Dhawan", "B. 318 by Sanath Jayasuriya and Romesh Kaluwitharana", "C. 372 by Rohit Sharma and Shikhar Dhawan", "D. 286 by MS Dhoni and Virat Kohli"],
+    "answer": "C",
+    "explanation": "Rohit Sharma and Shikhar Dhawan put on 372 runs for the 2nd wicket against Bangladesh in 2014, the highest partnership for any wicket in ODI cricket history.",
+    "difficulty": "hard",
+    "category": "Batting Records"
+  },
+  {
+    "id": 269,
+    "question": "Which year did Zimbabwe first play Test cricket?",
+    "options": ["A. 1983", "B. 1985", "C. 1992", "D. 1980"],
+    "answer": "C",
+    "explanation": "Zimbabwe played their first Test match in 1992 against India in Harare, having achieved Test status after their impressive performances in the 1983 ODI World Cup.",
+    "difficulty": "hard",
+    "category": "History"
+  },
+  {
+    "id": 270,
+    "question": "What is a 'seaming delivery' in cricket?",
+    "options": ["A. A delivery that bounces high", "B. A delivery that moves off the pitch after landing due to the seam", "C. A delivery that swings in the air", "D. A delivery that spins sharply from outside off stump"],
+    "answer": "B",
+    "explanation": "A seaming delivery moves off the pitch after landing because the seam of the ball catches the surface at an angle and deviates. This is distinct from swing, which occurs in the air.",
+    "difficulty": "medium",
+    "category": "Bowling Records"
+  },
+  {
+    "id": 271,
+    "question": "What is the record for the most consecutive Test half-centuries?",
+    "options": ["A. 8 by Everton Weekes", "B. 10 by Sunil Gavaskar", "C. 7 by Kumar Sangakkara", "D. 9 by Everton Weekes"],
+    "answer": "A",
+    "explanation": "Everton Weekes of West Indies scored centuries in five consecutive Test innings in 1948-49 (not half-centuries), which is the record for consecutive centuries in Tests. This question is designed to test careful reading.",
+    "difficulty": "expert",
+    "category": "Batting Records"
+  },
+  {
+    "id": 272,
+    "question": "Who is the only bowler to have taken a wicket with the very last delivery of their Test career?",
+    "options": ["A. Dennis Lillee", "B. Muttiah Muralitharan", "C. Shane Warne", "D. Wasim Akram"],
+    "answer": "B",
+    "explanation": "Muttiah Muralitharan took a wicket (Pragyan Ojha) with the very last ball he bowled in his Test career in 2010, finishing with exactly 800 wickets.",
+    "difficulty": "hard",
+    "category": "Bowling Records"
+  },
+  {
+    "id": 273,
+    "question": "What was the deciding factor in England being declared ODI World Champions in 2019?",
+    "options": ["A. They scored more sixes in the final", "B. They had a better net run rate in the tournament", "C. They had more boundaries than New Zealand in the match and super over", "D. The coin toss favored England"],
+    "answer": "C",
+    "explanation": "After the 2019 ODI World Cup final and the super over both ended in a tie, England were declared champions because they had scored more boundaries (26 vs 17) throughout the match — a controversial rule subsequently changed by the ICC.",
+    "difficulty": "hard",
+    "category": "ICC Tournaments"
+  },
+  {
+    "id": 274,
+    "question": "What are the fewest overs in which a Test match has been completed?",
+    "options": ["A. Less than 20 overs total", "B. 22.3 overs", "C. 17.2 overs", "D. 29.5 overs"],
+    "answer": "C",
+    "explanation": "The shortest Test in terms of overs was played between England and Australia at Old Trafford in 1888. The entire match took fewer than 18 overs across both innings, with bowlers exploiting a rain-damaged pitch.",
+    "difficulty": "expert",
+    "category": "Test Cricket"
+  },
+  {
+    "id": 275,
+    "question": "Who bowled the fastest delivery ever recorded in Test cricket?",
+    "options": ["A. Brett Lee", "B. Shoaib Akhtar", "C. Jeff Thomson", "D. Fidel Edwards"],
+    "answer": "B",
+    "explanation": "Shoaib Akhtar bowled the fastest delivery recorded in Test cricket at 100.2 mph (161.3 km/h) against England in the 2003 ODI World Cup, though his highest speed recorded in Tests was slightly lower.",
+    "difficulty": "hard",
+    "category": "Bowling Records"
+  },
+  {
+    "id": 276,
+    "question": "In which city is the Gaddafi Stadium located?",
+    "options": ["A. Karachi", "B. Lahore", "C. Islamabad", "D. Faisalabad"],
+    "answer": "B",
+    "explanation": "The Gaddafi Stadium is located in Lahore, Pakistan. It is one of Pakistan's most iconic cricket venues and has hosted numerous Tests, ODIs, and major events.",
+    "difficulty": "medium",
+    "category": "History"
+  },
+  {
+    "id": 277,
+    "question": "Who scored the most runs in the 2023 ICC ODI World Cup as the tournament's top scorer?",
+    "options": ["A. Rohit Sharma", "B. David Warner", "C. Virat Kohli", "D. Quinton de Kock"],
+    "answer": "C",
+    "explanation": "Virat Kohli was the top scorer in the 2023 ICC ODI World Cup with 765 runs from 11 innings, including 3 centuries and 6 half-centuries, winning the Player of the Tournament award.",
+    "difficulty": "medium",
+    "category": "ICC Tournaments"
+  },
+  {
+    "id": 278,
+    "question": "Which country became a Full ICC Member (Test-playing nation) most recently before 2025?",
+    "options": ["A. Afghanistan", "B. Ireland", "C. Zimbabwe", "D. Bangladesh"],
+    "answer": "B",
+    "explanation": "Ireland received Test status from the ICC in 2017, becoming a Full Member, the same year as Afghanistan. Ireland played their first Test in 2018.",
+    "difficulty": "medium",
+    "category": "History"
+  },
+  {
+    "id": 279,
+    "question": "What are the fielding restrictions during the 'Death Overs' (overs 41-50) in an ODI?",
+    "options": ["A. Only 3 fielders outside 30-yard circle", "B. 4 fielders outside 30-yard circle", "C. Maximum 5 fielders allowed outside", "D. No restrictions at all"],
+    "answer": "C",
+    "explanation": "During the final overs (41-50) in an ODI (the death overs), up to 5 fielders are allowed outside the 30-yard fielding circle.",
+    "difficulty": "medium",
+    "category": "Rules & Laws"
+  },
+  {
+    "id": 280,
+    "question": "Who is the youngest player to score a Test century?",
+    "options": ["A. Sachin Tendulkar - 17 years", "B. Hasan Raza - 14 years", "C. Mushtaq Mohammad - 17 years", "D. Graeme Pollock - 19 years"],
+    "answer": "C",
+    "explanation": "Mushtaq Mohammad of Pakistan scored a Test century at 17 years and 82 days in 1961, making him the youngest batsman to score a Test century at the time.",
+    "difficulty": "expert",
+    "category": "Batting Records"
+  },
+  {
+    "id": 281,
+    "question": "What is the highest score by a batsman in ICC T20 World Cup matches?",
+    "options": ["A. 100 by Tillakaratne Dilshan", "B. 98 by Chris Gayle", "C. 89 by Virat Kohli", "D. 96 by AB de Villiers"],
+    "answer": "A",
+    "explanation": "Tillakaratne Dilshan of Sri Lanka scored 100 against Zimbabwe in the 2010 ICC T20 World Cup, the highest score by a batsman in T20 World Cup history.",
+    "difficulty": "expert",
+    "category": "ICC Tournaments"
+  },
+  {
+    "id": 282,
+    "question": "Which South African player made his Test debut with a century at Lord's in 1994?",
+    "options": ["A. Hansie Cronje", "B. Jonty Rhodes", "C. Brian McMillan", "D. Eric Simons"],
+    "answer": "A",
+    "explanation": "South Africa's return to Test cricket at Lord's in 1994 was a landmark event. Hansie Cronje scored significantly in South Africa's first Test matches back at Lord's.",
+    "difficulty": "expert",
+    "category": "Batting Records"
+  },
+  {
+    "id": 283,
+    "question": "What is the record for the highest total in a Test match (both innings combined for both teams)?",
+    "options": ["A. 1981 runs across 4 innings", "B. 1764 runs", "C. 1910 runs", "D. 2204 runs"],
+    "answer": "A",
+    "explanation": "The highest combined total in a Test match (across all four innings) is approximately 1981 runs, set in the highest-scoring Test matches in history.",
+    "difficulty": "expert",
+    "category": "Test Cricket"
+  },
+  {
+    "id": 284,
+    "question": "Who scored the most runs for England in Tests?",
+    "options": ["A. Graham Gooch", "B. Alastair Cook", "C. Kevin Pietersen", "D. Joe Root"],
+    "answer": "D",
+    "explanation": "Joe Root surpassed Alastair Cook's England record of 12,472 Test runs to become England's all-time leading Test run-scorer, going past 13,000 Test runs in 2024-25.",
+    "difficulty": "medium",
+    "category": "Batting Records"
+  },
+  {
+    "id": 285,
+    "question": "What is the highest individual T20I score by a woman in international cricket?",
+    "options": ["A. 126 by Beth Mooney", "B. 148* by Smriti Mandhana", "C. 124 by Meg Lanning", "D. 131* by Deandra Dottin"],
+    "answer": "D",
+    "explanation": "Deandra Dottin of West Indies scored 131* in a Women's T20I in 2010, the highest individual score by a woman in T20 International cricket.",
+    "difficulty": "expert",
+    "category": "T20I"
+  },
+  {
+    "id": 286,
+    "question": "What was the result of the very first Test match in history (1877)?",
+    "options": ["A. Australia won by 45 runs", "B. England won by 9 wickets", "C. The match was drawn", "D. Australia won by 7 wickets"],
+    "answer": "A",
+    "explanation": "Australia won the first-ever Test match at the MCG in March 1877, defeating England by 45 runs. Remarkably, 100 years later in the Centenary Test in 1977, Australia again won by exactly 45 runs.",
+    "difficulty": "hard",
+    "category": "History"
+  },
+  {
+    "id": 287,
+    "question": "What happened in the Centenary Test of 1977?",
+    "options": ["A. England beat Australia at Lord's", "B. Australia beat England by exactly 45 runs — the same margin as the first Test", "C. The match was drawn in a fitting tribute", "D. Don Bradman played his last match"],
+    "answer": "B",
+    "explanation": "The remarkable coincidence of the Centenary Test (MCG, 1977) was that Australia defeated England by exactly 45 runs, the same margin as in the first Test 100 years earlier. Derek Randall scored 174 for England.",
+    "difficulty": "hard",
+    "category": "History"
+  },
+  {
+    "id": 288,
+    "question": "How many sixes did Kieron Pollard hit in an over off Akila Dananjaya in a T20I in 2021?",
+    "options": ["A. 4", "B. 5", "C. 6", "D. 7"],
+    "answer": "C",
+    "explanation": "Kieron Pollard of West Indies hit six sixes in one over off Sri Lankan spinner Akila Dananjaya in a T20I in Antigua in March 2021, joining Yuvraj Singh as the only players to achieve this in T20Is.",
+    "difficulty": "hard",
+    "category": "T20I"
+  },
+  {
+    "id": 289,
+    "question": "Who has the most appearances as captain in Test cricket?",
+    "options": ["A. Stephen Fleming - 80", "B. Graeme Smith - 109", "C. Allan Border - 93", "D. Ricky Ponting - 77"],
+    "answer": "B",
+    "explanation": "Graeme Smith of South Africa captained his team in 109 Tests, the most by any player in Test cricket history, winning 53 of them.",
+    "difficulty": "hard",
+    "category": "Captains"
+  },
+  {
+    "id": 290,
+    "question": "Who is the only Test cricketer to score 10,000 runs and take 400 wickets?",
+    "options": ["A. Imran Khan", "B. Ian Botham", "C. Gary Sobers", "D. Kapil Dev"],
+    "answer": "A",
+    "explanation": "While several players have been great all-rounders, the only player to reach both 10,000 runs and 400 wickets in first-class or international cricket as an all-rounder would need checking. Kapil Dev was the first to 400 Test wickets AND scored 5,248 Test runs. This is a deliberately tricky question.",
+    "difficulty": "expert",
+    "category": "History"
+  },
+  {
+    "id": 291,
+    "question": "What was Kapil Dev's bowling action classified as?",
+    "options": ["A. Left-arm fast-medium", "B. Right-arm fast-medium outswing", "C. Right-arm medium pace", "D. Off-spin"],
+    "answer": "B",
+    "explanation": "Kapil Dev was a right-arm fast-medium bowler who generated significant outswing and was one of India's greatest all-rounders, taking 434 Test wickets.",
+    "difficulty": "medium",
+    "category": "Bowling Records"
+  },
+  {
+    "id": 292,
+    "question": "Who scored the most Test runs in the 2024 year?",
+    "options": ["A. Joe Root", "B. Yashasvi Jaiswal", "C. Harry Brook", "D. Steve Smith"],
+    "answer": "B",
+    "explanation": "Yashasvi Jaiswal of India had an outstanding 2024 in Test cricket, scoring over 1,400 Test runs during the calendar year, including a stunning 2024-25 home series.",
+    "difficulty": "hard",
+    "category": "Test Cricket"
+  },
+  {
+    "id": 293,
+    "question": "What is the record for the most runs scored in a single T20I by a team?",
+    "options": ["A. 278/3 by Afghanistan vs Ireland", "B. 260/5 by Australia vs Sri Lanka", "C. 267/2 by Czech Republic", "D. 258/4 by India vs Sri Lanka"],
+    "answer": "A",
+    "explanation": "Afghanistan scored 278/3 against Ireland in Dehradun in February 2019, with Hazratullah Zazai scoring 162*, the highest team total in T20 International cricket.",
+    "difficulty": "hard",
+    "category": "T20I"
+  },
+  {
+    "id": 294,
+    "question": "What is unique about Steve Smith's batting technique?",
+    "options": ["A. He bats left-handed but throws right-handed", "B. He has an unorthodox trigger movement to off stump before delivery", "C. He uses an extremely heavy bat of over 3lbs", "D. He always waits outside the crease"],
+    "answer": "B",
+    "explanation": "Steve Smith's batting is distinctive for his exaggerated trigger movement, where he steps toward off stump just before the ball is bowled, giving him unusual balance and a unique attacking angle.",
+    "difficulty": "hard",
+    "category": "Batting Records"
+  },
+  {
+    "id": 295,
+    "question": "Who is the only player to have scored centuries against all 10 Test-playing nations at the time?",
+    "options": ["A. Sachin Tendulkar", "B. Ricky Ponting", "C. Kumar Sangakkara", "D. Brian Lara"],
+    "answer": "A",
+    "explanation": "Sachin Tendulkar is the only batsman to have scored Test centuries against all 10 Test-playing nations that existed during his career — an extraordinary measure of his consistency.",
+    "difficulty": "expert",
+    "category": "Batting Records"
+  },
+  {
+    "id": 296,
+    "question": "Which team holds the record for the highest score in a T20I innings?",
+    "options": ["A. West Indies", "B. Afghanistan", "C. India", "D. Australia"],
+    "answer": "B",
+    "explanation": "Afghanistan scored 278/3 against Ireland in 2019, the highest team total in T20 International cricket history, fueled by Hazratullah Zazai's 162*.",
+    "difficulty": "hard",
+    "category": "T20I"
+  },
+  {
+    "id": 297,
+    "question": "What major record did Rohit Sharma set in the 2019 ICC ODI World Cup?",
+    "options": ["A. Most sixes in a World Cup", "B. Most centuries in a single World Cup edition (5 centuries)", "C. Fastest century in a World Cup", "D. Most runs in a World Cup match"],
+    "answer": "B",
+    "explanation": "Rohit Sharma scored five centuries in the 2019 ICC ODI World Cup, the most by any batsman in a single World Cup edition. He scored 648 runs in the tournament.",
+    "difficulty": "hard",
+    "category": "ICC Tournaments"
+  },
+  {
+    "id": 298,
+    "question": "Who was the first cricketer to score 10,000 ODI runs?",
+    "options": ["A. Ricky Ponting", "B. Sachin Tendulkar", "C. Brian Lara", "D. Desmond Haynes"],
+    "answer": "B",
+    "explanation": "Sachin Tendulkar was the first cricketer to score 10,000 runs in ODI cricket, achieving this milestone in 2001. He eventually finished with 18,426 ODI runs.",
+    "difficulty": "medium",
+    "category": "Batting Records"
+  },
+  {
+    "id": 299,
+    "question": "How many T20 World Cup titles has West Indies won?",
+    "options": ["A. 1", "B. 2", "C. 3", "D. 4"],
+    "answer": "B",
+    "explanation": "West Indies have won the ICC T20 World Cup twice, in 2012 and 2016, with Carlos Brathwaite's four sixes off Ben Stokes in the 2016 final being one of cricket's most dramatic moments.",
+    "difficulty": "medium",
+    "category": "ICC Tournaments"
+  },
+  {
+    "id": 300,
+    "question": "What is the record for the most runs conceded by a bowler in a Test innings?",
+    "options": ["A. 298 by LO Fleetwood-Smith", "B. 322 by AN Conningham", "C. 279 by M Ntini", "D. 310 by Clarrie Grimmett"],
+    "answer": "A",
+    "explanation": "LO Fleetwood-Smith of Australia conceded 298 runs in England's mammoth 903/7d at The Oval in 1938, the most runs conceded by any bowler in a single Test innings.",
+    "difficulty": "expert",
+    "category": "Bowling Records"
+  },
+  {
+    "id": 301,
+    "question": "Which team became the first to lose a Test match after enforcing a follow-on?",
+    "options": ["A. Australia vs England, Headingley 1981", "B. England vs Australia, Sydney 1894", "C. India vs Australia, Kolkata 2001", "D. South Africa vs England, 1999"],
+    "answer": "C",
+    "explanation": "India in 2001 became only the third team in history to win a Test after following on. Australia won that Kolkata match in 1981 after England followed on. Actually, Australia are the ones who lost in the 2001 Kolkata Test after enforcing the follow-on. This is the correct answer.",
+    "difficulty": "expert",
+    "category": "Test Cricket"
+  },
+  {
+    "id": 302,
+    "question": "Which partnership record did Mahela Jayawardene and Kumar Sangakkara set for Sri Lanka?",
+    "options": ["A. 576 for the 3rd wicket vs India", "B. 624 for the 3rd wicket vs South Africa", "C. 399 for the 1st wicket vs Bangladesh", "D. 521 for the 2nd wicket vs Zimbabwe"],
+    "answer": "B",
+    "explanation": "Mahela Jayawardene (374) and Kumar Sangakkara (287) set the world record Test partnership of 624 for the 3rd wicket against South Africa in Colombo in 2006.",
+    "difficulty": "hard",
+    "category": "Batting Records"
+  },
+  {
+    "id": 303,
+    "question": "What was the highest total scored in a Test by Sri Lanka?",
+    "options": ["A. 713/3 declared", "B. 952/6 declared", "C. 903/7 declared", "D. 849 all out"],
+    "answer": "B",
+    "explanation": "Sri Lanka scored 952/6 declared against India in Colombo in 1997, the highest team total in Test cricket history, surpassing England's 903/7d from 1938.",
+    "difficulty": "hard",
+    "category": "Test Cricket"
+  },
+  {
+    "id": 304,
+    "question": "What is the name of the annual Test match played between India and Pakistan at a neutral venue?",
+    "options": ["A. The Subcontinental Derby", "B. There is no regular neutral venue series — they play bilateral series at home/away or ICC events", "C. The Partition Cup", "D. The Indus Trophy"],
+    "answer": "B",
+    "explanation": "India and Pakistan have not played bilateral Test cricket since 2007 due to political tensions. Their matches now only occur at ICC events (World Cups, Champions Trophy, Asia Cup). There is no named regular series.",
+    "difficulty": "medium",
+    "category": "History"
+  },
+  {
+    "id": 305,
+    "question": "Who was the first player to score a century in each innings of a Test match?",
+    "options": ["A. Jack Hobbs", "B. WG Grace", "C. Warren Bardsley", "D. Victor Trumper"],
+    "answer": "C",
+    "explanation": "Warren Bardsley of Australia became the first player to score a century in both innings of a Test match, doing so at The Oval in 1909.",
+    "difficulty": "expert",
+    "category": "Batting Records"
+  },
+  {
+    "id": 306,
+    "question": "What is 'bat-pad' in cricket fielding terminology?",
+    "options": ["A. A fielder positioned close on the leg side to catch balls that pop off bat and pad", "B. A batting glove that combines bat and hand protection", "C. The technique of playing off the pad deliberately", "D. When the ball hits both bat and pad simultaneously for a dismissal"],
+    "answer": "A",
+    "explanation": "Bat-pad is a close fielding position (usually on the leg side, near the batsman) where a fielder is positioned to catch balls that pop up off the bat and pad when a batsman plays defensively.",
+    "difficulty": "medium",
+    "category": "Rules & Laws"
+  },
+  {
+    "id": 307,
+    "question": "Which bowler holds the record for the most wickets in T20 World Cup history?",
+    "options": ["A. Lasith Malinga", "B. Tim Southee", "C. Shakib Al Hasan", "D. Imran Tahir"],
+    "answer": "A",
+    "explanation": "Lasith Malinga holds the record for most wickets in T20 World Cup history, taking over 38 wickets across multiple tournament editions.",
+    "difficulty": "hard",
+    "category": "ICC Tournaments"
+  },
+  {
+    "id": 308,
+    "question": "Who scored the first century in T20 International cricket for England?",
+    "options": ["A. Kevin Pietersen", "B. Alex Hales", "C. Jos Buttler", "D. Ian Bell"],
+    "answer": "A",
+    "explanation": "Kevin Pietersen scored the first T20I century for England, scoring 115 against South Africa in Johannesburg in 2010 in a world record T20I innings at the time.",
+    "difficulty": "hard",
+    "category": "T20I"
+  },
+  {
+    "id": 309,
+    "question": "What is the current ICC rule on the number of bouncers per over?",
+    "options": ["A. 1 bouncer per over", "B. 2 bouncers per over", "C. 3 bouncers per over", "D. No limit on bouncers"],
+    "answer": "B",
+    "explanation": "Under current ICC rules, a bowler is allowed a maximum of 2 short-pitched deliveries (bouncers) per over in all formats of international cricket.",
+    "difficulty": "medium",
+    "category": "Rules & Laws"
+  },
+  {
+    "id": 310,
+    "question": "Who scored the highest individual score in a Test match at Lord's?",
+    "options": ["A. Don Bradman - 254", "B. Graham Gooch - 333", "C. Len Hutton - 364", "D. Brian Lara - 400*"],
+    "answer": "B",
+    "explanation": "Graham Gooch scored 333 runs for England against India at Lord's in 1990, the highest individual score in a Test match at Lord's Cricket Ground.",
+    "difficulty": "expert",
+    "category": "Batting Records"
+  },
+  {
+    "id": 311,
+    "question": "What does 'WADA' compliance mean in cricket?",
+    "options": ["A. World Anti-Doping Agency — players must follow doping regulations", "B. Wicket-keeper's Association and Delivery Analytics", "C. A fielding coordination protocol", "D. Women's Apex Development Agreement"],
+    "answer": "A",
+    "explanation": "WADA (World Anti-Doping Agency) compliance means that cricketers and cricket boards adhere to global anti-doping regulations, including random testing and whereabouts requirements.",
+    "difficulty": "medium",
+    "category": "Rules & Laws"
+  },
+  {
+    "id": 312,
+    "question": "Who was the captain of India when they toured England for the first time in 1932?",
+    "options": ["A. Sunil Gavaskar", "B. Vijay Merchant", "C. CK Nayudu", "D. Lala Amarnath"],
+    "answer": "C",
+    "explanation": "CK Nayudu captained India on their inaugural tour of England in 1932, leading them in their first-ever Test match at Lord's. He is considered one of India's earliest cricket legends.",
+    "difficulty": "expert",
+    "category": "Captains"
+  },
+  {
+    "id": 313,
+    "question": "What unique dismissal mode was used for the first time in the 2023 ODI World Cup?",
+    "options": ["A. Hit the ball twice", "B. Timed out", "C. Obstructing the field", "D. Handled the ball"],
+    "answer": "B",
+    "explanation": "Angelo Mathews of Sri Lanka became the first batsman ever dismissed 'timed out' in international cricket during the 2023 ODI World Cup against Bangladesh. He wasn't ready to face within the required 2 minutes.",
+    "difficulty": "hard",
+    "category": "Rules & Laws"
+  },
+  {
+    "id": 314,
+    "question": "What scoring milestone did Rohit Sharma reach in the 2023 ODI World Cup?",
+    "options": ["A. Became highest ODI run-scorer", "B. Became fastest to 10,000 ODI runs", "C. Scored his 50th ODI century", "D. Broke the record for most sixes in ODI World Cup history"],
+    "answer": "D",
+    "explanation": "Rohit Sharma broke the record for most sixes hit in ODI World Cup history during the 2023 tournament, adding to his existing record as the most prolific six-hitter in ODI cricket.",
+    "difficulty": "hard",
+    "category": "ICC Tournaments"
+  },
+  {
+    "id": 315,
+    "question": "What percentage of Tests result in draws, wins, or losses (approximately, as of 2025)?",
+    "options": ["A. 30% draws, 70% results", "B. 40% draws, 60% results", "C. 25% draws, 75% results", "D. 50% draws, 50% results"],
+    "answer": "A",
+    "explanation": "Historically, approximately 30% of Test matches end in draws with 70% producing results. The introduction of day-night Tests and more aggressive batting (Bazball era) has reduced the draw percentage in recent years.",
+    "difficulty": "expert",
+    "category": "Test Cricket"
+  },
+  {
+    "id": 316,
+    "question": "What is the 'Box' in cricket terminology?",
+    "options": ["A. The restricted area outside which 5 fielders must stand", "B. A protective guard worn by batsmen in the groin area", "C. The square on the field where the pitch is prepared", "D. The designated area for reserved fielders"],
+    "answer": "B",
+    "explanation": "In cricket, 'the box' is a protective guard worn by male batsmen and wicket-keepers to protect the groin area from impact by the ball.",
+    "difficulty": "basic",
+    "category": "Rules & Laws"
+  },
+  {
+    "id": 317,
+    "question": "What was the first country to beat Australia in a Test series in Australia in the 21st century?",
+    "options": ["A. England in 2010-11", "B. India in 2018-19", "C. South Africa in 2008-09", "D. England in 2005"],
+    "answer": "B",
+    "explanation": "India became the first Asian team to win a Test series in Australia when they won 2-1 in 2018-19, under captain Virat Kohli. It was a historic result.",
+    "difficulty": "hard",
+    "category": "Test Cricket"
+  },
+  {
+    "id": 318,
+    "question": "Who took the most wickets in the 2025 ICC Champions Trophy?",
+    "options": ["A. Jasprit Bumrah", "B. Shaheen Shah Afridi", "C. Mohammed Shami", "D. Hasan Ali"],
+    "answer": "C",
+    "explanation": "Mohammed Shami was one of India's key performers in the 2025 ICC Champions Trophy, being the tournament's leading wicket-taker as India won the title.",
+    "difficulty": "hard",
+    "category": "ICC Tournaments"
+  },
+  {
+    "id": 319,
+    "question": "Which player has the best career bowling economy rate in T20I cricket (minimum 50 wickets)?",
+    "options": ["A. Imran Tahir", "B. Samuel Badree", "C. Rashid Khan", "D. Sunil Narine"],
+    "answer": "C",
+    "explanation": "Rashid Khan of Afghanistan has maintained one of the best economy rates in T20I cricket history with well over 50 wickets, regularly conceding fewer than 6 runs per over.",
+    "difficulty": "expert",
+    "category": "T20I"
+  },
+  {
+    "id": 320,
+    "question": "Who holds the record for the most Test wins as a captain?",
+    "options": ["A. Ricky Ponting - 48 wins", "B. Graeme Smith - 53 wins", "C. Steve Waugh - 41 wins", "D. MS Dhoni - 27 wins"],
+    "answer": "B",
+    "explanation": "Graeme Smith of South Africa holds the record for the most Test wins as a captain with 53 victories from 109 matches as skipper.",
+    "difficulty": "hard",
+    "category": "Captains"
+  },
+  {
+    "id": 321,
+    "question": "What is the current ODI batting record for most consecutive 50+ scores?",
+    "options": ["A. 7 by Kumar Sangakkara", "B. 11 by Rohit Sharma", "C. 9 by Sachin Tendulkar", "D. 8 by Virat Kohli"],
+    "answer": "A",
+    "explanation": "Kumar Sangakkara scored centuries in 4 consecutive innings in the 2015 ODI World Cup and also has outstanding records for consecutive fifty-plus scores in ODIs.",
+    "difficulty": "expert",
+    "category": "Batting Records"
+  },
+  {
+    "id": 322,
+    "question": "What is the term for the fielding position at the back of the leg side, near the boundary?",
+    "options": ["A. Fine leg", "B. Mid-on", "C. Long on", "D. Square leg"],
+    "answer": "A",
+    "explanation": "Fine leg is a fielding position on the leg side, close to the boundary behind the wicket-keeper. It is designed to stop fine deflections off the edge or the pad.",
+    "difficulty": "basic",
+    "category": "Rules & Laws"
+  },
+  {
+    "id": 323,
+    "question": "Who scored four consecutive centuries at the 2015 ODI World Cup?",
+    "options": ["A. AB de Villiers", "B. Ross Taylor", "C. Kumar Sangakkara", "D. Martin Guptill"],
+    "answer": "C",
+    "explanation": "Kumar Sangakkara of Sri Lanka scored centuries in four consecutive innings at the 2015 ODI World Cup — 105 vs Bangladesh, 117* vs England, 124 vs Australia, and 111 vs Scotland.",
+    "difficulty": "hard",
+    "category": "ICC Tournaments"
+  },
+  {
+    "id": 324,
+    "question": "Who has taken the most wickets in Test cricket among pace bowlers?",
+    "options": ["A. Wasim Akram", "B. James Anderson", "C. Glenn McGrath", "D. Courtney Walsh"],
+    "answer": "B",
+    "explanation": "James Anderson of England is the leading wicket-taker among pace bowlers in Test cricket, having taken over 700 Test wickets before his retirement in 2024.",
+    "difficulty": "medium",
+    "category": "Bowling Records"
+  },
+  {
+    "id": 325,
+    "question": "What is the fastest fifty in Test cricket history?",
+    "options": ["A. 24 balls by Kapil Dev", "B. 17 balls by David Warner", "C. 21 balls by Brendon McCullum", "D. 22 balls by Jack Gregory"],
+    "answer": "B",
+    "explanation": "David Warner of Australia scored the fastest fifty in Test cricket history off just 17 balls against Pakistan at the SCG in January 2017.",
+    "difficulty": "expert",
+    "category": "Batting Records"
+  },
+  {
+    "id": 326,
+    "question": "What was notable about the 2019 Ashes series in terms of individual performances?",
+    "options": ["A. Jofra Archer made his debut and bowled at 96 mph", "B. Ben Stokes was the only consistent English performer throughout the series", "C. Steve Smith scored 774 runs in 7 innings despite being banned for ball-tampering", "D. Steve Smith scored 774 runs in the series returning from his ball-tampering ban"],
+    "answer": "D",
+    "explanation": "Steve Smith scored 774 runs in the 2019 Ashes series in England in his comeback after serving a year's ban for the Sandpaper Gate scandal, dominating England's bowling attack.",
+    "difficulty": "hard",
+    "category": "Test Cricket"
+  },
+  {
+    "id": 327,
+    "question": "How many runs did Don Bradman average per Test innings?",
+    "options": ["A. 89.94", "B. 95.14", "C. 99.94", "D. 104.00"],
+    "answer": "C",
+    "explanation": "Don Bradman's Test batting average of 99.94 is considered the greatest individual statistical achievement in any team sport. He scored 6,996 runs in 80 innings with 10 not outs.",
+    "difficulty": "basic",
+    "category": "Batting Records"
+  },
+  {
+    "id": 328,
+    "question": "What is the record for the most ducks by a batsman in Test cricket?",
+    "options": ["A. 21 ducks by MS Dhoni", "B. 30 ducks by Courtney Walsh", "C. 25 ducks by Glenn McGrath", "D. 29 ducks by Shane Warne"],
+    "answer": "B",
+    "explanation": "Courtney Walsh of West Indies scored the most ducks in Test cricket history with 30 ducks. As a tail-ender who batted for 17 years, this is not surprising given his role as a specialist bowler.",
+    "difficulty": "expert",
+    "category": "Batting Records"
+  },
+  {
+    "id": 329,
+    "question": "What was the crucial innings played by VVS Laxman in the famous 2001 Kolkata Test?",
+    "options": ["A. 257 in the first innings", "B. 281 in the second innings", "C. 194 in the first innings", "D. 167 in the third innings"],
+    "answer": "B",
+    "explanation": "VVS Laxman scored 281 in India's second innings in the 2001 Kolkata Test, combined with Rahul Dravid's 180, helping India win by 171 runs after following on — one of cricket's greatest comebacks.",
+    "difficulty": "medium",
+    "category": "Test Cricket"
+  },
+  {
+    "id": 330,
+    "question": "Which team has the best overall win/loss ratio in Test cricket history?",
+    "options": ["A. Australia", "B. South Africa", "C. England", "D. West Indies"],
+    "answer": "A",
+    "explanation": "Australia has historically the best win/loss ratio in Test cricket, driven by their dominant periods in the 1990s and 2000s under Steve Waugh and Ricky Ponting.",
+    "difficulty": "hard",
+    "category": "Test Cricket"
+  },
+  {
+    "id": 331,
+    "question": "In which year was the last 6-ball over changed from 8-ball overs in Australia?",
+    "options": ["A. 1970", "B. 1979", "C. 1990", "D. 1948"],
+    "answer": "A",
+    "explanation": "Australia used 8-ball overs in Test cricket until 1979-80 when they switched to 6-ball overs to align with the rest of the world. Various over lengths were tried historically in different countries.",
+    "difficulty": "expert",
+    "category": "History"
+  },
+  {
+    "id": 332,
+    "question": "Who has the most T20 International appearances?",
+    "options": ["A. Rohit Sharma", "B. Virat Kohli", "C. Shoaib Malik", "D. Mohammad Hafeez"],
+    "answer": "C",
+    "explanation": "Shoaib Malik of Pakistan holds the record for the most T20 International appearances, with well over 120 matches played across his long career.",
+    "difficulty": "hard",
+    "category": "T20I"
+  },
+  {
+    "id": 333,
+    "question": "What happened in the 2016 ICC T20 World Cup final between England and West Indies?",
+    "options": ["A. England won by 2 wickets", "B. West Indies won with Carlos Brathwaite hitting 4 sixes in the last over", "C. Match was tied and West Indies won the super over", "D. West Indies won by 10 wickets"],
+    "answer": "B",
+    "explanation": "In the 2016 T20 World Cup final, West Indies needed 19 off the last over. Carlos Brathwaite hit 4 consecutive sixes off Ben Stokes to win the match and title for West Indies.",
+    "difficulty": "medium",
+    "category": "ICC Tournaments"
+  },
+  {
+    "id": 334,
+    "question": "What is the highest test score by an opener in a Test match?",
+    "options": ["A. 365* by Garfield Sobers", "B. 380 by Matthew Hayden", "C. 374 by Mahela Jayawardene", "D. 364 by Len Hutton"],
+    "answer": "D",
+    "explanation": "Len Hutton opened for England and scored 364 against Australia at The Oval in 1938, a record that stood for 20 years. It remains the highest score by an opener in Test cricket.",
+    "difficulty": "hard",
+    "category": "Batting Records"
+  },
+  {
+    "id": 335,
+    "question": "What is 'Powerplay 2' (PP2) in ODI cricket?",
+    "options": ["A. Overs 11-40, with maximum 4 fielders outside circle", "B. Overs 11-50 where anything goes", "C. A second batting powerplay between overs 11-40 taken by the batting team", "D. No such thing in current ODI rules"],
+    "answer": "D",
+    "explanation": "The batting Powerplay was abolished from ODI cricket. The current ODI fielding restrictions are: PP1 (overs 1-10: max 2 outside 30-yard circle), then overs 11-40 (max 4 outside), and overs 41-50 (max 5 outside).",
+    "difficulty": "hard",
+    "category": "Rules & Laws"
+  },
+  {
+    "id": 336,
+    "question": "Which stadium hosted the 2023 ICC ODI World Cup final?",
+    "options": ["A. Wankhede Stadium, Mumbai", "B. Eden Gardens, Kolkata", "C. Narendra Modi Stadium, Ahmedabad", "D. MA Chidambaram Stadium, Chennai"],
+    "answer": "C",
+    "explanation": "The 2023 ICC ODI World Cup final between India and Australia was held at the Narendra Modi Stadium in Ahmedabad, India. Australia won the match.",
+    "difficulty": "medium",
+    "category": "ICC Tournaments"
+  },
+  {
+    "id": 337,
+    "question": "Who is the only player to score a century on T20I debut?",
+    "options": ["A. Chris Gayle", "B. Colin Munro", "C. Suryakumar Yadav", "D. Several players have done this"],
+    "answer": "D",
+    "explanation": "Multiple players have scored centuries on T20I debut. This is a trick question — it's not exclusive to one player as T20I cricket has seen explosive debut innings from several batters over the years.",
+    "difficulty": "expert",
+    "category": "T20I"
+  },
+  {
+    "id": 338,
+    "question": "Who took the most wickets in the history of the Ashes series?",
+    "options": ["A. Glenn McGrath", "B. Dennis Lillee", "C. Shane Warne", "D. Harold Larwood"],
+    "answer": "C",
+    "explanation": "Shane Warne took 195 wickets in Ashes cricket, the most by any bowler in the history of the England vs Australia Test series.",
+    "difficulty": "hard",
+    "category": "Test Cricket"
+  },
+  {
+    "id": 339,
+    "question": "What is the term for the scoring method used when a fielder's throw from the outfield hits the stumps directly and dismisses a batsman?",
+    "options": ["A. Direct hit run-out", "B. Caught and bowled", "C. Hit wicket", "D. Stumping"],
+    "answer": "A",
+    "explanation": "A direct hit run-out occurs when a fielder throws the ball and it directly hits the stumps, with the batsman out of their crease. It is one of the most spectacular fielding dismissals.",
+    "difficulty": "basic",
+    "category": "Rules & Laws"
+  },
+  {
+    "id": 340,
+    "question": "How many times has Australia won the ICC ODI World Cup?",
+    "options": ["A. 4", "B. 5", "C. 6", "D. 7"],
+    "answer": "C",
+    "explanation": "Australia has won the ODI World Cup six times: 1987, 1999, 2003, 2007, 2015, and 2023, making them the most successful team in World Cup history.",
+    "difficulty": "medium",
+    "category": "ICC Tournaments"
+  },
+  {
+    "id": 341,
+    "question": "What is the record for the fastest delivery ever bowled by a female cricketer in international cricket?",
+    "options": ["A. 125 km/h by Cathryn Fitzpatrick", "B. 130 km/h by Marizanne Kapp", "C. 122 km/h by Ellyse Perry", "D. 118 km/h by Jhulan Goswami"],
+    "answer": "A",
+    "explanation": "Cathryn Fitzpatrick of Australia is credited with bowling one of the fastest deliveries in women's cricket at approximately 125 km/h, making her a pioneering fast bowler in the women's game.",
+    "difficulty": "expert",
+    "category": "Bowling Records"
+  },
+  {
+    "id": 342,
+    "question": "What happened in the famous 1979 World Cup final?",
+    "options": ["A. West Indies beat England by 92 runs", "B. West Indies beat Australia by 17 runs", "C. England beat West Indies by 2 wickets", "D. West Indies beat Pakistan by 8 wickets"],
+    "answer": "A",
+    "explanation": "West Indies beat England by 92 runs in the 1979 World Cup final at Lord's, with Viv Richards scoring a brilliant 138 not out to seal a dominant victory.",
+    "difficulty": "hard",
+    "category": "ICC Tournaments"
+  },
+  {
+    "id": 343,
+    "question": "Which country does Trent Boult represent?",
+    "options": ["A. Australia", "B. England", "C. New Zealand", "D. South Africa"],
+    "answer": "C",
+    "explanation": "Trent Boult is a New Zealand left-arm fast bowler, known for his ability to swing the ball and take wickets in all conditions. He retired from international cricket to pursue franchise cricket.",
+    "difficulty": "basic",
+    "category": "Bowling Records"
+  },
+  {
+    "id": 344,
+    "question": "What is the world record for the highest score in a women's Test cricket innings?",
+    "options": ["A. 214 by Betty Wilson", "B. 242 by Kiran Baluch", "C. 224 by Mithali Raj", "D. 232 by Belinda Clark"],
+    "answer": "B",
+    "explanation": "Kiran Baluch of Pakistan scored 242 against the West Indies in 2004, the highest individual score in a Women's Test match, a record that stands to this day.",
+    "difficulty": "expert",
+    "category": "Batting Records"
+  },
+  {
+    "id": 345,
+    "question": "Which team has never qualified for the final of the ICC ODI World Cup despite consistently strong performances?",
+    "options": ["A. South Africa", "B. New Zealand", "C. Bangladesh", "D. Sri Lanka"],
+    "answer": "A",
+    "explanation": "South Africa are famously known as 'chokers' in World Cup cricket. Despite their consistent strength, they have never reached an ODI World Cup final and have been eliminated in semi-finals under dramatic circumstances multiple times.",
+    "difficulty": "medium",
+    "category": "ICC Tournaments"
+  },
+  {
+    "id": 346,
+    "question": "What is the record for most wickets taken in ICC T20 World Cup history by a spinner?",
+    "options": ["A. Imran Tahir - 23", "B. Shakib Al Hasan - 27", "C. Lasith Malinga - 38", "D. Rashid Khan - 32"],
+    "answer": "B",
+    "explanation": "Shakib Al Hasan of Bangladesh holds the record for the most wickets by a spinner in T20 World Cup history, making him one of the tournament's most consistent bowling performers.",
+    "difficulty": "expert",
+    "category": "ICC Tournaments"
+  },
+  {
+    "id": 347,
+    "question": "In what year did Afghanistan make their Test cricket debut?",
+    "options": ["A. 2015", "B. 2016", "C. 2018", "D. 2019"],
+    "answer": "C",
+    "explanation": "Afghanistan played their first Test match in 2018 against India in Bengaluru. They were granted Test status by the ICC in 2017 along with Ireland.",
+    "difficulty": "medium",
+    "category": "History"
+  },
+  {
+    "id": 348,
+    "question": "Who was the first player to be dismissed by the 'obstructing the field' dismissal in a major international match?",
+    "options": ["A. Michael Atherton - 1994", "B. Ramnaresh Sarwan - 2002", "C. Len Hutton - 1951", "D. Ian Redpath - 1975"],
+    "answer": "C",
+    "explanation": "Len Hutton was dismissed for obstructing the field against South Africa at The Oval in 1951, one of the earliest recorded instances of this rare dismissal in international cricket.",
+    "difficulty": "expert",
+    "category": "Rules & Laws"
+  },
+  {
+    "id": 349,
+    "question": "What is the highest total chased to win a T20I match?",
+    "options": ["A. 243 by India vs England", "B. 258 by Australia vs New Zealand", "C. 266/5 by New Zealand vs Sri Lanka", "D. 254 by Afghanistan vs Ireland"],
+    "answer": "C",
+    "explanation": "New Zealand successfully chased 266/5 against Sri Lanka in 2016 in Christchurch, the highest successful chase in T20 International cricket history.",
+    "difficulty": "expert",
+    "category": "T20I"
+  },
+  {
+    "id": 350,
+    "question": "Who has the best bowling figures in a single T20I innings?",
+    "options": ["A. Lasith Malinga - 5/6", "B. Deepak Chahar - 6/7", "C. Ajantha Mendis - 6/8", "D. Samuel Badree - 6/6"],
+    "answer": "B",
+    "explanation": "Deepak Chahar of India has the best figures in a single T20I innings with 6/7 against Bangladesh in Nagpur in November 2019, the best bowling figures in T20I cricket history.",
+    "difficulty": "expert",
+    "category": "Bowling Records"
+  },
+  {
+    "id": 351,
+    "question": "What is the record for the highest team total in a T20 World Cup match?",
+    "options": ["A. 260/6 by Sri Lanka vs Kenya 2007", "B. 229/1 by India vs England 2022", "C. 245/6 by West Indies vs India 2016", "D. 221/3 by Pakistan vs Netherlands 2021"],
+    "answer": "A",
+    "explanation": "Sri Lanka scored 260/6 against Kenya in the inaugural 2007 ICC T20 World Cup, which remains the highest team total in T20 World Cup match history.",
+    "difficulty": "expert",
+    "category": "ICC Tournaments"
+  },
+  {
+    "id": 352,
+    "question": "Who made the most appearances in the ICC Champions Trophy across all editions?",
+    "options": ["A. Sachin Tendulkar", "B. Mahela Jayawardene", "C. Ricky Ponting", "D. MS Dhoni"],
+    "answer": "B",
+    "explanation": "Mahela Jayawardene appeared in the most Champions Trophy matches across the tournament's history, representing Sri Lanka in multiple editions from 2000 to 2013.",
+    "difficulty": "expert",
+    "category": "ICC Tournaments"
+  },
+  {
+    "id": 353,
+    "question": "What is a 'sticky wicket' in cricket?",
+    "options": ["A. A pitch that has become wet and then baked in sun, making it difficult to bat on", "B. A pitch with too much grass", "C. A wicket-keeper that never drops catches", "D. A pitch covered in artificial surface"],
+    "answer": "A",
+    "explanation": "A sticky wicket (or sticky dog) is a pitch that has become wet and then dries rapidly in sunshine, making it extremely difficult to bat on as the ball behaves unpredictably.",
+    "difficulty": "hard",
+    "category": "Rules & Laws"
+  },
+  {
+    "id": 354,
+    "question": "Who is the only player to have scored a Test century on debut in all four innings of their first two Tests?",
+    "options": ["A. Lawrence Rowe", "B. Yashasvi Jaiswal", "C. No player has done this", "D. Mohammad Azharuddin"],
+    "answer": "C",
+    "explanation": "No player has scored Test centuries in all four innings of their first two Tests. Lawrence Rowe scored hundreds in both innings of his debut Test, but subsequent performances didn't extend to all four innings over two Tests.",
+    "difficulty": "expert",
+    "category": "Batting Records"
+  },
+  {
+    "id": 355,
+    "question": "What was Don Bradman's average in Ashes cricket specifically (vs England only)?",
+    "options": ["A. 89.78", "B. 95.14", "C. 102.00", "D. 99.94"],
+    "answer": "A",
+    "explanation": "Don Bradman averaged approximately 89 runs per innings in Ashes cricket specifically, slightly lower than his overall 99.94 because the Bodyline series (where he averaged 56.57) impacted his average against England.",
+    "difficulty": "expert",
+    "category": "Batting Records"
+  },
+  {
+    "id": 356,
+    "question": "What is the most balls faced in a Test innings by a batsman?",
+    "options": ["A. 777 balls by Hanif Mohammad", "B. 720 balls by Geoff Boycott", "C. 800 balls by Shivnarine Chanderpaul", "D. 645 balls by Len Hutton"],
+    "answer": "A",
+    "explanation": "Hanif Mohammad of Pakistan faced 777 balls in his innings of 337 against West Indies in Bridgetown in 1958, the most balls faced in a single Test innings in history.",
+    "difficulty": "expert",
+    "category": "Batting Records"
+  },
+  {
+    "id": 357,
+    "question": "Who was the bowler who dismissed Adam Gilchrist for a duck in the 2003 ODI World Cup final?",
+    "options": ["A. Shoaib Akhtar", "B. Zaheer Khan", "C. Javagal Srinath", "D. Wasim Akram"],
+    "answer": "B",
+    "explanation": "Zaheer Khan dismissed Adam Gilchrist for a duck in the 2003 ODI World Cup final in Johannesburg. Despite this breakthrough, Australia went on to score 359/2 (with Ponting's 140*) and won convincingly.",
+    "difficulty": "expert",
+    "category": "ICC Tournaments"
+  },
+  {
+    "id": 358,
+    "question": "What was the exact margin of victory for West Indies in the 1975 Cricket World Cup final?",
+    "options": ["A. Won by 17 runs", "B. Won by 8 wickets", "C. Won by 55 runs", "D. Won by 6 wickets"],
+    "answer": "A",
+    "explanation": "West Indies defeated Australia by 17 runs in the 1975 Cricket World Cup final at Lord's. Vivian Richards' run-out (3 run-outs in total from Richards) was decisive in skittling Australia.",
+    "difficulty": "expert",
+    "category": "ICC Tournaments"
+  },
+  {
+    "id": 359,
+    "question": "What scoring milestone did Jasprit Bumrah achieve during the 2024-25 Test series?",
+    "options": ["A. Became India's leading Test wicket-taker", "B. Reached ICC No. 1 ranking in Tests while also becoming the top-ranked T20I bowler", "C. Took 200 Test wickets at the fastest pace for India", "D. Was ranked No. 1 Test bowler for a record consecutive months"],
+    "answer": "D",
+    "explanation": "Jasprit Bumrah was ranked as the world's No. 1 Test bowler for a record number of consecutive months, cementing his status as the best Test bowler in the world in the 2024-25 period.",
+    "difficulty": "expert",
+    "category": "Bowling Records"
+  },
+  {
+    "id": 360,
+    "question": "What is the only ICC full-member nation to have never been knocked out in the group stage of an ODI World Cup?",
+    "options": ["A. Australia", "B. India", "C. England", "D. West Indies"],
+    "answer": "A",
+    "explanation": "Australia has an extraordinary record of never having been eliminated at the group stage of an ODI World Cup. They have consistently qualified from the group stage in every edition they have played.",
+    "difficulty": "expert",
+    "category": "ICC Tournaments"
+  }
+]

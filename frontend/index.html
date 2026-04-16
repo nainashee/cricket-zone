@@ -228,11 +228,43 @@ video{width:100%;aspect-ratio:1/1;object-fit:cover;}
 .res-ptsl{font-family:'DM Mono',monospace;font-size:0.62rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.14em;margin-top:0.2rem;}
 .res-btns{display:flex;gap:0.7rem;justify-content:center;padding:1.4rem 0 0;flex-wrap:wrap;}
 
+/* ── TRIVIA ── */
+#triviaScreen,#triviaResultScreen{max-width:680px;margin:0 auto;padding:2rem 1.5rem 5rem;}
+.triv-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.8rem;}
+.triv-label{font-family:'DM Mono',monospace;font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--accent);}
+.triv-prog{display:flex;gap:6px;}
+.triv-pip{width:28px;height:3px;border-radius:100px;background:var(--surface2);transition:background 0.3s;}
+.triv-pip.done{background:var(--accent2);}
+.triv-pip.cur{background:var(--accent);}
+.triv-q{font-family:'DM Sans',sans-serif;font-size:1.18rem;font-weight:500;line-height:1.55;color:var(--text);margin-bottom:1.8rem;}
+.triv-opts{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;}
+@media(max-width:480px){.triv-opts{grid-template-columns:1fr;}}
+.triv-opt{background:var(--surface);border:1.5px solid var(--border2);border-radius:14px;padding:0.95rem 1.1rem;text-align:left;font-size:0.9rem;font-family:'DM Sans',sans-serif;color:var(--text2);cursor:pointer;transition:all 0.18s;display:flex;align-items:center;gap:0.75rem;}
+.triv-opt:hover{border-color:var(--border);background:var(--surface2);color:var(--text);}
+.triv-opt-key{font-family:'Bebas Neue',sans-serif;font-size:1.15rem;color:var(--accent);letter-spacing:0.05em;flex-shrink:0;width:1.4rem;}
+/* trivia result rows */
+.triv-res-row{background:var(--surface);border:1px solid var(--border2);border-radius:14px;padding:1.1rem 1.2rem;margin-bottom:0.75rem;}
+.triv-res-row.correct{border-color:rgba(58,125,68,0.35);background:rgba(58,125,68,0.04);}
+.triv-res-row.wrong{border-color:rgba(255,79,79,0.22);background:rgba(255,79,79,0.03);}
+.triv-res-header{display:flex;align-items:flex-start;justify-content:space-between;gap:0.6rem;margin-bottom:0.55rem;}
+.triv-res-q{font-size:0.86rem;font-weight:500;color:var(--text);line-height:1.4;flex:1;}
+.triv-res-badge{font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.08em;padding:0.2rem 0.55rem;border-radius:100px;flex-shrink:0;margin-top:0.1rem;}
+.triv-res-badge.ok{background:rgba(58,125,68,0.12);border:1px solid rgba(58,125,68,0.35);color:var(--accent);}
+.triv-res-badge.no{background:rgba(255,79,79,0.1);border:1px solid rgba(255,79,79,0.3);color:var(--red);}
+.triv-res-ans{font-size:0.78rem;color:var(--text3);margin-bottom:0.45rem;font-family:'DM Mono',monospace;letter-spacing:0.04em;}
+.triv-res-ans strong{color:var(--text2);}
+.triv-res-exp{font-size:0.79rem;color:var(--text3);line-height:1.6;font-weight:300;border-top:1px solid var(--border2);padding-top:0.45rem;}
+.triv-score-hero{text-align:center;padding:1.6rem 1.5rem;background:var(--surface);border:1px solid var(--border2);border-radius:20px;margin-bottom:1.4rem;}
+.triv-score-val{font-family:'Bebas Neue',sans-serif;font-size:5rem;color:var(--accent);letter-spacing:0.04em;line-height:1;}
+.triv-score-lbl{font-family:'DM Mono',monospace;font-size:0.62rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.14em;margin-top:0.2rem;}
+.triv-correct-line{font-size:0.9rem;color:var(--text2);margin-top:0.6rem;font-weight:300;}
+.triv-correct-line strong{color:var(--text);font-weight:500;}
+
 /* ── FINAL ── */
 #finalScreen{max-width:860px;margin:0 auto;padding:3rem 1.5rem 5rem;text-align:center;}
 .fin-eyebrow{font-family:'DM Mono',monospace;font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--accent);margin-bottom:0.7rem;}
 .fin-score{font-family:'Bebas Neue',sans-serif;font-size:7rem;color:var(--accent);letter-spacing:0.04em;line-height:0.9;margin-bottom:2rem;}
-.fin-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border2);border:1px solid var(--border2);border-radius:16px;overflow:hidden;margin-bottom:1.4rem;}
+.fin-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:1px;background:var(--border2);border:1px solid var(--border2);border-radius:16px;overflow:hidden;margin-bottom:1.4rem;}
 .fin-st{background:var(--surface);padding:1.2rem;}
 .fin-sv{font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--accent);letter-spacing:0.05em;display:block;line-height:1;margin-bottom:0.28rem;}
 .fin-sl{font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em;}
@@ -700,6 +732,34 @@ video{width:100%;aspect-ratio:1/1;object-fit:cover;}
 </div>
 </div>
 
+<!-- ══ TRIVIA ══ -->
+<div class="screen" id="triviaScreen">
+<div style="max-width:680px;margin:0 auto;padding:2rem 1.5rem 5rem;">
+  <div class="triv-top">
+    <span class="triv-label">Cricket Trivia</span>
+    <div class="triv-prog" id="trivProg"></div>
+  </div>
+  <div class="triv-q" id="trivQuestion"></div>
+  <div class="triv-opts" id="trivOpts"></div>
+</div>
+</div>
+
+<!-- ══ TRIVIA RESULT ══ -->
+<div class="screen" id="triviaResultScreen">
+<div style="max-width:680px;margin:0 auto;padding:2rem 1.5rem 5rem;">
+  <div class="triv-score-hero">
+    <div class="triv-score-val" id="trivResScore">0</div>
+    <div class="triv-score-lbl">Trivia Points</div>
+    <div class="triv-correct-line" id="trivResLine"></div>
+  </div>
+  <div id="trivResList"></div>
+  <div style="display:flex;gap:0.7rem;justify-content:center;margin-top:1.4rem;">
+    <button class="btn-p" onclick="finishTrivia()">See Final Score →</button>
+    <button class="btn-s" onclick="showLanding()">← Home</button>
+  </div>
+</div>
+</div>
+
 <!-- ══ FINAL ══ -->
 <div class="screen" id="finalScreen">
 <div style="max-width:860px;margin:0 auto;padding:3rem 1.5rem 5rem;text-align:center;">
@@ -762,15 +822,17 @@ const BATTERS=[
 const VIDEO_BATTERS=BATTERS.filter(b=>['azam','tendulkar','pietersen'].includes(b.id));
 
 const MAX_G=5,BLITZ_T=15,PTS=[100,75,50,25,15],PTS_BAT=[200,150,100,50,25];
-const G={mode:'classic',category:'bowling',queue:[],idx:0,bowler:null,guesses:[],cluesLit:0,score:0,correct:0,results:[],timer:null,tLeft:BLITZ_T,pick:'',pickName:''};
+const G={mode:'classic',category:'bowling',queue:[],idx:0,bowler:null,guesses:[],cluesLit:0,score:0,correct:0,results:[],timer:null,tLeft:BLITZ_T,pick:'',pickName:'',triviaScore:0,triviaAnswers:[],triviaQuestions:[]};
 let allBowlers=[];
 let allBatters=[];
+let allTrivia=[];
 let stats=JSON.parse(localStorage.getItem('cz3')||'{"games":0,"wins":0,"best":0,"streak":0}');
 let statsReady=!!localStorage.getItem('cz3');
 
 async function boot(){
   fetch('assets/bowlers.json').then(r=>r.json()).then(d=>{allBowlers=d;}).catch(()=>{});
   fetch('assets/batters.json').then(r=>r.json()).then(d=>{allBatters=d;}).catch(()=>{});
+  fetch('assets/trivia.json').then(r=>r.json()).then(d=>{allTrivia=d;}).catch(()=>{});
   refreshH();refreshLS();
   applyDailyCardState();
   applyBattingCardState();
@@ -1554,7 +1616,7 @@ function doVerify(email){
 }
 
 async function startGame(mode,category='bowling'){
-  G.mode=mode;G.category=category;G.score=0;G.correct=0;G.idx=0;G.results=[];
+  G.mode=mode;G.category=category;G.score=0;G.correct=0;G.idx=0;G.results=[];G.triviaScore=0;G.triviaAnswers=[];G.triviaQuestions=[];
   const pool=category==='batting'?VIDEO_BATTERS:VIDEO_BOWLERS;
   const sh=[...pool].sort(()=>Math.random()-0.5);
 
@@ -1662,14 +1724,16 @@ function showResult(won,pts){
   if(won)confetti();
   const last=G.idx>=G.queue.length-1,nb=document.getElementById('nextBtn');
   if(last){
-    nb.textContent='See Final Score →';nb.onclick=showFinal;
     if(G.mode==='daily'){
       document.getElementById('dshare').style.display='block';
       document.getElementById('dsharebox').innerHTML=buildDailyShareCardHTML();
-      // Save immediately so score reaches DynamoDB even if user navigates away
+      // Mark played now so duplicate plays are blocked even if user navigates away
       if(G.category==='batting'){markBattingPlayed();applyBattingCardState();}
       else{markDailyPlayed();applyDailyCardState();}
-      saveScore();
+      // Score saved after trivia completes so triviaScore is included
+      nb.textContent='Continue to Trivia →';nb.onclick=startTrivia;
+    }else{
+      nb.textContent='See Final Score →';nb.onclick=showFinal;
     }
   }
   else{
@@ -1689,7 +1753,7 @@ async function saveScore(){
     const res=await fetch(`${API}/score`,{
       method:'POST',
       headers:{'Content-Type':'application/json','Authorization':`Bearer ${idToken}`},
-      body:JSON.stringify({score:G.score,gameMode:G.mode,category:G.category,pictureUrl:localStorage.getItem('cz_user_picture')||undefined})
+      body:JSON.stringify({score:G.score,triviaScore:G.triviaScore||0,gameMode:G.mode,category:G.category,pictureUrl:localStorage.getItem('cz_user_picture')||undefined})
     });
     if(!res.ok){
       const body=await res.text();
@@ -1738,6 +1802,92 @@ async function saveScoreAsGuest(){
   }
 }
 
+// ── Trivia ────────────────────────────────────────────────────────────────
+
+const TRIVIA_Q_COUNT=3;
+const TRIVIA_PTS_PER_Q=100;
+
+function startTrivia(){
+  // Pick 3 random questions from the pool (or hardcoded fallback)
+  const pool=allTrivia.length>=TRIVIA_Q_COUNT?allTrivia:[
+    {id:'f1',question:'How many players are in a cricket team?',options:['A. 9','B. 10','C. 11','D. 12'],answer:'C',explanation:'A cricket team consists of 11 players on each side.'},
+    {id:'f2',question:'What does LBW stand for?',options:['A. Leg Before Wicket','B. Left Bat Wide','C. Long Ball Wide','D. Last Batsman Wicket'],answer:'A',explanation:'LBW — Leg Before Wicket — is given when the ball hits the batsman\'s body and would have hit the stumps.'},
+    {id:'f3',question:'How many runs is a six worth?',options:['A. 4','B. 5','C. 6','D. 7'],answer:'C',explanation:'Hitting the ball over the boundary without it bouncing scores 6 runs.'},
+  ];
+  // Fisher-Yates shuffle then take 3
+  const shuffled=[...pool];
+  for(let i=shuffled.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[shuffled[i],shuffled[j]]=[shuffled[j],shuffled[i]];}
+  G.triviaQuestions=shuffled.slice(0,TRIVIA_Q_COUNT);
+  G.triviaAnswers=[];
+  G.triviaScore=0;
+  showScreen('triviaScreen');
+  renderTriviaQuestion();
+}
+
+function renderTriviaQuestion(){
+  const idx=G.triviaAnswers.length;
+  const q=G.triviaQuestions[idx];
+  if(!q)return;
+  // Progress pips
+  document.getElementById('trivProg').innerHTML=G.triviaQuestions.map((_,i)=>
+    `<div class="triv-pip ${i<idx?'done':i===idx?'cur':''}"></div>`
+  ).join('');
+  document.getElementById('trivQuestion').textContent=`${idx+1}. ${q.question}`;
+  const letters=['A','B','C','D'];
+  document.getElementById('trivOpts').innerHTML=q.options.map((opt,i)=>{
+    const letter=letters[i];
+    const text=opt.replace(/^[A-D]\.\s*/,'');
+    return`<button class="triv-opt" onclick="submitTriviaAnswer('${letter}')">
+      <span class="triv-opt-key">${letter}</span>
+      <span>${text}</span>
+    </button>`;
+  }).join('');
+}
+
+function submitTriviaAnswer(letter){
+  const idx=G.triviaAnswers.length;
+  const q=G.triviaQuestions[idx];
+  if(!q)return;
+  G.triviaAnswers.push(letter);
+  if(letter===q.answer)G.triviaScore+=TRIVIA_PTS_PER_Q;
+  if(G.triviaAnswers.length<G.triviaQuestions.length){
+    renderTriviaQuestion();
+  }else{
+    showTriviaResults();
+  }
+}
+
+function showTriviaResults(){
+  showScreen('triviaResultScreen');
+  document.getElementById('trivResScore').textContent=G.triviaScore;
+  const correct=G.triviaAnswers.filter((a,i)=>a===G.triviaQuestions[i].answer).length;
+  document.getElementById('trivResLine').innerHTML=`You got <strong>${correct} of ${G.triviaQuestions.length}</strong> correct`;
+  const letters=['A','B','C','D'];
+  document.getElementById('trivResList').innerHTML=G.triviaQuestions.map((q,i)=>{
+    const chosen=G.triviaAnswers[i];
+    const isRight=chosen===q.answer;
+    const chosenText=q.options.find(o=>o.startsWith(chosen+'.'))?.replace(/^[A-D]\.\s*/,'')||chosen;
+    const correctText=q.options.find(o=>o.startsWith(q.answer+'.'))?.replace(/^[A-D]\.\s*/,'')||q.answer;
+    return`<div class="triv-res-row ${isRight?'correct':'wrong'}">
+      <div class="triv-res-header">
+        <div class="triv-res-q">${q.question}</div>
+        <div class="triv-res-badge ${isRight?'ok':'no'}">${isRight?'+100':'0 pts'}</div>
+      </div>
+      ${isRight
+        ?`<div class="triv-res-ans">Your answer: <strong>${chosen}. ${chosenText}</strong> ✓</div>`
+        :`<div class="triv-res-ans">Your answer: <strong>${chosen}. ${chosenText}</strong> · Correct: <strong>${q.answer}. ${correctText}</strong></div>`
+      }
+      <div class="triv-res-exp">${q.explanation}</div>
+    </div>`;
+  }).join('');
+  if(correct===G.triviaQuestions.length)confetti();
+}
+
+async function finishTrivia(){
+  await saveScore();
+  showFinal();
+}
+
 async function loadLeaderboard(){
   try{
     const cat=G.category||'bowling';
@@ -1769,15 +1919,17 @@ async function loadLeaderboard(){
       const name=s.playerName||s.userId;
       const youBadge=isMe?`<span style="font-family:'DM Mono',monospace;font-size:0.58rem;color:var(--accent);background:var(--accent-dim);border:1px solid var(--border);border-radius:100px;padding:0.1rem 0.45rem;margin-left:0.4rem;vertical-align:middle;">YOU</span>`:'';
       const avHtml=lbAvHtml(s,name,24,isMe);
+      const trivPts=s.triviaScore||0;
+      const totalPts=(s.score||0)+trivPts;
       return`<div style="display:flex;align-items:center;justify-content:space-between;padding:0.65rem 0.9rem;border-bottom:1px solid var(--border2);${isMe?'background:rgba(58,125,68,0.04);':''}">
         <div style="display:flex;align-items:center;gap:0.6rem;min-width:0;flex:1;">
           <span style="font-family:'Bebas Neue',sans-serif;font-size:1.1rem;color:${isMe?'var(--accent)':rankColor(i)};width:1.4rem;text-align:center;flex-shrink:0;">${i+1}</span>
           ${avHtml}
           <span style="font-size:0.82rem;color:${isMe?'var(--text)':'var(--text2)'};font-weight:${isMe?500:400};overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${name}${youBadge}</span>
         </div>
-        <div style="display:flex;align-items:center;gap:0.8rem;flex-shrink:0;">
-          <span style="font-family:'DM Mono',monospace;font-size:0.68rem;color:var(--text3);">${s.gameMode||''}</span>
-          <span style="font-family:'Bebas Neue',sans-serif;font-size:1.1rem;color:var(--accent);min-width:3rem;text-align:right;">${s.score}</span>
+        <div style="display:flex;align-items:center;gap:0.5rem;flex-shrink:0;">
+          ${trivPts>0?`<span style="font-family:'DM Mono',monospace;font-size:0.62rem;color:#f59e0b;" title="Trivia">+${trivPts}T</span>`:''}
+          <span style="font-family:'Bebas Neue',sans-serif;font-size:1.1rem;color:var(--accent);min-width:3rem;text-align:right;">${totalPts}</span>
         </div>
       </div>`;
     }
@@ -1838,15 +1990,17 @@ function showFinal(){
 
 async function revealFinal(){
   showScreen('finalScreen');
-  document.getElementById('finScore').textContent=G.score;
+  const total=(G.score||0)+(G.triviaScore||0);
+  document.getElementById('finScore').textContent=total;
   const tot=G.queue.length,avg=tot?Math.round(G.score/tot):0;
-  document.getElementById('finGrid').innerHTML=`<div class="fin-st"><span class="fin-sv">${G.correct}/${tot}</span><span class="fin-sl">Correct</span></div><div class="fin-st"><span class="fin-sv">${avg}</span><span class="fin-sl">Avg pts</span></div><div class="fin-st"><span class="fin-sv">${stats.streak+1}</span><span class="fin-sl">Streak</span></div>`;
+  const triviaCell=G.triviaScore>0?`<div class="fin-st"><span class="fin-sv">${G.triviaScore}</span><span class="fin-sl">Trivia Pts</span></div>`:'';
+  document.getElementById('finGrid').innerHTML=`<div class="fin-st"><span class="fin-sv">${G.correct}/${tot}</span><span class="fin-sl">Correct</span></div><div class="fin-st"><span class="fin-sv">${avg}</span><span class="fin-sl">Avg pts</span></div>${triviaCell}<div class="fin-st"><span class="fin-sv">${stats.streak+1}</span><span class="fin-sl">Streak</span></div>`;
   document.getElementById('finShare').innerHTML=buildShareCardHTML(G.results,G.mode,G.score,G.correct,G.queue.length);
   stats.games++;if(G.correct>0){stats.wins++;stats.streak++;}else stats.streak=0;
   if(G.score>stats.best)stats.best=G.score;
   localStorage.setItem('cz3',JSON.stringify(stats));refreshH();
-  // For daily: markDailyPlayed + saveScore already ran at showResult time.
-  // For other modes (future), save now.
+  // For daily: saveScore() is called in finishTrivia() so triviaScore is included.
+  // For non-daily modes, save now (no trivia phase).
   if(G.mode!=='daily'){await saveScore();}
   // Brief delay to allow DynamoDB GSI eventual consistency before querying leaderboard
   setTimeout(loadLeaderboard,2000);
@@ -1971,15 +2125,17 @@ function renderTop5(tab){
   if(tab==='combined'){
     const map={};
     for(const s of(_top5Cache.bowling||[])){
-      if(!map[s.userId])map[s.userId]={...s,bowlingScore:0,battingScore:0,score:0};
+      if(!map[s.userId])map[s.userId]={...s,bowlingScore:0,bowlingTrivia:0,battingScore:0,battingTrivia:0,score:0};
       map[s.userId].bowlingScore=s.score||0;
-      map[s.userId].score+=s.score||0;
+      map[s.userId].bowlingTrivia=s.triviaScore||0;
+      map[s.userId].score+=(s.score||0)+(s.triviaScore||0);
     }
     for(const s of(_top5Cache.batting||[])){
-      if(!map[s.userId]){map[s.userId]={...s,bowlingScore:0,battingScore:0,score:0};}
+      if(!map[s.userId]){map[s.userId]={...s,bowlingScore:0,bowlingTrivia:0,battingScore:0,battingTrivia:0,score:0};}
       else{if(s.playerName)map[s.userId].playerName=s.playerName;if(s.pictureUrl)map[s.userId].pictureUrl=s.pictureUrl;}
       map[s.userId].battingScore=s.score||0;
-      map[s.userId].score+=s.score||0;
+      map[s.userId].battingTrivia=s.triviaScore||0;
+      map[s.userId].score+=(s.score||0)+(s.triviaScore||0);
     }
     scores=Object.values(map).sort((a,b)=>b.score-a.score).slice(0,5);
   }else{
@@ -2002,12 +2158,15 @@ function renderTop5(tab){
     const medal=i===0?'🥇':i===1?'🥈':i===2?'🥉':'';
     const avHtml=lbAvHtml(s,name,22,isMe);
     let subtext='';
+    const trivPts=s.triviaScore||0;
+    const displayTotal=tab==='combined'?s.score:(s.score||0)+trivPts;
     if(tab==='combined'&&(s.bowlingScore||s.battingScore)){
       const parts=[];
-      if(s.bowlingScore)parts.push(`🏏 ${s.bowlingScore}`);
-      if(s.battingScore)parts.push(`🏃 ${s.battingScore}`);
-      if(parts.length>1)subtext=`<div class="top5-subtext" style="margin-top:0.1rem;">${parts.join(' + ')}</div>`;
+      if(s.bowlingScore){const bt=s.bowlingTrivia||0;parts.push(`🏏 ${s.bowlingScore}${bt?` +${bt}T`:''}`);}
+      if(s.battingScore){const bt=s.battingTrivia||0;parts.push(`🏃 ${s.battingScore}${bt?` +${bt}T`:''}`);}
+      if(parts.length>1)subtext=`<div class="top5-subtext" style="margin-top:0.1rem;">${parts.join(' · ')}</div>`;
     }
+    const trivBadge=(tab!=='combined'&&trivPts>0)?`<span style="font-family:'DM Mono',monospace;font-size:0.62rem;color:#f59e0b;margin-right:0.15rem;" title="Trivia bonus">+${trivPts}T</span>`:'';
     return`<div class="top5-row${isMe?' me':''}">
       <div class="top5-left">
         <span class="top5-rank" style="color:${isMe?'var(--accent)':rankColor(i)}">${medal||i+1}</span>
@@ -2018,7 +2177,7 @@ function renderTop5(tab){
         </div>
       </div>
       <div class="top5-right">
-        <span class="top5-score">${s.score}</span>
+        ${trivBadge}<span class="top5-score">${displayTotal}</span>
       </div>
     </div>`;
   }).join('');
@@ -2081,6 +2240,8 @@ async function loadAllTime(){
       const statsLine=statsParts.length
         ?`<div class="top5-stats-row">${statsParts.map(p=>`<span class="top5-stat">${p}</span>`).join('')}</div>`
         :'';
+      const atTriviaScore=s.triviaScore||0;
+      const atTotal=(s.score||0)+atTriviaScore;
       return`<div class="top5-row${isMe?' me':''}">
         <div class="top5-left">
           <span class="top5-rank" style="color:${isMe?'var(--accent)':rankColor(i)}">${medal||i+1}</span>
@@ -2091,9 +2252,10 @@ async function loadAllTime(){
           </div>
         </div>
         <div class="top5-right">
-          <div style="display:flex;flex-direction:column;align-items:flex-end;">
-            <span style="font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--accent);letter-spacing:0.08em;line-height:1.2;">TOTAL</span>
-            <span class="top5-score">${s.score}</span>
+          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:0.05rem;">
+            ${atTriviaScore>0?`<span style="font-family:'DM Mono',monospace;font-size:0.6rem;color:#f59e0b;letter-spacing:0.06em;">+${atTriviaScore} trivia</span>`:''}
+            <span style="font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--accent);letter-spacing:0.08em;line-height:1.2;">TOTAL</span>
+            <span class="top5-score">${atTotal}</span>
           </div>
         </div>
       </div>`;
