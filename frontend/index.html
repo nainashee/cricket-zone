@@ -243,6 +243,34 @@ video{width:100%;aspect-ratio:1/1;object-fit:cover;}
 .triv-timer-fill{height:100%;border-radius:100px;background:var(--accent);transition:width 0.1s linear,background 0.4s;}
 .triv-timer-fill.urg{background:var(--red);}
 .triv-timer-num{font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--text3);text-align:right;}
+/* Trivia intro */
+.triv-intro{max-width:480px;margin:0 auto;padding:3rem 1.5rem 5rem;text-align:center;}
+.triv-intro-icon{font-size:4rem;display:block;margin-bottom:1.4rem;}
+.triv-intro-tag{display:inline-block;background:rgba(168,85,247,0.12);border:1px solid rgba(168,85,247,0.3);color:#a855f7;border-radius:100px;padding:0.22rem 0.85rem;font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.14em;text-transform:uppercase;margin-bottom:1.1rem;}
+.triv-intro-title{font-family:'Bebas Neue',sans-serif;font-size:3rem;letter-spacing:0.04em;margin-bottom:0.6rem;}
+.triv-intro-desc{font-size:0.9rem;color:var(--text2);line-height:1.75;font-weight:300;margin-bottom:2rem;}
+.triv-intro-stats{display:flex;justify-content:center;gap:1.5rem;margin-bottom:2.2rem;flex-wrap:wrap;}
+.triv-intro-stat{display:flex;flex-direction:column;align-items:center;gap:0.25rem;}
+.triv-intro-stat-v{font-family:'Bebas Neue',sans-serif;font-size:2rem;color:#a855f7;line-height:1;}
+.triv-intro-stat-l{font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--text3);letter-spacing:0.12em;text-transform:uppercase;}
+.triv-intro-btn{display:inline-flex;align-items:center;gap:0.55rem;background:#a855f7;color:#fff;border:none;border-radius:10px;padding:0.88rem 2rem;font-size:0.9rem;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all 0.2s;box-shadow:0 8px 24px rgba(168,85,247,0.25);}
+.triv-intro-btn:hover{background:#9333ea;transform:translateY(-2px);box-shadow:0 12px 32px rgba(168,85,247,0.4);}
+/* Answer feedback states */
+.triv-opt.ans-correct{border-color:var(--accent)!important;background:rgba(58,125,68,0.14)!important;color:var(--text)!important;animation:trivBounce 0.35s ease;}
+.triv-opt.ans-correct .triv-opt-key{color:var(--accent);}
+.triv-opt.ans-wrong{border-color:var(--red)!important;background:rgba(255,79,79,0.1)!important;animation:trivShake 0.4s ease;}
+.triv-opt.ans-wrong .triv-opt-key{color:var(--red);}
+.triv-opt.ans-reveal{border-color:var(--accent)!important;background:rgba(58,125,68,0.08)!important;}
+.triv-opt.ans-reveal .triv-opt-key{color:var(--accent);}
+.triv-opt:disabled{cursor:default;}
+@keyframes trivBounce{0%{transform:scale(1);}30%{transform:scale(1.04);}60%{transform:scale(0.98);}100%{transform:scale(1);}}
+@keyframes trivShake{0%,100%{transform:translateX(0);}20%{transform:translateX(-6px);}40%{transform:translateX(6px);}60%{transform:translateX(-4px);}80%{transform:translateX(4px);}}
+/* Floating feedback badge */
+.triv-fb{position:fixed;left:50%;transform:translateX(-50%);top:40%;pointer-events:none;z-index:999;font-family:'Bebas Neue',sans-serif;font-size:2.2rem;letter-spacing:0.06em;padding:0.5rem 1.4rem;border-radius:14px;animation:trivFbIn 0.7s ease forwards;}
+.triv-fb.ok{color:#3a7d44;background:rgba(58,125,68,0.18);border:1.5px solid rgba(58,125,68,0.4);}
+.triv-fb.no{color:var(--red);background:rgba(255,79,79,0.1);border:1.5px solid rgba(255,79,79,0.3);}
+.triv-fb.timeout{color:var(--text3);background:rgba(255,255,255,0.04);border:1.5px solid rgba(255,255,255,0.1);}
+@keyframes trivFbIn{0%{opacity:0;transform:translateX(-50%) scale(0.7);}25%{opacity:1;transform:translateX(-50%) scale(1.1);}50%{opacity:1;transform:translateX(-50%) scale(1);}80%{opacity:1;transform:translateX(-50%) translateY(-10px);}100%{opacity:0;transform:translateX(-50%) translateY(-24px);}}
 /* trivia card played state */
 .cat-card.trivia-card.played{cursor:default;opacity:0.55;filter:saturate(0.25);}
 .cat-card.trivia-card.played:hover{transform:none;box-shadow:0 0 28px rgba(168,85,247,0.06);border-color:rgba(168,85,247,0.2);}
@@ -647,8 +675,8 @@ video{width:100%;aspect-ratio:1/1;object-fit:cover;}
             <div class="top5-tabs">
               <button class="top5-tab" id="tabBowling" onclick="switchTop5Tab('bowling')">🏏 Bowl</button>
               <button class="top5-tab" id="tabBatting" onclick="switchTop5Tab('batting')">🏃 Bat</button>
-              <button class="top5-tab active" id="tabCombined" onclick="switchTop5Tab('combined')">⚡ Total</button>
               <button class="top5-tab" id="tabTrivia" onclick="switchTop5Tab('trivia')">🧠 Trivia</button>
+              <button class="top5-tab active" id="tabCombined" onclick="switchTop5Tab('combined')">⚡ Total</button>
             </div>
             <span class="top5-date" id="top5Date"></span>
           </div>
@@ -762,6 +790,22 @@ video{width:100%;aspect-ratio:1/1;object-fit:cover;}
     <div class="share-card" id="dsharebox"></div>
     <button class="btn-p" style="width:100%;" onclick="copyShare('d')">Copy Result</button>
   </div>
+</div>
+</div>
+
+<!-- ══ TRIVIA INTRO ══ -->
+<div class="screen" id="triviaIntroScreen">
+<div class="triv-intro">
+  <span class="triv-intro-icon">🧠</span>
+  <div class="triv-intro-tag">⚡ Rapid Fire</div>
+  <div class="triv-intro-title">Cricket Trivia</div>
+  <p class="triv-intro-desc">Three questions stand between you and glory.<br>The clock starts the moment the question appears — answer before time runs out or the round moves on without you.</p>
+  <div class="triv-intro-stats">
+    <div class="triv-intro-stat"><span class="triv-intro-stat-v">3</span><span class="triv-intro-stat-l">Questions</span></div>
+    <div class="triv-intro-stat"><span class="triv-intro-stat-v">20s</span><span class="triv-intro-stat-l">Per question</span></div>
+    <div class="triv-intro-stat"><span class="triv-intro-stat-v">20</span><span class="triv-intro-stat-l">Pts each</span></div>
+  </div>
+  <button class="triv-intro-btn" onclick="startTriviaGame()">Start Quiz →</button>
 </div>
 </div>
 
@@ -1884,7 +1928,7 @@ function applyTriviaCardState(){
 }
 function tryStartTrivia(){
   if(hasTriviaPlayed())return;
-  startTriviaGame();
+  showScreen('triviaIntroScreen');
 }
 
 function startTriviaTimer(){
@@ -1938,7 +1982,7 @@ function renderTriviaQuestion(){
   document.getElementById('trivOpts').innerHTML=q.options.map((opt,i)=>{
     const letter=letters[i];
     const text=opt.replace(/^[A-D]\.\s*/,'');
-    return`<button class="triv-opt" onclick="submitTriviaAnswer('${letter}')">
+    return`<button class="triv-opt" data-letter="${letter}" onclick="submitTriviaAnswer('${letter}')">
       <span class="triv-opt-key">${letter}</span>
       <span>${text}</span>
     </button>`;
@@ -1951,13 +1995,37 @@ function submitTriviaAnswer(letter){
   const idx=G.triviaAnswers.length;
   const q=G.triviaQuestions[idx];
   if(!q)return;
-  G.triviaAnswers.push(letter); // null = timed out
-  if(letter!==null&&letter===q.answer)G.triviaScore+=TRIVIA_PTS_PER_Q;
-  if(G.triviaAnswers.length<G.triviaQuestions.length){
-    renderTriviaQuestion();
-  }else{
-    showTriviaResults();
-  }
+  const isCorrect=letter!==null&&letter===q.answer;
+  // Record answer
+  G.triviaAnswers.push(letter);
+  if(isCorrect)G.triviaScore+=TRIVIA_PTS_PER_Q;
+  // Visual feedback on buttons
+  const opts=document.querySelectorAll('#trivOpts .triv-opt');
+  opts.forEach(btn=>{
+    btn.disabled=true;
+    const bl=btn.getAttribute('data-letter');
+    if(bl===letter&&isCorrect)btn.classList.add('ans-correct');
+    else if(bl===letter&&letter!==null)btn.classList.add('ans-wrong');
+    if(bl===q.answer&&!isCorrect)btn.classList.add('ans-reveal');
+  });
+  // Floating feedback badge
+  _showTriviaFeedback(isCorrect,letter===null);
+  // Advance after short pause so player sees feedback
+  setTimeout(()=>{
+    if(G.triviaAnswers.length<G.triviaQuestions.length){
+      renderTriviaQuestion();
+    }else{
+      showTriviaResults();
+    }
+  },900);
+}
+
+function _showTriviaFeedback(isCorrect,isTimeout){
+  const el=document.createElement('div');
+  el.className='triv-fb '+(isTimeout?'timeout':isCorrect?'ok':'no');
+  el.textContent=isTimeout?'⏱ Time\'s up':(isCorrect?`+${TRIVIA_PTS_PER_Q} pts`:'✗ Wrong');
+  document.body.appendChild(el);
+  setTimeout(()=>el.remove(),750);
 }
 
 function showTriviaResults(){
