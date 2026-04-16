@@ -330,6 +330,17 @@ video{width:100%;aspect-ratio:1/1;object-fit:cover;}
 .sc-dot.miss{background:var(--red);}
 .sc-url{font-family:'DM Mono',monospace;font-size:0.62rem;color:var(--text3);letter-spacing:0.06em;}
 .fin-btns{display:flex;gap:0.7rem;justify-content:center;flex-wrap:wrap;}
+/* Play Next */
+.play-next-wrap{margin:1.6rem 0 0.4rem;text-align:left;}
+.play-next-lbl{font-family:'DM Mono',monospace;font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--text3);margin-bottom:0.75rem;}
+.play-next-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:0.7rem;}
+.play-next-card{display:flex;align-items:center;justify-content:space-between;background:var(--surface);border:1.5px solid var(--border2);border-radius:14px;padding:0.9rem 1rem;cursor:pointer;transition:all 0.22s;text-align:left;}
+.play-next-card:hover{transform:translateY(-3px);box-shadow:0 10px 28px rgba(0,0,0,0.35);}
+.play-next-card.pn-bowling:hover{border-color:var(--border);}
+.play-next-card.pn-batting:hover{border-color:rgba(77,184,255,0.35);}
+.play-next-card.pn-trivia:hover{border-color:rgba(168,85,247,0.35);}
+.play-next-name{font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:0.06em;line-height:1.1;}
+.play-next-sub{font-family:'DM Mono',monospace;font-size:0.58rem;color:var(--text3);letter-spacing:0.06em;margin-top:0.18rem;}
 
 /* shared buttons */
 .btn-p{background:var(--accent);color:var(--bg);border:none;border-radius:10px;padding:0.72rem 1.55rem;font-size:0.86rem;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all 0.2s;}
@@ -835,6 +846,7 @@ video{width:100%;aspect-ratio:1/1;object-fit:cover;}
   </div>
   <div id="trivResList"></div>
   <div id="trivResActions" style="display:flex;gap:0.7rem;justify-content:center;margin-top:1.4rem;flex-wrap:wrap;"></div>
+  <div id="trivPlayNext"></div>
   <div id="trivResLb" style="margin-top:1.6rem;"></div>
 </div>
 </div>
@@ -852,6 +864,7 @@ video{width:100%;aspect-ratio:1/1;object-fit:cover;}
       <p style="color:var(--text3);font-size:0.78rem;font-family:'DM Mono',monospace;padding:0.9rem;">Loading leaderboard...</p>
     </div>
   </div>
+  <div id="finPlayNext"></div>
   <div class="fin-btns">
     <button class="btn-p" onclick="startGame(G.mode)">Play Again</button>
     <button class="btn-p" onclick="copyShare('f')">Share</button>
@@ -1926,6 +1939,32 @@ function applyTriviaCardState(){
     if(meta)meta.style.display='inline';
   }
 }
+function renderPlayNext(exclude){
+  const opts=[];
+  if(exclude!=='bowling'&&!hasDailyPlayed())
+    opts.push({key:'bowling',icon:'🏏',name:'GUESS THE BOWLER',color:'var(--accent)',action:"startGame('daily','bowling')",sub:'Bowling · Daily'});
+  if(exclude!=='batting'&&!hasBattingPlayed())
+    opts.push({key:'batting',icon:'🏃',name:'GUESS THE BATTER',color:'#4db8ff',action:"startGame('daily','batting')",sub:'Batting · Daily'});
+  if(exclude!=='trivia'&&!hasTriviaPlayed())
+    opts.push({key:'trivia',icon:'🧠',name:'CRICKET TRIVIA',color:'#a855f7',action:'tryStartTrivia()',sub:'Trivia · Daily'});
+  if(!opts.length)return'';
+  return`<div class="play-next-wrap">
+    <p class="play-next-lbl">Keep going — what's next?</p>
+    <div class="play-next-grid">${opts.map(o=>`
+      <div class="play-next-card pn-${o.key}" onclick="${o.action}">
+        <div style="display:flex;align-items:center;gap:0.65rem;">
+          <span style="font-size:1.5rem;line-height:1;">${o.icon}</span>
+          <div>
+            <div class="play-next-name" style="color:${o.color};">${o.name}</div>
+            <div class="play-next-sub">${o.sub}</div>
+          </div>
+        </div>
+        <span style="color:var(--text3);font-size:1.1rem;flex-shrink:0;">→</span>
+      </div>`).join('')}
+    </div>
+  </div>`;
+}
+
 function tryStartTrivia(){
   if(hasTriviaPlayed())return;
   showScreen('triviaIntroScreen');
@@ -2059,6 +2098,9 @@ function showTriviaResults(){
   // Buttons — no Play Again since it's a daily limit
   document.getElementById('trivResActions').innerHTML=`
     <button class="btn-s" onclick="showLanding()">← Home</button>`;
+  // Play-next suggestions
+  const pnEl=document.getElementById('trivPlayNext');
+  if(pnEl)pnEl.innerHTML=renderPlayNext('trivia');
   // Save + load leaderboard
   saveTriviaScore();
   if(correct===G.triviaQuestions.length)confetti();
@@ -2230,6 +2272,11 @@ async function revealFinal(){
   // For daily: markDailyPlayed + saveScore already ran at showResult time.
   // For other modes (future), save now.
   if(G.mode!=='daily'){await saveScore();}
+  // Play-next suggestions (daily mode only — other modes can replay freely)
+  if(G.mode==='daily'){
+    const pnEl=document.getElementById('finPlayNext');
+    if(pnEl)pnEl.innerHTML=renderPlayNext(G.category);
+  }
   // Brief delay to allow DynamoDB GSI eventual consistency before querying leaderboard
   setTimeout(loadLeaderboard,2000);
   if(G.correct===G.queue.length)confetti();
