@@ -80,8 +80,15 @@ export const handler = async (event) => {
       playerName = guestName;
     }
 
-    const isGuest  = !claims?.sub;
-    const date     = new Date().toISOString().split("T")[0];
+    const isGuest   = !claims?.sub;
+    const serverUtc = new Date().toISOString().split("T")[0];           // today UTC
+    const yesterday = new Date(Date.now() - 86400000).toISOString().split("T")[0]; // yesterday UTC
+    // Accept the client's local date only if it falls within [yesterday_UTC, today_UTC].
+    // This corrects the UTC-midnight bleed-through for users in UTC- timezones while
+    // preventing anyone from claiming a future date to appear on tomorrow's leaderboard.
+    const clientDate = typeof body.localDate === "string" && /^\d{4}-\d{2}-\d{2}$/.test(body.localDate)
+      ? body.localDate : serverUtc;
+    const date = (clientDate >= yesterday && clientDate <= serverUtc) ? clientDate : serverUtc;
     const scoreId  = `${category}#${date}#${randomUUID()}`;
     const ttl      = Math.floor(Date.now() / 1000) + (90 * 24 * 60 * 60);
 

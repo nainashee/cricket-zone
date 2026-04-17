@@ -915,6 +915,10 @@ video{width:100%;aspect-ratio:1/1;object-fit:cover;}
 
 <script src="https://cdn.jsdelivr.net/npm/amazon-cognito-identity-js@6/dist/amazon-cognito-identity.min.js"></script>
 <script>
+// Returns the user's local date as YYYY-MM-DD (sent to backend so scores are
+// stored under the day the player experienced, not the UTC day on the server)
+function localDateStr(){const n=new Date();return`${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,'0')}-${String(n.getDate()).padStart(2,'0')}`;}
+
 const BOWLERS=[
   {id:'malinga',name:'Lasith Malinga',nation:'Sri Lanka',era:'2004–2019',style:'Right-arm fast',clues:['Slingy round-arm action','Sri Lanka','2004–2019','Right-arm fast']},
   {id:'bumrah',name:'Jasprit Bumrah',nation:'India',era:'2016–present',style:'Right-arm fast',clues:['Unique loading action','India','2016–present','Right-arm fast']},
@@ -1969,7 +1973,7 @@ async function saveScore(){
     const res=await fetch(`${API}/score`,{
       method:'POST',
       headers:{'Content-Type':'application/json','Authorization':`Bearer ${idToken}`},
-      body:JSON.stringify({score:G.score,gameMode:G.mode,category:G.category,pictureUrl:localStorage.getItem('cz_user_picture')||undefined})
+      body:JSON.stringify({score:G.score,gameMode:G.mode,category:G.category,localDate:localDateStr(),pictureUrl:localStorage.getItem('cz_user_picture')||undefined})
     });
     if(!res.ok){
       const body=await res.text();
@@ -2005,7 +2009,7 @@ async function saveScoreAsGuest(){
     const res=await fetch(`${API}/score`,{
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({score:G.score,gameMode:G.mode,category:G.category,playerName,userId})
+      body:JSON.stringify({score:G.score,gameMode:G.mode,category:G.category,localDate:localDateStr(),playerName,userId})
     });
     if(!res.ok)throw new Error(await res.text());
     guestPromptDismiss();
@@ -2281,7 +2285,7 @@ async function saveTriviaScore(){
     await fetch(`${API}/score`,{
       method:'POST',
       headers:{'Content-Type':'application/json','Authorization':`Bearer ${idToken}`},
-      body:JSON.stringify({score:G.triviaScore,gameMode:'trivia',category:'trivia',pictureUrl:localStorage.getItem('cz_user_picture')||undefined})
+      body:JSON.stringify({score:G.triviaScore,gameMode:'trivia',category:'trivia',localDate:localDateStr(),pictureUrl:localStorage.getItem('cz_user_picture')||undefined})
     });
   }catch(e){console.error('Trivia score save failed:',e);}
   // Load trivia leaderboard under the results
