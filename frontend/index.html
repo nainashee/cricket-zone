@@ -1102,14 +1102,18 @@ async function loadAccountStats(){
   let picSrc='';
   try{const c=parseJwt(idToken);if(c&&c.picture)picSrc=c.picture;}catch(e){}
   if(!picSrc)picSrc=localStorage.getItem('cz_user_picture')||localStorage.getItem('cz_avatar_url')||'';
+  const accFlag=countryFlag(localStorage.getItem('cz_country')||'');
   const avatarHtml=picSrc
     ?`<img src="${picSrc}" width="72" height="72" style="width:72px;height:72px;object-fit:cover;display:block;" onerror="onAvatarError(this,'${name.replace(/'/g,"\\'")}')" alt="">`
     :`<img src="${makeInitialsAvatar(name,72)}" width="72" height="72" style="width:72px;height:72px;object-fit:cover;display:block;" alt="">`;
+  const avatarWrap=accFlag
+    ?`<div style="position:relative;display:inline-block;">${avatarHtml}<span style="position:absolute;bottom:-3px;right:-8px;font-size:26px;line-height:1;pointer-events:none;">${accFlag}</span></div>`
+    :avatarHtml;
   // Render shell immediately while fetching stats
   el.innerHTML=`
     <button class="acc-back" onclick="showLanding()">← Back</button>
     <div class="acc-profile">
-      <div class="acc-avatar">${avatarHtml}</div>
+      <div class="acc-avatar">${avatarWrap}</div>
       <div class="acc-meta">
         <div class="acc-name-row">
           <div class="acc-name" id="accName">${name}</div>
@@ -1447,16 +1451,22 @@ function onAvatarError(img,name){
   if(picture&&img.src!==picture){img.src=picture;}
   else{img.src=initials;}
 }
-function lbAvHtml(s,name,size,isMe){
+function lbAvHtml(s,name,size,isMe,country){
   const st=`width:${size}px;height:${size}px;border-radius:50%;object-fit:cover;flex-shrink:0;`;
   const n=name.replace(/'/g,"\\'");
+  let img;
   if(isMe){
     const src=getAvatarSrc(name);
-    return`<img src="${src}" width="${size}" height="${size}" style="${st}" onerror="onAvatarError(this,'${n}')" alt="">`;
+    img=`<img src="${src}" width="${size}" height="${size}" style="${st}" onerror="onAvatarError(this,'${n}')" alt="">`;
+  }else{
+    const src=s.pictureUrl||`${AVATAR_BASE}/avatars/${s.userId}`;
+    const fb=makeInitialsAvatar(name,size);
+    img=`<img src="${src}" width="${size}" height="${size}" style="${st}" onerror="this.src='${fb}';this.onerror=null;" alt="">`;
   }
-  const src=s.pictureUrl||`${AVATAR_BASE}/avatars/${s.userId}`;
-  const fb=makeInitialsAvatar(name,size);
-  return`<img src="${src}" width="${size}" height="${size}" style="${st}" onerror="this.src='${fb}';this.onerror=null;" alt="">`;
+  const flag=countryFlag(country||'');
+  if(!flag)return img;
+  const fs=Math.round(size*0.6);
+  return`<div style="position:relative;flex-shrink:0;width:${size}px;height:${size}px;">${img}<span style="position:absolute;bottom:-3px;right:-5px;font-size:${fs}px;line-height:1;pointer-events:none;">${flag}</span></div>`;
 }
 
 function updateHeaderUser(){
@@ -1523,12 +1533,13 @@ function renderProfileDropdown(){
     const dropFlag=countryFlag(localStorage.getItem('cz_country')||'');
     drop.innerHTML=`
       <div class="drop-avatar-wrap">
-        <div class="drop-avatar-lg">
+        <div class="drop-avatar-lg" style="position:relative;">
           <img src="${src}" width="56" height="56" style="width:56px;height:56px;object-fit:cover;border-radius:50%;display:block;" onerror="onAvatarError(this,'${name.replace(/'/g,"\\'")}')" alt="" id="dropAvImg">
           <div class="drop-av-edit">EDIT<input type="file" accept="image/*" onchange="uploadAvatar(this.files[0])" style="position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;pointer-events:auto;"></div>
+          ${dropFlag?`<span style="position:absolute;bottom:-2px;right:-6px;font-size:22px;line-height:1;pointer-events:none;">${dropFlag}</span>`:''}
         </div>
         <div class="drop-info">
-          <div class="drop-info-name">${dropFlag?dropFlag+' ':''}${name}</div>
+          <div class="drop-info-name">${name}</div>
           ${email?`<div class="drop-info-sub">${email}</div>`:''}
         </div>
       </div>
@@ -1974,8 +1985,8 @@ function _renderResLb(el){
     const name=s.playerName||'Anonymous';
     const youBadge=isMe?'<span class="top5-you">YOU</span>':'';
     const medal=i===0?'🥇':i===1?'🥈':i===2?'🥉':'';
-    const avHtml=lbAvHtml(s,name,22,isMe);
-    const flag=countryFlag(s.country||'');
+    const flagCode=s.country||(isMe?localStorage.getItem('cz_country')||'':'');
+    const avHtml=lbAvHtml(s,name,22,isMe,flagCode);
     const parts=[];
     if(s.bowlingScore)parts.push(`🏃 ${s.bowlingScore}`);
     if(s.battingScore)parts.push(`🏏 ${s.battingScore}`);
@@ -1986,7 +1997,7 @@ function _renderResLb(el){
         <span class="top5-rank" style="color:${isMe?'var(--accent)':rankColor(i)}">${medal||i+1}</span>
         ${avHtml}
         <div style="display:flex;flex-direction:column;gap:0.08rem;min-width:0;">
-          <span class="top5-name${isMe?' me':''}">${flag?flag+' ':''}${name}${youBadge}</span>
+          <span class="top5-name${isMe?' me':''}">${name}${youBadge}</span>
           ${subtext}
         </div>
       </div>
@@ -2350,11 +2361,12 @@ async function saveTriviaScore(){
       const isMe=s.userId===currentUserId;
       const name=s.playerName||'Anonymous';
       const youBadge=isMe?`<span style="font-family:'DM Mono',monospace;font-size:0.58rem;color:var(--accent);background:var(--accent-dim);border:1px solid var(--border);border-radius:100px;padding:0.1rem 0.45rem;margin-left:0.4rem;">YOU</span>`:'';
+      const trivFlagCode=s.country||(isMe?localStorage.getItem('cz_country')||'':'');
       return`<div style="display:flex;align-items:center;justify-content:space-between;padding:0.6rem 0.9rem;border-bottom:1px solid var(--border2);${isMe?'background:rgba(58,125,68,0.04);':''}">
         <div style="display:flex;align-items:center;gap:0.55rem;flex:1;min-width:0;">
           <span style="font-family:'Bebas Neue',sans-serif;font-size:1.05rem;color:${isMe?'var(--accent)':rankColor(i)};width:1.3rem;text-align:center;flex-shrink:0;">${i+1}</span>
-          ${lbAvHtml(s,name,22,isMe)}
-          <span style="font-size:0.81rem;color:${isMe?'var(--text)':'var(--text2)'};overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${countryFlag(s.country||'')?countryFlag(s.country||'')+' ':''}${name}${youBadge}</span>
+          ${lbAvHtml(s,name,22,isMe,trivFlagCode)}
+          <span style="font-size:0.81rem;color:${isMe?'var(--text)':'var(--text2)'};overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${name}${youBadge}</span>
         </div>
         <span style="font-family:'Bebas Neue',sans-serif;font-size:1.05rem;color:#a855f7;min-width:3rem;text-align:right;flex-shrink:0;">${s.score}</span>
       </div>`;
@@ -2392,14 +2404,15 @@ async function loadLeaderboard(){
     function renderRow(s,i,isMe){
       const name=s.playerName||s.userId;
       const youBadge=isMe?`<span style="font-family:'DM Mono',monospace;font-size:0.58rem;color:var(--accent);background:var(--accent-dim);border:1px solid var(--border);border-radius:100px;padding:0.1rem 0.45rem;margin-left:0.4rem;vertical-align:middle;">YOU</span>`:'';
-      const avHtml=lbAvHtml(s,name,24,isMe);
+      const flagCode=s.country||(isMe?localStorage.getItem('cz_country')||'':'');
+      const avHtml=lbAvHtml(s,name,24,isMe,flagCode);
       const trivPts=s.triviaScore||0;
       const totalPts=(s.score||0)+trivPts;
       return`<div style="display:flex;align-items:center;justify-content:space-between;padding:0.65rem 0.9rem;border-bottom:1px solid var(--border2);${isMe?'background:rgba(58,125,68,0.04);':''}">
         <div style="display:flex;align-items:center;gap:0.6rem;min-width:0;flex:1;">
           <span style="font-family:'Bebas Neue',sans-serif;font-size:1.1rem;color:${isMe?'var(--accent)':rankColor(i)};width:1.4rem;text-align:center;flex-shrink:0;">${i+1}</span>
           ${avHtml}
-          <span style="font-size:0.82rem;color:${isMe?'var(--text)':'var(--text2)'};font-weight:${isMe?500:400};overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${countryFlag(s.country||'')?countryFlag(s.country||'')+' ':''}${name}${youBadge}</span>
+          <span style="font-size:0.82rem;color:${isMe?'var(--text)':'var(--text2)'};font-weight:${isMe?500:400};overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${name}${youBadge}</span>
         </div>
         <div style="display:flex;align-items:center;gap:0.5rem;flex-shrink:0;">
           ${trivPts>0?`<span style="font-family:'DM Mono',monospace;font-size:0.62rem;color:#f59e0b;" title="Trivia">+${trivPts}T</span>`:''}
@@ -2654,8 +2667,8 @@ function renderTop5(tab){
     const name=s.playerName||'Anonymous';
     const youBadge=isMe?'<span class="top5-you">YOU</span>':'';
     const medal=i===0?'🥇':i===1?'🥈':i===2?'🥉':'';
-    const avHtml=lbAvHtml(s,name,22,isMe);
-    const flag=countryFlag(s.country||'');
+    const flagCode=s.country||(isMe?localStorage.getItem('cz_country')||'':'');
+    const avHtml=lbAvHtml(s,name,22,isMe,flagCode);
     let subtext='';
     const trivPts=s.triviaScore||0;
     const displayTotal=tab==='combined'?s.score:(s.score||0)+trivPts;
@@ -2672,7 +2685,7 @@ function renderTop5(tab){
         <span class="top5-rank" style="color:${isMe?'var(--accent)':rankColor(i)}">${medal||i+1}</span>
         ${avHtml}
         <div style="display:flex;flex-direction:column;gap:0.08rem;min-width:0;">
-          <span class="top5-name${isMe?' me':''}">${flag?flag+' ':''}${name}${youBadge}</span>
+          <span class="top5-name${isMe?' me':''}">${name}${youBadge}</span>
           ${subtext}
         </div>
       </div>
@@ -2750,8 +2763,8 @@ async function loadAllTime(){
       const name=s.playerName||'Anonymous';
       const youBadge=isMe?'<span class="top5-you">YOU</span>':'';
       const medal=i===0?'🥇':i===1?'🥈':i===2?'🥉':'';
-      const avHtml=lbAvHtml(s,name,22,isMe);
-      const flag=countryFlag(s.country||'');
+      const flagCode=s.country||(isMe?localStorage.getItem('cz_country')||'':'');
+      const avHtml=lbAvHtml(s,name,22,isMe,flagCode);
       const statsParts=[
         s.gamesPlayed!=null?`${s.gamesPlayed} Games`:null,
         s.streak!=null?`🔥 ${s.streak} Streak`:null,
@@ -2768,7 +2781,7 @@ async function loadAllTime(){
           <span class="top5-rank" style="color:${isMe?'var(--accent)':rankColor(i)}">${medal||i+1}</span>
           ${avHtml}
           <div class="top5-name-col">
-            <span class="top5-name${isMe?' me':''}">${flag?flag+' ':''}${name}${youBadge}</span>
+            <span class="top5-name${isMe?' me':''}">${name}${youBadge}</span>
             ${statsLine}
           </div>
         </div>
