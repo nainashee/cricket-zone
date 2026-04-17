@@ -2001,6 +2001,7 @@ async function saveScore(){
           stats.streak=s.streak;
           if((s.bestScore||0)>stats.best)stats.best=s.bestScore;
           localStorage.setItem('cz3',JSON.stringify(stats));
+          if(s.country!==undefined){localStorage.setItem('cz_country',s.country||'');updateHeaderUser();}
           refreshH();
         }
       }catch(e){console.warn('Summary parse failed',e);}
@@ -2293,11 +2294,17 @@ async function saveTriviaScore(){
     return;
   }
   try{
-    await fetch(`${API}/score`,{
+    const trivRes=await fetch(`${API}/score`,{
       method:'POST',
       headers:{'Content-Type':'application/json','Authorization':`Bearer ${idToken}`},
       body:JSON.stringify({score:G.triviaScore,gameMode:'trivia',category:'trivia',localDate:localDateStr(),pictureUrl:localStorage.getItem('cz_user_picture')||undefined})
     });
+    if(trivRes.ok){
+      try{
+        const td=await trivRes.json();
+        if(td.summary?.country!==undefined){localStorage.setItem('cz_country',td.summary.country||'');updateHeaderUser();}
+      }catch(_){}
+    }
   }catch(e){console.error('Trivia score save failed:',e);}
   // Load trivia leaderboard under the results
   if(!lbEl)return;
@@ -2324,7 +2331,7 @@ async function saveTriviaScore(){
         <div style="display:flex;align-items:center;gap:0.55rem;flex:1;min-width:0;">
           <span style="font-family:'Bebas Neue',sans-serif;font-size:1.05rem;color:${isMe?'var(--accent)':rankColor(i)};width:1.3rem;text-align:center;flex-shrink:0;">${i+1}</span>
           ${lbAvHtml(s,name,22,isMe)}
-          <span style="font-size:0.81rem;color:${isMe?'var(--text)':'var(--text2)'};overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${name}${youBadge}</span>
+          <span style="font-size:0.81rem;color:${isMe?'var(--text)':'var(--text2)'};overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${countryFlag(s.country||'')?countryFlag(s.country||'')+' ':''}${name}${youBadge}</span>
         </div>
         <span style="font-family:'Bebas Neue',sans-serif;font-size:1.05rem;color:#a855f7;min-width:3rem;text-align:right;flex-shrink:0;">${s.score}</span>
       </div>`;
@@ -2369,7 +2376,7 @@ async function loadLeaderboard(){
         <div style="display:flex;align-items:center;gap:0.6rem;min-width:0;flex:1;">
           <span style="font-family:'Bebas Neue',sans-serif;font-size:1.1rem;color:${isMe?'var(--accent)':rankColor(i)};width:1.4rem;text-align:center;flex-shrink:0;">${i+1}</span>
           ${avHtml}
-          <span style="font-size:0.82rem;color:${isMe?'var(--text)':'var(--text2)'};font-weight:${isMe?500:400};overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${name}${youBadge}</span>
+          <span style="font-size:0.82rem;color:${isMe?'var(--text)':'var(--text2)'};font-weight:${isMe?500:400};overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${countryFlag(s.country||'')?countryFlag(s.country||'')+' ':''}${name}${youBadge}</span>
         </div>
         <div style="display:flex;align-items:center;gap:0.5rem;flex-shrink:0;">
           ${trivPts>0?`<span style="font-family:'DM Mono',monospace;font-size:0.62rem;color:#f59e0b;" title="Trivia">+${trivPts}T</span>`:''}
