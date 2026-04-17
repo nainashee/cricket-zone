@@ -925,7 +925,16 @@ video{width:100%;aspect-ratio:1/1;object-fit:cover;}
 // Returns the user's local date as YYYY-MM-DD (sent to backend so scores are
 // stored under the day the player experienced, not the UTC day on the server)
 function localDateStr(){const n=new Date();return`${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,'0')}-${String(n.getDate()).padStart(2,'0')}`;}
-function countryFlag(code){if(!code||code.length!==2)return'';return[...code.toUpperCase()].map(c=>String.fromCodePoint(0x1F1E6+c.charCodeAt(0)-65)).join('');}
+function escHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+// Returns an <img> flag tag using flagcdn.com (works on all platforms including Windows)
+function countryFlag(code,size){
+  if(!code||code.length!==2)return'';
+  const lc=code.toLowerCase();
+  const w=size&&size<=18?20:size&&size<=32?40:80;
+  const h=Math.round((size||16)*0.75);
+  const disp=size||16;
+  return`<img src="https://flagcdn.com/w${w}/${lc}.png" width="${disp}" height="${h}" style="border-radius:2px;vertical-align:middle;flex-shrink:0;" alt="${escHtml(code)}" onerror="this.style.display='none'">`;
+}
 // Detect country once from Cloudflare edge (browser IP, no rate-limit, no API key)
 async function detectAndCacheCountry(){
   if(localStorage.getItem('cz_country'))return;
@@ -1102,12 +1111,12 @@ async function loadAccountStats(){
   let picSrc='';
   try{const c=parseJwt(idToken);if(c&&c.picture)picSrc=c.picture;}catch(e){}
   if(!picSrc)picSrc=localStorage.getItem('cz_user_picture')||localStorage.getItem('cz_avatar_url')||'';
-  const accFlag=countryFlag(localStorage.getItem('cz_country')||'');
+  const accFlag=countryFlag(localStorage.getItem('cz_country')||'',26);
   const avatarHtml=picSrc
     ?`<img src="${picSrc}" width="72" height="72" style="width:72px;height:72px;object-fit:cover;display:block;" onerror="onAvatarError(this,'${name.replace(/'/g,"\\'")}')" alt="">`
     :`<img src="${makeInitialsAvatar(name,72)}" width="72" height="72" style="width:72px;height:72px;object-fit:cover;display:block;" alt="">`;
   const avatarWrap=accFlag
-    ?`<div style="position:relative;display:inline-block;">${avatarHtml}<span style="position:absolute;bottom:-3px;right:-8px;font-size:26px;line-height:1;pointer-events:none;">${accFlag}</span></div>`
+    ?`<div style="position:relative;display:inline-block;">${avatarHtml}<span style="position:absolute;bottom:-4px;right:-8px;line-height:1;pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.6));">${accFlag}</span></div>`
     :avatarHtml;
   // Render shell immediately while fetching stats
   el.innerHTML=`
@@ -1165,7 +1174,7 @@ async function loadAccountStats(){
       const streakVal=row.streak!=null?row.streak:'—';
       const winRateVal=(games>0&&row.wins!=null)?Math.round(row.wins/games*100)+'%':'—';
       const countryCode=row.country||'';
-      const countryRow=countryCode?`<div class="acc-stat" style="grid-column:1/-1;"><span class="acc-stat-v" style="font-size:1.6rem;">${countryFlag(countryCode)}</span><span class="acc-stat-l">Country · <span style="font-family:'DM Mono',monospace;">${countryCode}</span> · Detected from your IP</span></div>`:'';
+      const countryRow=countryCode?`<div class="acc-stat" style="grid-column:1/-1;"><span class="acc-stat-v">${countryFlag(countryCode,32)}</span><span class="acc-stat-l">Country · <span style="font-family:'DM Mono',monospace;">${escHtml(countryCode)}</span> · Detected from your IP</span></div>`:'';
       gridEl.innerHTML=`
         <div class="acc-stat"><span class="acc-stat-v">${total.toLocaleString()}</span><span class="acc-stat-l">Total Score</span></div>
         <div class="acc-stat"><span class="acc-stat-v">${games}</span><span class="acc-stat-l">Games Played</span></div>
@@ -1463,10 +1472,11 @@ function lbAvHtml(s,name,size,isMe,country){
     const fb=makeInitialsAvatar(name,size);
     img=`<img src="${src}" width="${size}" height="${size}" style="${st}" onerror="this.src='${fb}';this.onerror=null;" alt="">`;
   }
-  const flag=countryFlag(country||'');
-  if(!flag)return img;
-  const fs=Math.round(size*0.6);
-  return`<div style="position:relative;flex-shrink:0;width:${size}px;height:${size}px;">${img}<span style="position:absolute;bottom:-3px;right:-5px;font-size:${fs}px;line-height:1;pointer-events:none;">${flag}</span></div>`;
+  const flagW=Math.round(size*0.7);
+  const flagH=Math.round(flagW*0.75);
+  const flagHtml=countryFlag(country||'',flagW);
+  if(!flagHtml)return img;
+  return`<div style="position:relative;flex-shrink:0;width:${size}px;height:${size}px;">${img}<span style="position:absolute;bottom:-4px;right:-6px;line-height:1;pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.6));">${flagHtml}</span></div>`;
 }
 
 function updateHeaderUser(){
@@ -1479,8 +1489,9 @@ function updateHeaderUser(){
   if(name||guest){
     el.style.display='flex';
     if(nameEl){
-      const flag=(!guest)?countryFlag(localStorage.getItem('cz_country')||''):'';
-      nameEl.textContent=(flag?flag+' ':'')+(name||'');
+      const flag=(!guest)?countryFlag(localStorage.getItem('cz_country')||'',14):'';
+      if(flag){nameEl.innerHTML=flag+' '+escHtml(name||'');}
+      else{nameEl.textContent=name||'';}
     }
     if(avatarEl){
       const src=getAvatarSrc(name||'Guest');
@@ -1530,13 +1541,13 @@ function renderProfileDropdown(){
       <div class="drop-divider"></div>
       <button class="drop-create" onclick="closeProfileDropdown();showAuthModal();setTimeout(()=>authTab('register'),50);">Create Free Account</button>`;
   }else{
-    const dropFlag=countryFlag(localStorage.getItem('cz_country')||'');
+    const dropFlag=countryFlag(localStorage.getItem('cz_country')||'',20);
     drop.innerHTML=`
       <div class="drop-avatar-wrap">
         <div class="drop-avatar-lg" style="position:relative;">
           <img src="${src}" width="56" height="56" style="width:56px;height:56px;object-fit:cover;border-radius:50%;display:block;" onerror="onAvatarError(this,'${name.replace(/'/g,"\\'")}')" alt="" id="dropAvImg">
           <div class="drop-av-edit">EDIT<input type="file" accept="image/*" onchange="uploadAvatar(this.files[0])" style="position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;pointer-events:auto;"></div>
-          ${dropFlag?`<span style="position:absolute;bottom:-2px;right:-6px;font-size:22px;line-height:1;pointer-events:none;">${dropFlag}</span>`:''}
+          ${dropFlag?`<span style="position:absolute;bottom:-4px;right:-6px;line-height:1;pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.6));">${dropFlag}</span>`:''}
         </div>
         <div class="drop-info">
           <div class="drop-info-name">${name}</div>
