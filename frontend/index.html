@@ -812,6 +812,25 @@ video{width:100%;aspect-ratio:1/1;object-fit:cover;}
     <button class="btn-p" style="width:100%;" onclick="copyShare('d')">Copy Result</button>
   </div>
   <div id="resPlayNext"></div>
+  <div id="resLbWrap" style="display:none;margin-top:2rem;">
+    <div style="margin-bottom:1.2rem;">
+      <p style="font-family:'DM Mono',monospace;font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--text3);margin-bottom:0.4rem;">Daily Challenge</p>
+      <h2 style="font-family:'Bebas Neue',sans-serif;font-size:2.2rem;letter-spacing:0.04em;">TODAY'S TOP 5</h2>
+    </div>
+    <div class="top5-card">
+      <div class="top5-header">
+        <div class="top5-title">
+          <span>🏆</span>
+          <span class="top5-title-text">LEADERBOARD</span>
+          <span class="top5-badge">Live</span>
+        </div>
+        <span class="top5-date" id="resLbDate"></span>
+      </div>
+      <div id="resLbList">
+        <div class="top5-loading"><div class="top5-spinner"></div>Loading…</div>
+      </div>
+    </div>
+  </div>
 </div>
 </div>
 
@@ -1839,27 +1858,109 @@ function showResult(won,pts){
   if(won)confetti();
   const last=G.idx>=G.queue.length-1,nb=document.getElementById('nextBtn');
   const rpn=document.getElementById('resPlayNext');
+  const resLbWrap=document.getElementById('resLbWrap');
   if(last){
     nb.textContent='See Final Score →';nb.onclick=showFinal;
     if(rpn)rpn.innerHTML=renderPlayNext(G.category);
+    if(resLbWrap)resLbWrap.style.display='none'; // will be shown after score saves
     if(G.mode==='daily'){
       document.getElementById('dshare').style.display='block';
       document.getElementById('dsharebox').innerHTML=buildDailyShareCardHTML();
       if(G.category==='batting'){markBattingPlayed();applyBattingCardState();}
       else{markDailyPlayed();applyDailyCardState();}
-      saveScore();
+      saveScore().then(()=>loadResLeaderboard());
+    }else{
+      loadResLeaderboard();
     }
   }
   else{
     const nextLabel=G.category==='batting'?'Next Batter →':'Next Bowler →';
     nb.textContent=nextLabel;nb.onclick=nextBowler;document.getElementById('dshare').style.display='none';
     if(rpn)rpn.innerHTML='';
+    if(resLbWrap)resLbWrap.style.display='none';
     // Start fetching next video into HTTP cache while user reads the result screen
     const nextBowler=G.queue[G.idx+1];
     if(nextBowler){const v=document.getElementById('bvid');const ns=`content/${G.category}/${nextBowler.id}.mp4`;if(v.src!==ns)v.src=ns;}
   }
 }
 function nextBowler(){G.idx++;showScreen('gameScreen');loadBowler();}
+
+async function loadResLeaderboard(){
+  const wrap=document.getElementById('resLbWrap');
+  const el=document.getElementById('resLbList');
+  const dateEl=document.getElementById('resLbDate');
+  if(!wrap||!el)return;
+  wrap.style.display='block';
+  if(dateEl)dateEl.textContent=new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+  // Render from cache immediately so there's no blank state
+  _renderResLb(el);
+  // After DynamoDB GSI settles, refresh with the latest scores
+  await new Promise(r=>setTimeout(r,2200));
+  try{
+    const noCache={cache:'no-store'};
+    const [bowlRes,batRes,trivRes]=await Promise.all([
+      fetch(`${API}/leaderboard?category=bowling`,noCache),
+      fetch(`${API}/leaderboard?category=batting`,noCache),
+      fetch(`${API}/leaderboard?category=trivia`,noCache)
+    ]);
+    const [bowlData,batData,trivData]=await Promise.all([bowlRes.json(),batRes.json(),trivRes.json()]);
+    _top5Cache.bowling=bowlData.leaderboard||[];
+    _top5Cache.batting=batData.leaderboard||[];
+    _top5Cache.trivia=trivData.leaderboard||[];
+    _renderResLb(el);
+  }catch(e){console.error('resLb refresh failed',e);}
+}
+
+function _renderResLb(el){
+  const today=new Date().toISOString().split('T')[0];
+  const currentUserId=getCurrentUserId();
+  const map={};
+  for(const s of(_top5Cache.bowling||[])){
+    if(s.date&&s.date!==today)continue;
+    if(!map[s.userId])map[s.userId]={...s,bowlingScore:0,battingScore:0,triviaGameScore:0,score:0};
+    map[s.userId].bowlingScore=s.score||0;map[s.userId].score+=s.score||0;
+  }
+  for(const s of(_top5Cache.batting||[])){
+    if(s.date&&s.date!==today)continue;
+    if(!map[s.userId]){map[s.userId]={...s,bowlingScore:0,battingScore:0,triviaGameScore:0,score:0};}
+    else{if(s.playerName)map[s.userId].playerName=s.playerName;if(s.pictureUrl)map[s.userId].pictureUrl=s.pictureUrl;}
+    map[s.userId].battingScore=s.score||0;map[s.userId].score+=s.score||0;
+  }
+  for(const s of(_top5Cache.trivia||[])){
+    if(s.date&&s.date!==today)continue;
+    if(!map[s.userId]){map[s.userId]={...s,bowlingScore:0,battingScore:0,triviaGameScore:0,score:0};}
+    else{if(s.playerName)map[s.userId].playerName=s.playerName;if(s.pictureUrl)map[s.userId].pictureUrl=s.pictureUrl;}
+    map[s.userId].triviaGameScore=s.score||0;map[s.userId].score+=s.score||0;
+  }
+  const scores=Object.values(map).sort((a,b)=>b.score-a.score).slice(0,5);
+  if(!scores.length){el.innerHTML='<div class="top5-empty">No scores yet today — you might be first! 🏆</div>';return;}
+  function rankColor(i){return i===0?'var(--gold)':i===1?'#c0c0c0':i===2?'#cd7f32':'var(--text3)';}
+  el.innerHTML=scores.map((s,i)=>{
+    const isMe=s.userId===currentUserId;
+    const name=s.playerName||'Anonymous';
+    const youBadge=isMe?'<span class="top5-you">YOU</span>':'';
+    const medal=i===0?'🥇':i===1?'🥈':i===2?'🥉':'';
+    const avHtml=lbAvHtml(s,name,22,isMe);
+    const parts=[];
+    if(s.bowlingScore)parts.push(`🏃 ${s.bowlingScore}`);
+    if(s.battingScore)parts.push(`🏏 ${s.battingScore}`);
+    if(s.triviaGameScore)parts.push(`🧠 ${s.triviaGameScore}`);
+    const subtext=parts.length>1?`<div class="top5-subtext" style="margin-top:0.1rem;">${parts.join(' · ')}</div>`:'';
+    return`<div class="top5-row${isMe?' me':''}">
+      <div class="top5-left">
+        <span class="top5-rank" style="color:${isMe?'var(--accent)':rankColor(i)}">${medal||i+1}</span>
+        ${avHtml}
+        <div style="display:flex;flex-direction:column;gap:0.08rem;min-width:0;">
+          <span class="top5-name${isMe?' me':''}">${name}${youBadge}</span>
+          ${subtext}
+        </div>
+      </div>
+      <div class="top5-right">
+        <span class="top5-score">${s.score}</span>
+      </div>
+    </div>`;
+  }).join('');
+}
 
 async function saveScore(){
   const idToken=getIdToken();
