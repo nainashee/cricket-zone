@@ -87,6 +87,7 @@ main{position:relative;z-index:1;}
 .cat-card:nth-child(2){animation-delay:0.65s;}
 .cat-card:nth-child(3){animation-delay:0.75s;}
 .cat-card:nth-child(4){animation-delay:0.85s;}
+.cat-card:nth-child(5){animation-delay:0.95s;}
 .cat-card.live{cursor:pointer;}
 .cat-card.live:hover{border-color:var(--border);transform:translateY(-4px);box-shadow:0 20px 50px rgba(0,0,0,0.5),0 0 0 1px var(--border);}
 .cat-card.soon{opacity:0.4;filter:saturate(0.2);cursor:not-allowed;}
@@ -132,6 +133,14 @@ main{position:relative;z-index:1;}
 .cat-card.trivia-card{border-color:rgba(168,85,247,0.2);box-shadow:0 0 28px rgba(168,85,247,0.06);}
 .cat-card.trivia-card:hover{border-color:rgba(168,85,247,0.45);box-shadow:0 20px 50px rgba(0,0,0,0.5),0 0 0 1px rgba(168,85,247,0.35);}
 .cat-card.trivia-card .cat-arr{background:#a855f7;}
+/* rapid fire card */
+.cb-rapid{background:linear-gradient(135deg,#1a0f00,#2a1a00);}
+.cb-rapid .cb-glow{background:radial-gradient(ellipse at center,rgba(251,191,36,0.22) 0%,transparent 70%);}
+.ct-rapid{background:rgba(251,191,36,0.12);border:1px solid rgba(251,191,36,0.38);color:#fbbf24;}
+.cat-card.rapid-card{border-color:rgba(251,191,36,0.22);box-shadow:0 0 28px rgba(251,191,36,0.07);}
+.cat-card.rapid-card:hover{border-color:rgba(251,191,36,0.5);box-shadow:0 20px 50px rgba(0,0,0,0.5),0 0 0 1px rgba(251,191,36,0.38);}
+.cat-card.rapid-card .cat-arr{background:#fbbf24;color:var(--bg);}
+.cb-icon-rapid{position:relative;z-index:1;font-size:3.8rem;animation:iconFloat 3s ease-in-out infinite;filter:drop-shadow(0 0 18px rgba(251,191,36,0.55));}
 .daily-banner-inner{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:0.3rem;}
 .daily-banner-icons{display:flex;align-items:center;gap:0.4rem;font-size:2.4rem;animation:iconFloat 3s ease-in-out infinite;}
 .daily-stamp{font-family:'Bebas Neue',sans-serif;font-size:0.7rem;letter-spacing:0.22em;color:rgba(245,158,11,0.55);margin-top:0.1rem;}
@@ -651,6 +660,19 @@ video{width:100%;aspect-ratio:1/1;object-fit:cover;}
         </div>
       </div>
 
+      <div class="cat-card live rapid-card" id="rapidCard" onclick="tryStartRapidFire()">
+        <div class="cat-banner cb-rapid"><div class="cb-glow"></div><span class="cb-icon-rapid">⚡</span></div>
+        <div class="cat-body">
+          <span class="cat-tag ct-rapid">⚡ Rapid Fire</span>
+          <span class="cat-name">RAPID<br>FIRE</span>
+          <p class="cat-desc">5 questions. 10 seconds each. No warm-up — raw cricket knowledge under pressure.</p>
+          <div class="cat-foot">
+            <span class="cat-meta">5 questions · 10s · Unlimited plays</span>
+            <div class="cat-arr">→</div>
+          </div>
+        </div>
+      </div>
+
       <div class="cat-card soon">
         <div class="cat-banner cb-cel"><div class="cb-glow"></div><span class="cb-icon">🎉</span></div>
         <div class="cat-body">
@@ -685,8 +707,8 @@ video{width:100%;aspect-ratio:1/1;object-fit:cover;}
           </div>
           <div style="display:flex;align-items:center;gap:0.75rem;">
             <div class="top5-tabs">
-              <button class="top5-tab" id="tabBowling" onclick="switchTop5Tab('bowling')">🏏 Bowl</button>
-              <button class="top5-tab" id="tabBatting" onclick="switchTop5Tab('batting')">🏃 Bat</button>
+              <button class="top5-tab" id="tabBowling" onclick="switchTop5Tab('bowling')">🏃 Bowl</button>
+              <button class="top5-tab" id="tabBatting" onclick="switchTop5Tab('batting')">🏏 Bat</button>
               <button class="top5-tab" id="tabTrivia" onclick="switchTop5Tab('trivia')">🧠 Trivia</button>
               <button class="top5-tab active" id="tabCombined" onclick="switchTop5Tab('combined')">⚡ Total</button>
             </div>
@@ -761,7 +783,7 @@ video{width:100%;aspect-ratio:1/1;object-fit:cover;}
 
   <div class="vid-wrap">
     <div class="vid-ph" id="vidPH">
-      <div class="vid-ph-icon">🏏</div>
+      <div class="vid-ph-icon">🏃</div>
       <p id="vidPHText">Watch the action and identify the bowler</p>
     </div>
     <video id="bvid" loop muted autoplay playsinline preload="auto" style="display:none;"></video>
@@ -802,6 +824,7 @@ video{width:100%;aspect-ratio:1/1;object-fit:cover;}
     <div class="share-card" id="dsharebox"></div>
     <button class="btn-p" style="width:100%;" onclick="copyShare('d')">Copy Result</button>
   </div>
+  <div id="resPlayNext"></div>
 </div>
 </div>
 
@@ -813,7 +836,7 @@ video{width:100%;aspect-ratio:1/1;object-fit:cover;}
   <div class="triv-intro-title">Cricket Trivia</div>
   <p class="triv-intro-desc">Three questions stand between you and glory.<br>The clock starts the moment the question appears — answer before time runs out or the round moves on without you.</p>
   <div class="triv-intro-stats">
-    <div class="triv-intro-stat"><span class="triv-intro-stat-v">3</span><span class="triv-intro-stat-l">Questions</span></div>
+    <div class="triv-intro-stat"><span class="triv-intro-stat-v" id="trivIntroQCount">5</span><span class="triv-intro-stat-l">Questions</span></div>
     <div class="triv-intro-stat"><span class="triv-intro-stat-v">20s</span><span class="triv-intro-stat-l">Per question</span></div>
     <div class="triv-intro-stat"><span class="triv-intro-stat-v">20</span><span class="triv-intro-stat-l">Pts each</span></div>
   </div>
@@ -918,8 +941,14 @@ const MAX_G=5,BLITZ_T=15,PTS=[100,75,50,25,15],PTS_BAT=[200,150,100,50,25];
 const TRIVIA_Q_COUNT=3;
 const TRIVIA_PTS_PER_Q=20;
 const TRIVIA_TIMER_SECS=20;
+const RAPID_Q_COUNT=5;
+const RAPID_PTS_PER_Q=15;
+const RAPID_TIMER_SECS=10;
 const TRIVIA_LS_KEY='howzat_trivia_last_played';
-const G={mode:'classic',category:'bowling',queue:[],idx:0,bowler:null,guesses:[],cluesLit:0,score:0,correct:0,results:[],timer:null,tLeft:BLITZ_T,pick:'',pickName:'',triviaScore:0,triviaAnswers:[],triviaQuestions:[],triviaTimer:null,triviaTimeLeft:TRIVIA_TIMER_SECS};
+const G={mode:'classic',category:'bowling',queue:[],idx:0,bowler:null,guesses:[],cluesLit:0,score:0,correct:0,results:[],timer:null,tLeft:BLITZ_T,pick:'',pickName:'',triviaScore:0,triviaAnswers:[],triviaQuestions:[],triviaTimer:null,triviaTimeLeft:TRIVIA_TIMER_SECS,triviaMode:'standard'};
+function _triviaPtsPerQ(){return G.triviaMode==='rapid'?RAPID_PTS_PER_Q:TRIVIA_PTS_PER_Q;}
+function _triviaTimerSecs(){return G.triviaMode==='rapid'?RAPID_TIMER_SECS:TRIVIA_TIMER_SECS;}
+function _triviaQCount(){return G.triviaMode==='rapid'?RAPID_Q_COUNT:getDailyTriviaCount();}
 let allBowlers=[];
 let allBatters=[];
 let allTrivia=[];
@@ -1738,6 +1767,7 @@ function loadBowler(){
   const isBat=G.category==='batting';
   document.getElementById('sfield').placeholder=isBat?'Type a batter\'s name...':'Type a bowler\'s name...';
   const pht=document.getElementById('vidPHText');if(pht)pht.textContent=isBat?'Watch the action and identify the batter':'Watch the action and identify the bowler';
+  const phi=document.querySelector('.vid-ph-icon');if(phi)phi.textContent=isBat?'🏏':'🏃';
   document.getElementById('sfield').value='';
   document.getElementById('gbtn').disabled=true;
   document.getElementById('glog').innerHTML='';
@@ -1821,8 +1851,10 @@ function showResult(won,pts){
   document.getElementById('resPts').textContent=pts;
   if(won)confetti();
   const last=G.idx>=G.queue.length-1,nb=document.getElementById('nextBtn');
+  const rpn=document.getElementById('resPlayNext');
   if(last){
     nb.textContent='See Final Score →';nb.onclick=showFinal;
+    if(rpn)rpn.innerHTML=renderPlayNext(G.category);
     if(G.mode==='daily'){
       document.getElementById('dshare').style.display='block';
       document.getElementById('dsharebox').innerHTML=buildDailyShareCardHTML();
@@ -1834,6 +1866,7 @@ function showResult(won,pts){
   else{
     const nextLabel=G.category==='batting'?'Next Batter →':'Next Bowler →';
     nb.textContent=nextLabel;nb.onclick=nextBowler;document.getElementById('dshare').style.display='none';
+    if(rpn)rpn.innerHTML='';
     // Start fetching next video into HTTP cache while user reads the result screen
     const nextBowler=G.queue[G.idx+1];
     if(nextBowler){const v=document.getElementById('bvid');const ns=`content/${G.category}/${nextBowler.id}.mp4`;if(v.src!==ns)v.src=ns;}
@@ -1912,6 +1945,20 @@ const TRIVIA_FALLBACK=[
   {question:'Which country won the 2007 ICC T20 World Cup?',options:['A. Australia','B. Pakistan','C. India','D. West Indies'],answer:'C',explanation:'India won the inaugural ICC T20 World Cup in 2007, held in South Africa, defeating Pakistan in the final.'},
 ];
 
+// Returns how many trivia questions are scheduled for today (3, 4, or 5)
+function getDailyTriviaCount(){
+  return 5;
+}
+// Returns today's deterministic question set — same for every player
+function getDailyTriviaQuestions(pool){
+  const d=new Date().toISOString().split('T')[0];
+  let h=0;for(const c of d)h=(h*31+c.charCodeAt(0))>>>0;
+  const count=Math.min(5,pool.length);
+  const start=h%pool.length;
+  const qs=[];
+  for(let i=0;i<count;i++)qs.push(pool[(start+i)%pool.length]);
+  return qs;
+}
 function hasTriviaPlayed(){
   const last=localStorage.getItem(TRIVIA_LS_KEY);
   if(!last)return false;
@@ -1926,6 +1973,7 @@ function applyTriviaCardState(){
   const arr=document.getElementById('triviaCardArr');
   const msg=document.getElementById('triviaPlayedMsg');
   const meta=document.getElementById('triviaCardMeta');
+  if(meta)meta.textContent=`${getDailyTriviaCount()} questions · 20 pts each · Daily`;
   if(hasTriviaPlayed()){
     card.classList.add('played');
     if(badge)badge.style.display='flex';
@@ -1943,9 +1991,9 @@ function applyTriviaCardState(){
 function renderPlayNext(exclude){
   const opts=[];
   if(exclude!=='bowling'&&!hasDailyPlayed())
-    opts.push({key:'bowling',icon:'🏏',name:'GUESS THE BOWLER',color:'var(--accent)',action:"startGame('daily','bowling')",sub:'Bowling · Daily'});
+    opts.push({key:'bowling',icon:'🏃',name:'GUESS THE BOWLER',color:'var(--accent)',action:"startGame('daily','bowling')",sub:'Bowling · Daily'});
   if(exclude!=='batting'&&!hasBattingPlayed())
-    opts.push({key:'batting',icon:'🏃',name:'GUESS THE BATTER',color:'#4db8ff',action:"startGame('daily','batting')",sub:'Batting · Daily'});
+    opts.push({key:'batting',icon:'🏏',name:'GUESS THE BATTER',color:'#4db8ff',action:"startGame('daily','batting')",sub:'Batting · Daily'});
   if(exclude!=='trivia'&&!hasTriviaPlayed())
     opts.push({key:'trivia',icon:'🧠',name:'CRICKET TRIVIA',color:'#a855f7',action:'tryStartTrivia()',sub:'Trivia · Daily'});
   if(!opts.length)return'';
@@ -1968,12 +2016,22 @@ function renderPlayNext(exclude){
 
 function tryStartTrivia(){
   if(hasTriviaPlayed())return;
+  G.triviaMode='standard';
+  const cnt=getDailyTriviaCount();
+  const el=document.getElementById('trivIntroQCount');if(el)el.textContent=cnt;
+  const pts=cnt*TRIVIA_PTS_PER_Q;
+  const desc=document.querySelector('.triv-intro-desc');
+  if(desc)desc.innerHTML=`Five questions stand between you and glory.<br>The clock starts the moment the question appears — answer before time runs out or the round moves on without you.`;
   showScreen('triviaIntroScreen');
+}
+function tryStartRapidFire(){
+  G.triviaMode='rapid';
+  startTriviaGame();
 }
 
 function startTriviaTimer(){
   stopTriviaTimer();
-  G.triviaTimeLeft=TRIVIA_TIMER_SECS;
+  G.triviaTimeLeft=_triviaTimerSecs();
   _updateTriviaTimerUI();
   G.triviaTimer=setInterval(tickTriviaTimer,100);
 }
@@ -1992,18 +2050,24 @@ function _updateTriviaTimerUI(){
   const fill=document.getElementById('trivTimerFill');
   const num=document.getElementById('trivTimerNum');
   if(!fill||!num)return;
-  const pct=(G.triviaTimeLeft/TRIVIA_TIMER_SECS)*100;
+  const pct=(G.triviaTimeLeft/_triviaTimerSecs())*100;
   fill.style.width=pct+'%';
-  fill.classList.toggle('urg',G.triviaTimeLeft<=6);
+  fill.classList.toggle('urg',G.triviaTimeLeft<=(_triviaTimerSecs()<=10?3:6));
   num.textContent=Math.ceil(G.triviaTimeLeft)+'s';
 }
 
 function startTriviaGame(){
   stopTriviaTimer();
-  const pool=allTrivia.length>=TRIVIA_Q_COUNT?allTrivia:TRIVIA_FALLBACK;
-  const shuffled=[...pool];
-  for(let i=shuffled.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[shuffled[i],shuffled[j]]=[shuffled[j],shuffled[i]];}
-  G.triviaQuestions=shuffled.slice(0,TRIVIA_Q_COUNT);
+  const pool=allTrivia.length>=3?allTrivia:TRIVIA_FALLBACK;
+  if(G.triviaMode==='rapid'){
+    // Rapid fire: random shuffle every play
+    const shuffled=[...pool];
+    for(let i=shuffled.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[shuffled[i],shuffled[j]]=[shuffled[j],shuffled[i]];}
+    G.triviaQuestions=shuffled.slice(0,RAPID_Q_COUNT);
+  }else{
+    // Daily trivia: deterministic set — same questions for all players today
+    G.triviaQuestions=getDailyTriviaQuestions(pool);
+  }
   G.triviaAnswers=[];
   G.triviaScore=0;
   showScreen('triviaScreen');
@@ -2043,7 +2107,7 @@ function submitTriviaAnswer(letter){
   const isCorrect=letter!==null&&letter===q.answer;
   // Record answer
   G.triviaAnswers.push(letter);
-  if(isCorrect)G.triviaScore+=TRIVIA_PTS_PER_Q;
+  if(isCorrect)G.triviaScore+=_triviaPtsPerQ();
   // Visual feedback on buttons
   const opts=document.querySelectorAll('#trivOpts .triv-opt');
   opts.forEach(btn=>{
@@ -2068,19 +2132,20 @@ function submitTriviaAnswer(letter){
 function _showTriviaFeedback(isCorrect,isTimeout){
   const el=document.createElement('div');
   el.className='triv-fb '+(isTimeout?'timeout':isCorrect?'ok':'no');
-  el.textContent=isTimeout?'⏱ Time\'s up':(isCorrect?`+${TRIVIA_PTS_PER_Q} pts`:'✗ Wrong');
+  el.textContent=isTimeout?'⏱ Time\'s up':(isCorrect?`+${_triviaPtsPerQ()} pts`:'✗ Wrong');
   document.body.appendChild(el);
   setTimeout(()=>el.remove(),750);
 }
 
 function showTriviaResults(){
   stopTriviaTimer();
-  markTriviaPlayed();
-  applyTriviaCardState();
+  const isRapid=G.triviaMode==='rapid';
+  if(!isRapid){markTriviaPlayed();applyTriviaCardState();}
   showScreen('triviaResultScreen');
   document.getElementById('trivResScore').textContent=G.triviaScore;
   const correct=G.triviaAnswers.filter((a,i)=>a!==null&&a===G.triviaQuestions[i].answer).length;
   document.getElementById('trivResLine').innerHTML=`You got <strong>${correct} of ${G.triviaQuestions.length}</strong> correct`;
+  const ptsPerQ=_triviaPtsPerQ();
   document.getElementById('trivResList').innerHTML=G.triviaQuestions.map((q,i)=>{
     const chosen=G.triviaAnswers[i];
     const isRight=chosen!==null&&chosen===q.answer;
@@ -2090,7 +2155,7 @@ function showTriviaResults(){
     return`<div class="triv-res-row ${isRight?'correct':'wrong'}">
       <div class="triv-res-header">
         <div class="triv-res-q">${q.question}</div>
-        <div class="triv-res-badge ${isRight?'ok':'no'}">${isRight?'+'+TRIVIA_PTS_PER_Q:'0 pts'}</div>
+        <div class="triv-res-badge ${isRight?'ok':'no'}">${isRight?'+'+ptsPerQ:'0 pts'}</div>
       </div>
       ${timedOut
         ?`<div class="triv-res-ans" style="color:var(--red)">⏱ Time's up! · Correct: <strong>${q.answer}. ${correctText}</strong></div>`
@@ -2101,14 +2166,19 @@ function showTriviaResults(){
       <div class="triv-res-exp">${q.explanation}</div>
     </div>`;
   }).join('');
-  // Buttons — no Play Again since it's a daily limit
-  document.getElementById('trivResActions').innerHTML=`
-    <button class="btn-s" onclick="showLanding()">← Home</button>`;
-  // Play-next suggestions
-  const pnEl=document.getElementById('trivPlayNext');
-  if(pnEl)pnEl.innerHTML=renderPlayNext('trivia');
-  // Save + load leaderboard
-  saveTriviaScore();
+  if(isRapid){
+    document.getElementById('trivResActions').innerHTML=`
+      <button class="btn-p" style="background:#fbbf24;color:var(--bg);" onclick="tryStartRapidFire()">⚡ Play Again</button>
+      <button class="btn-s" onclick="showLanding()">← Home</button>`;
+    const pnEl=document.getElementById('trivPlayNext');
+    if(pnEl)pnEl.innerHTML=renderPlayNext('trivia');
+  }else{
+    document.getElementById('trivResActions').innerHTML=`
+      <button class="btn-s" onclick="showLanding()">← Home</button>`;
+    const pnEl=document.getElementById('trivPlayNext');
+    if(pnEl)pnEl.innerHTML=renderPlayNext('trivia');
+    saveTriviaScore();
+  }
   if(correct===G.triviaQuestions.length)confetti();
 }
 
@@ -2221,9 +2291,9 @@ async function loadLeaderboard(){
       }
       return h;
     }
-    let html=renderSection(bowlingScores,'🏏 Bowling');
+    let html=renderSection(bowlingScores,'🏃 Bowling');
     html+=`<div style="border-top:2px solid var(--border2);"></div>`;
-    html+=renderSection(battingScores,'🏃 Batting');
+    html+=renderSection(battingScores,'🏏 Batting');
     // Combined section — merge bowling + batting + trivia by userId
     const [trivRes]=await Promise.all([fetch(`${API}/leaderboard?category=trivia`)]);
     const trivScores=(await trivRes.json()).leaderboard||[];
@@ -2452,8 +2522,8 @@ function renderTop5(tab){
     const displayTotal=tab==='combined'?s.score:(s.score||0)+trivPts;
     if(tab==='combined'&&(s.bowlingScore||s.battingScore||s.triviaGameScore)){
       const parts=[];
-      if(s.bowlingScore)parts.push(`🏏 ${s.bowlingScore}`);
-      if(s.battingScore)parts.push(`🏃 ${s.battingScore}`);
+      if(s.bowlingScore)parts.push(`🏃 ${s.bowlingScore}`);
+      if(s.battingScore)parts.push(`🏏 ${s.battingScore}`);
       if(s.triviaGameScore)parts.push(`🧠 ${s.triviaGameScore}`);
       if(parts.length>1)subtext=`<div class="top5-subtext" style="margin-top:0.1rem;">${parts.join(' · ')}</div>`;
     }
