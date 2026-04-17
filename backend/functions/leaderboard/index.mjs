@@ -77,7 +77,7 @@ export const handler = async (event) => {
         if (item.isGuest || item.userId?.startsWith('guest_')) continue;
         const uid = item.userId;
         if (!userMap[uid]) {
-          userMap[uid] = { userId: uid, playerName: item.playerName, pictureUrl: item.pictureUrl, totalScore: 0, totalTriviaScore: 0, bestScore: 0, gamesPlayed: 0, wins: null, streak: null, latestDate: '' };
+          userMap[uid] = { userId: uid, playerName: item.playerName, pictureUrl: item.pictureUrl, country: item.country || null, totalScore: 0, totalTriviaScore: 0, bestScore: 0, gamesPlayed: 0, wins: null, streak: null, latestDate: '' };
         }
         const s = item.score || 0;
         userMap[uid].totalScore += s;
@@ -106,6 +106,7 @@ export const handler = async (event) => {
             if (summary.totalTriviaScore !== undefined) userMap[uid].totalTriviaScore = summary.totalTriviaScore;
             if (summary.gamesPlayed      !== undefined) userMap[uid].gamesPlayed      = summary.gamesPlayed;
             if (summary.bestScore        !== undefined) userMap[uid].bestScore        = summary.bestScore;
+            if (summary.country          !== undefined) userMap[uid].country          = summary.country;
           }
         } catch (_) { /* summary not yet created — GSI-computed values remain as fallback */ }
       }));
@@ -117,10 +118,10 @@ export const handler = async (event) => {
           return bTotal - aTotal;
         })
         .slice(0, 20)
-        .map(({ userId, playerName, pictureUrl, totalScore, totalTriviaScore, bestScore, gamesPlayed, wins, streak }) => {
+        .map(({ userId, playerName, pictureUrl, country, totalScore, totalTriviaScore, bestScore, gamesPlayed, wins, streak }) => {
           const winRate = (gamesPlayed > 0 && wins != null) ? Math.round(wins / gamesPlayed * 100) : null;
           const triviaScore = totalTriviaScore || 0;
-          return { userId, playerName, pictureUrl, score: totalScore, triviaScore, bestScore, gamesPlayed, streak, winRate };
+          return { userId, playerName, pictureUrl, country: country || null, score: totalScore, triviaScore, bestScore, gamesPlayed, streak, winRate };
         });
 
     } else {

@@ -918,6 +918,7 @@ video{width:100%;aspect-ratio:1/1;object-fit:cover;}
 // Returns the user's local date as YYYY-MM-DD (sent to backend so scores are
 // stored under the day the player experienced, not the UTC day on the server)
 function localDateStr(){const n=new Date();return`${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,'0')}-${String(n.getDate()).padStart(2,'0')}`;}
+function countryFlag(code){if(!code||code.length!==2)return'';return[...code.toUpperCase()].map(c=>String.fromCodePoint(0x1F1E6+c.charCodeAt(0)-65)).join('');}
 
 const BOWLERS=[
   {id:'malinga',name:'Lasith Malinga',nation:'Sri Lanka',era:'2004–2019',style:'Right-arm fast',clues:['Slingy round-arm action','Sri Lanka','2004–2019','Right-arm fast']},
@@ -1133,6 +1134,7 @@ async function loadAccountStats(){
       const nameEl=document.getElementById('accName');
       if(nameEl)nameEl.textContent=row.playerName;
     }
+    if(row?.country!==undefined) localStorage.setItem('cz_country',row.country||'');
     if(row&&gridEl){
       const total=row.totalScore||0;
       const games=row.gamesPlayed||0;
@@ -1140,13 +1142,16 @@ async function loadAccountStats(){
       const avg=games>0?Math.round(total/games):0;
       const streakVal=row.streak!=null?row.streak:'—';
       const winRateVal=(games>0&&row.wins!=null)?Math.round(row.wins/games*100)+'%':'—';
+      const countryCode=row.country||'';
+      const countryRow=countryCode?`<div class="acc-stat" style="grid-column:1/-1;"><span class="acc-stat-v" style="font-size:1.6rem;">${countryFlag(countryCode)}</span><span class="acc-stat-l">Country · <span style="font-family:'DM Mono',monospace;">${countryCode}</span> · Detected from your IP</span></div>`:'';
       gridEl.innerHTML=`
         <div class="acc-stat"><span class="acc-stat-v">${total.toLocaleString()}</span><span class="acc-stat-l">Total Score</span></div>
         <div class="acc-stat"><span class="acc-stat-v">${games}</span><span class="acc-stat-l">Games Played</span></div>
         <div class="acc-stat"><span class="acc-stat-v">${best.toLocaleString()}</span><span class="acc-stat-l">Best Score</span></div>
         <div class="acc-stat"><span class="acc-stat-v">${avg.toLocaleString()}</span><span class="acc-stat-l">Avg Score</span></div>
         <div class="acc-stat"><span class="acc-stat-v">${streakVal}</span><span class="acc-stat-l">Current Streak</span></div>
-        <div class="acc-stat"><span class="acc-stat-v">${winRateVal}</span><span class="acc-stat-l">Win Rate</span></div>`;
+        <div class="acc-stat"><span class="acc-stat-v">${winRateVal}</span><span class="acc-stat-l">Win Rate</span></div>
+        ${countryRow}`;
       if(bodyEl)bodyEl.style.display='block';
     }else if(bodyEl){
       if(loadingEl)loadingEl.remove();
@@ -1345,6 +1350,7 @@ async function syncSummaryStats(idToken){
     if(sd.summary){
       const s=sd.summary;
       if(s.playerName){localStorage.setItem('cz_user_name',s.playerName);localStorage.setItem('cz_name',s.playerName);updateHeaderUser();}
+      if(s.country    !== undefined) localStorage.setItem('cz_country', s.country||'');
       if(s.streak     !==undefined) stats.streak=s.streak;
       if(s.totalScore !==undefined) stats.total =s.totalScore;
       if(s.bestScore  !==undefined) stats.best  =s.bestScore;
@@ -1442,7 +1448,10 @@ function updateHeaderUser(){
   const name=guest?(localStorage.getItem('cz_name')||'Guest'):getCurrentUserName();
   if(name||guest){
     el.style.display='flex';
-    if(nameEl)nameEl.textContent=name||'';
+    if(nameEl){
+      const flag=(!guest)?countryFlag(localStorage.getItem('cz_country')||''):'';
+      nameEl.textContent=(flag?flag+' ':'')+(name||'');
+    }
     if(avatarEl){
       const src=getAvatarSrc(name||'Guest');
       const fb=makeInitialsAvatar(name||'Guest');
@@ -1491,6 +1500,7 @@ function renderProfileDropdown(){
       <div class="drop-divider"></div>
       <button class="drop-create" onclick="closeProfileDropdown();showAuthModal();setTimeout(()=>authTab('register'),50);">Create Free Account</button>`;
   }else{
+    const dropFlag=countryFlag(localStorage.getItem('cz_country')||'');
     drop.innerHTML=`
       <div class="drop-avatar-wrap">
         <div class="drop-avatar-lg">
@@ -1498,7 +1508,7 @@ function renderProfileDropdown(){
           <div class="drop-av-edit">EDIT<input type="file" accept="image/*" onchange="uploadAvatar(this.files[0])" style="position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;pointer-events:auto;"></div>
         </div>
         <div class="drop-info">
-          <div class="drop-info-name">${name}</div>
+          <div class="drop-info-name">${dropFlag?dropFlag+' ':''}${name}</div>
           ${email?`<div class="drop-info-sub">${email}</div>`:''}
         </div>
       </div>
@@ -1945,6 +1955,7 @@ function _renderResLb(el){
     const youBadge=isMe?'<span class="top5-you">YOU</span>':'';
     const medal=i===0?'🥇':i===1?'🥈':i===2?'🥉':'';
     const avHtml=lbAvHtml(s,name,22,isMe);
+    const flag=countryFlag(s.country||'');
     const parts=[];
     if(s.bowlingScore)parts.push(`🏃 ${s.bowlingScore}`);
     if(s.battingScore)parts.push(`🏏 ${s.battingScore}`);
@@ -1955,7 +1966,7 @@ function _renderResLb(el){
         <span class="top5-rank" style="color:${isMe?'var(--accent)':rankColor(i)}">${medal||i+1}</span>
         ${avHtml}
         <div style="display:flex;flex-direction:column;gap:0.08rem;min-width:0;">
-          <span class="top5-name${isMe?' me':''}">${name}${youBadge}</span>
+          <span class="top5-name${isMe?' me':''}">${flag?flag+' ':''}${name}${youBadge}</span>
           ${subtext}
         </div>
       </div>
@@ -2614,6 +2625,7 @@ function renderTop5(tab){
     const youBadge=isMe?'<span class="top5-you">YOU</span>':'';
     const medal=i===0?'🥇':i===1?'🥈':i===2?'🥉':'';
     const avHtml=lbAvHtml(s,name,22,isMe);
+    const flag=countryFlag(s.country||'');
     let subtext='';
     const trivPts=s.triviaScore||0;
     const displayTotal=tab==='combined'?s.score:(s.score||0)+trivPts;
@@ -2630,7 +2642,7 @@ function renderTop5(tab){
         <span class="top5-rank" style="color:${isMe?'var(--accent)':rankColor(i)}">${medal||i+1}</span>
         ${avHtml}
         <div style="display:flex;flex-direction:column;gap:0.08rem;min-width:0;">
-          <span class="top5-name${isMe?' me':''}">${name}${youBadge}</span>
+          <span class="top5-name${isMe?' me':''}">${flag?flag+' ':''}${name}${youBadge}</span>
           ${subtext}
         </div>
       </div>
@@ -2707,6 +2719,7 @@ async function loadAllTime(){
       const youBadge=isMe?'<span class="top5-you">YOU</span>':'';
       const medal=i===0?'🥇':i===1?'🥈':i===2?'🥉':'';
       const avHtml=lbAvHtml(s,name,22,isMe);
+      const flag=countryFlag(s.country||'');
       const statsParts=[
         s.gamesPlayed!=null?`${s.gamesPlayed} Games`:null,
         s.streak!=null?`🔥 ${s.streak} Streak`:null,
@@ -2723,7 +2736,7 @@ async function loadAllTime(){
           <span class="top5-rank" style="color:${isMe?'var(--accent)':rankColor(i)}">${medal||i+1}</span>
           ${avHtml}
           <div class="top5-name-col">
-            <span class="top5-name${isMe?' me':''}">${name}${youBadge}</span>
+            <span class="top5-name${isMe?' me':''}">${flag?flag+' ':''}${name}${youBadge}</span>
             ${statsLine}
           </div>
         </div>

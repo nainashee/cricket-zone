@@ -92,6 +92,35 @@ export const handler = async (event) => {
     const scoreId  = `${category}#${date}#${randomUUID()}`;
     const ttl      = Math.floor(Date.now() / 1000) + (90 * 24 * 60 * 60);
 
+    // ── For authenticated users: fetch summary first so we have country ─
+    let existing = null;
+    let country  = null;
+
+    if (!isGuest) {
+      const { Item } = await db.send(new GetCommand({
+        TableName: SCORES_TABLE,
+        Key: { userId, scoreId: '#summary' }
+      }));
+      existing = Item || null;
+
+      // Use cached country; only hit ipapi.co once per user lifetime
+      country = existing?.country || null;
+      if (!country) {
+        const sourceIp = event.requestContext?.http?.sourceIp;
+        if (sourceIp && !sourceIp.startsWith('::1') && sourceIp !== '127.0.0.1') {
+          try {
+            const geoRes = await fetch(`https://ipapi.co/${sourceIp}/country/`, {
+              signal: AbortSignal.timeout(2500)
+            });
+            if (geoRes.ok) {
+              const code = (await geoRes.text()).trim();
+              if (/^[A-Z]{2}$/.test(code)) country = code;
+            }
+          } catch { /* ignore timeout or network errors */ }
+        }
+      }
+    }
+
     // ── Write the game record ─────────────────────────────────────────
     await db.send(new PutCommand({
       TableName: SCORES_TABLE,
@@ -105,30 +134,26 @@ export const handler = async (event) => {
         gameMode,
         date,
         ttl,
-        ...(isGuest     && { isGuest: true }),
-        ...(pictureUrl  !== undefined && { pictureUrl }),
+        ...(isGuest             && { isGuest: true }),
+        ...(pictureUrl !== undefined && { pictureUrl }),
+        ...(country    !== null      && { country }),
       }
     }));
 
     // ── Upsert user summary record (authenticated users only) ─────────
     if (!isGuest) {
-      const { Item: existing } = await db.send(new GetCommand({
-        TableName: SCORES_TABLE,
-        Key: { userId, scoreId: '#summary' }
-      }));
-
-      const isWin = score > 0;
-      const today     = new Date().toISOString().split("T")[0];
-      const yesterday = new Date(Date.now() - 86400000).toISOString().split("T")[0];
-      const lastDate  = existing?.lastPlayed ? existing.lastPlayed.split("T")[0] : null;
+      const isWin   = score > 0;
+      const today2  = new Date().toISOString().split("T")[0];
+      const yest2   = new Date(Date.now() - 86400000).toISOString().split("T")[0];
+      const lastDate = existing?.lastPlayed ? existing.lastPlayed.split("T")[0] : null;
 
       let newStreak;
       if (!isWin) {
         newStreak = 0;
-      } else if (lastDate === today) {
+      } else if (lastDate === today2) {
         // Already played today — don't increment again
         newStreak = existing?.streak || 1;
-      } else if (lastDate === yesterday) {
+      } else if (lastDate === yest2) {
         // Consecutive day — extend streak
         newStreak = (existing?.streak || 0) + 1;
       } else {
@@ -148,6 +173,7 @@ export const handler = async (event) => {
         lastPlayed:       new Date().toISOString(),
         playerName,
         ...(pictureUrl !== undefined && { pictureUrl }),
+        ...(country    !== null      && { country }),
       };
 
       await db.send(new PutCommand({
