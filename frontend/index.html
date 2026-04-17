@@ -2192,7 +2192,7 @@ async function saveTriviaScore(){
   try{
     // Brief delay for DynamoDB GSI consistency
     await new Promise(r=>setTimeout(r,1500));
-    const res=await fetch(`${API}/leaderboard?category=trivia`);
+    const res=await fetch(`${API}/leaderboard?category=trivia`,{cache:'no-store'});
     const data=await res.json();
     const el=document.getElementById('trivLbInner');
     if(!el)return;
@@ -2223,8 +2223,8 @@ async function loadLeaderboard(){
     const el=document.getElementById('lbList');
     if(!el)return;
     const [res1,res2]=await Promise.all([
-      fetch(`${API}/leaderboard?category=${cat}`),
-      fetch(`${API}/leaderboard?category=${otherCat}`)
+      fetch(`${API}/leaderboard?category=${cat}`,{cache:'no-store'}),
+      fetch(`${API}/leaderboard?category=${otherCat}`,{cache:'no-store'})
     ]);
     const [data1,data2]=await Promise.all([res1.json(),res2.json()]);
     const catScores=data1.leaderboard||[];
@@ -2282,7 +2282,7 @@ async function loadLeaderboard(){
     html+=`<div style="border-top:2px solid var(--border2);"></div>`;
     html+=renderSection(battingScores,'🏏 Batting');
     // Combined section — merge bowling + batting + trivia by userId
-    const [trivRes]=await Promise.all([fetch(`${API}/leaderboard?category=trivia`)]);
+    const [trivRes]=await Promise.all([fetch(`${API}/leaderboard?category=trivia`,{cache:'no-store'})]);
     const trivScores=(await trivRes.json()).leaderboard||[];
     const map={};
     for(const s of bowlingScores){
@@ -2433,10 +2433,11 @@ async function loadTop5(){
   if(!el)return;
   if(dateEl)dateEl.textContent=new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
   try{
+    const noCache={cache:'no-store'};
     const [bowlRes,batRes,trivRes]=await Promise.all([
-      fetch(`${API}/leaderboard?category=bowling`),
-      fetch(`${API}/leaderboard?category=batting`),
-      fetch(`${API}/leaderboard?category=trivia`)
+      fetch(`${API}/leaderboard?category=bowling`,noCache),
+      fetch(`${API}/leaderboard?category=batting`,noCache),
+      fetch(`${API}/leaderboard?category=trivia`,noCache)
     ]);
     const [bowlData,batData,trivData]=await Promise.all([bowlRes.json(),batRes.json(),trivRes.json()]);
     _top5Cache.bowling=bowlData.leaderboard||[];
@@ -2464,19 +2465,23 @@ function renderTop5(tab){
   const currentUserId=getCurrentUserId();
   let scores=[];
   if(tab==='combined'){
+    const today=new Date().toISOString().split('T')[0];
     const map={};
     for(const s of(_top5Cache.bowling||[])){
+      if(s.date&&s.date!==today)continue; // discard any record not from today
       if(!map[s.userId])map[s.userId]={...s,bowlingScore:0,battingScore:0,triviaGameScore:0,score:0};
       map[s.userId].bowlingScore=s.score||0;
       map[s.userId].score+=s.score||0;
     }
     for(const s of(_top5Cache.batting||[])){
+      if(s.date&&s.date!==today)continue;
       if(!map[s.userId]){map[s.userId]={...s,bowlingScore:0,battingScore:0,triviaGameScore:0,score:0};}
       else{if(s.playerName)map[s.userId].playerName=s.playerName;if(s.pictureUrl)map[s.userId].pictureUrl=s.pictureUrl;}
       map[s.userId].battingScore=s.score||0;
       map[s.userId].score+=s.score||0;
     }
     for(const s of(_top5Cache.trivia||[])){
+      if(s.date&&s.date!==today)continue;
       if(!map[s.userId]){map[s.userId]={...s,bowlingScore:0,battingScore:0,triviaGameScore:0,score:0};}
       else{if(s.playerName)map[s.userId].playerName=s.playerName;if(s.pictureUrl)map[s.userId].pictureUrl=s.pictureUrl;}
       map[s.userId].triviaGameScore=s.score||0;
