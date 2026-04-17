@@ -133,6 +133,9 @@ main{position:relative;z-index:1;}
 .cat-card.trivia-card{border-color:rgba(168,85,247,0.2);box-shadow:0 0 28px rgba(168,85,247,0.06);}
 .cat-card.trivia-card:hover{border-color:rgba(168,85,247,0.45);box-shadow:0 20px 50px rgba(0,0,0,0.5),0 0 0 1px rgba(168,85,247,0.35);}
 .cat-card.trivia-card .cat-arr{background:#a855f7;}
+.cat-card.trivia-card.played{cursor:default;opacity:0.55;filter:saturate(0.25);}
+.cat-card.trivia-card.played:hover{transform:none;box-shadow:0 0 28px rgba(168,85,247,0.06);border-color:rgba(168,85,247,0.2);}
+.triv-countdown-val{color:#a855f7;font-size:0.72rem;letter-spacing:0.05em;}
 /* rapid fire card */
 .cb-rapid{background:linear-gradient(135deg,#1a0f00,#2a1a00);}
 .cb-rapid .cb-glow{background:radial-gradient(ellipse at center,rgba(251,191,36,0.22) 0%,transparent 70%);}
@@ -653,10 +656,14 @@ video{width:100%;aspect-ratio:1/1;object-fit:cover;}
           <p class="cat-desc">5 daily questions. Rules, records, history, legends — test how well you really know the game.</p>
           <div class="cat-foot">
             <span class="cat-meta" id="triviaCardMeta">3 questions · 20 pts each · Daily</span>
-            <div class="triv-done-badge" id="triviaDoneBadge">✓ Done today</div>
+            <div class="triv-done-badge" id="triviaDoneBadge">✓ Completed</div>
             <div class="cat-arr" id="triviaCardArr" style="background:#a855f7;">→</div>
           </div>
-          <p class="cat-desc" id="triviaPlayedMsg" style="display:none;color:#a855f7;font-size:0.72rem;margin-top:0.5rem;">Come back tomorrow for new questions · Resets at midnight</p>
+          <p class="daily-played-msg" id="triviaPlayedMsg" style="display:none;">You've completed today's trivia challenge. Come back tomorrow!</p>
+          <div class="cat-countdown" id="triviaCountdownWrap" style="display:none;">
+            <span>Next challenge in:</span>
+            <span class="triv-countdown-val" id="triviaCountdown">--:--:--</span>
+          </div>
         </div>
       </div>
 
@@ -994,8 +1001,10 @@ async function boot(){
           .then(d=>{
             if(d.bowlingPlayed||d.played)localStorage.setItem('howzat_last_played',getTodayLocal());
             if(d.battingPlayed)localStorage.setItem('howzat_batting_last_played',getTodayLocal());
+            if(d.triviaPlayed)localStorage.setItem(TRIVIA_LS_KEY,getTodayLocal());
             applyDailyCardState();
             applyBattingCardState();
+            applyTriviaCardState();
           }).catch(()=>{});
       }else{
         // Guest — no server stats, show whatever is cached locally
@@ -1336,10 +1345,12 @@ async function storeAuth(idToken){
       const d=await playedRes.json();
       if(d.bowlingPlayed||d.played)localStorage.setItem('howzat_last_played',getTodayLocal());
       if(d.battingPlayed)localStorage.setItem('howzat_batting_last_played',getTodayLocal());
+      if(d.triviaPlayed)localStorage.setItem(TRIVIA_LS_KEY,getTodayLocal());
     }
   }catch(e){console.warn('Auth sync failed',e);}
   applyDailyCardState();
   applyBattingCardState();
+  applyTriviaCardState();
 }
 
 async function syncSummaryStats(idToken){
@@ -2077,6 +2088,7 @@ function applyTriviaCardState(){
   const arr=document.getElementById('triviaCardArr');
   const msg=document.getElementById('triviaPlayedMsg');
   const meta=document.getElementById('triviaCardMeta');
+  const cdWrap=document.getElementById('triviaCountdownWrap');
   if(meta)meta.textContent=`${getDailyTriviaCount()} questions · 20 pts each · Daily`;
   if(hasTriviaPlayed()){
     card.classList.add('played');
@@ -2084,12 +2096,14 @@ function applyTriviaCardState(){
     if(arr)arr.style.display='none';
     if(msg)msg.style.display='block';
     if(meta)meta.style.display='none';
+    if(cdWrap)cdWrap.style.display='flex';
   }else{
     card.classList.remove('played');
     if(badge)badge.style.display='none';
     if(arr)arr.style.display='flex';
     if(msg)msg.style.display='none';
     if(meta)meta.style.display='inline';
+    if(cdWrap)cdWrap.style.display='none';
   }
 }
 function renderPlayNext(exclude){
@@ -2682,6 +2696,8 @@ function tickDailyCountdown(){
   const formatted=`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
   if(el)el.textContent=formatted;
   if(el2)el2.textContent=formatted;
+  const el3=document.getElementById('triviaCountdown');
+  if(el3)el3.textContent=formatted;
 }
 async function loadAllTime(){
   const el=document.getElementById('allTimeList');

@@ -32,10 +32,10 @@ export const handler = async (event) => {
 
     const date = new Date().toISOString().split("T")[0];
 
-    // Query both bowling and batting in parallel
-    // scoreId format: "<category>#<date>#<uuid>"; filter to daily mode only
+    // Query bowling, batting, and trivia in parallel
+    // scoreId format: "<category>#<date>#<uuid>"; filter bowling/batting to daily mode only
     // Note: no Limit — Limit applies before FilterExpression so Limit:1 could return played:false incorrectly
-    const [bowlResult, batResult] = await Promise.all([
+    const [bowlResult, batResult, trivResult] = await Promise.all([
       db.send(new QueryCommand({
         TableName: SCORES_TABLE,
         KeyConditionExpression: "userId = :uid AND begins_with(scoreId, :prefix)",
@@ -47,16 +47,22 @@ export const handler = async (event) => {
         KeyConditionExpression: "userId = :uid AND begins_with(scoreId, :prefix)",
         FilterExpression: "gameMode = :mode",
         ExpressionAttributeValues: { ":uid": claims.sub, ":prefix": `batting#${date}#`, ":mode": "daily" }
+      })),
+      db.send(new QueryCommand({
+        TableName: SCORES_TABLE,
+        KeyConditionExpression: "userId = :uid AND begins_with(scoreId, :prefix)",
+        ExpressionAttributeValues: { ":uid": claims.sub, ":prefix": `trivia#${date}#` }
       }))
     ]);
 
     const bowlingPlayed = (bowlResult.Count ?? 0) > 0;
     const battingPlayed = (batResult.Count  ?? 0) > 0;
+    const triviaPlayed  = (trivResult.Count ?? 0) > 0;
 
     return {
       statusCode: 200,
       headers,
-      body: JSON.stringify({ played: bowlingPlayed, bowlingPlayed, battingPlayed })
+      body: JSON.stringify({ played: bowlingPlayed, bowlingPlayed, battingPlayed, triviaPlayed })
     };
 
   } catch (err) {
