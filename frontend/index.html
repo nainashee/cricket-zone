@@ -1979,13 +1979,13 @@ function _renderResLb(el){
   for(const s of(_top5Cache.batting||[])){
     if(s.date&&s.date!==today)continue;
     if(!map[s.userId]){map[s.userId]={...s,bowlingScore:0,battingScore:0,triviaGameScore:0,score:0};}
-    else{if(s.playerName)map[s.userId].playerName=s.playerName;if(s.pictureUrl)map[s.userId].pictureUrl=s.pictureUrl;}
+    else{if(s.playerName)map[s.userId].playerName=s.playerName;if(s.pictureUrl)map[s.userId].pictureUrl=s.pictureUrl;if(s.country)map[s.userId].country=s.country;}
     map[s.userId].battingScore=s.score||0;map[s.userId].score+=s.score||0;
   }
   for(const s of(_top5Cache.trivia||[])){
     if(s.date&&s.date!==today)continue;
     if(!map[s.userId]){map[s.userId]={...s,bowlingScore:0,battingScore:0,triviaGameScore:0,score:0};}
-    else{if(s.playerName)map[s.userId].playerName=s.playerName;if(s.pictureUrl)map[s.userId].pictureUrl=s.pictureUrl;}
+    else{if(s.playerName)map[s.userId].playerName=s.playerName;if(s.pictureUrl)map[s.userId].pictureUrl=s.pictureUrl;if(s.country)map[s.userId].country=s.country;}
     map[s.userId].triviaGameScore=s.score||0;map[s.userId].score+=s.score||0;
   }
   const scores=Object.values(map).sort((a,b)=>b.score-a.score).slice(0,5);
@@ -2461,12 +2461,12 @@ async function loadLeaderboard(){
     }
     for(const s of battingScores){
       if(!map[s.userId])map[s.userId]={...s,score:0};
-      else{if(s.playerName)map[s.userId].playerName=s.playerName;if(s.pictureUrl)map[s.userId].pictureUrl=s.pictureUrl;}
+      else{if(s.playerName)map[s.userId].playerName=s.playerName;if(s.pictureUrl)map[s.userId].pictureUrl=s.pictureUrl;if(s.country)map[s.userId].country=s.country;}
       map[s.userId].score+=s.score||0;
     }
     for(const s of trivScores){
       if(!map[s.userId])map[s.userId]={...s,score:0};
-      else{if(s.playerName)map[s.userId].playerName=s.playerName;if(s.pictureUrl)map[s.userId].pictureUrl=s.pictureUrl;}
+      else{if(s.playerName)map[s.userId].playerName=s.playerName;if(s.pictureUrl)map[s.userId].pictureUrl=s.pictureUrl;if(s.country)map[s.userId].country=s.country;}
       map[s.userId].score+=s.score||0;
     }
     const combined=Object.values(map).filter(s=>s.score>0).sort((a,b)=>b.score-a.score).slice(0,5);
@@ -2646,14 +2646,14 @@ function renderTop5(tab){
     for(const s of(_top5Cache.batting||[])){
       if(s.date&&s.date!==today)continue;
       if(!map[s.userId]){map[s.userId]={...s,bowlingScore:0,battingScore:0,triviaGameScore:0,score:0};}
-      else{if(s.playerName)map[s.userId].playerName=s.playerName;if(s.pictureUrl)map[s.userId].pictureUrl=s.pictureUrl;}
+      else{if(s.playerName)map[s.userId].playerName=s.playerName;if(s.pictureUrl)map[s.userId].pictureUrl=s.pictureUrl;if(s.country)map[s.userId].country=s.country;}
       map[s.userId].battingScore=s.score||0;
       map[s.userId].score+=s.score||0;
     }
     for(const s of(_top5Cache.trivia||[])){
       if(s.date&&s.date!==today)continue;
       if(!map[s.userId]){map[s.userId]={...s,bowlingScore:0,battingScore:0,triviaGameScore:0,score:0};}
-      else{if(s.playerName)map[s.userId].playerName=s.playerName;if(s.pictureUrl)map[s.userId].pictureUrl=s.pictureUrl;}
+      else{if(s.playerName)map[s.userId].playerName=s.playerName;if(s.pictureUrl)map[s.userId].pictureUrl=s.pictureUrl;if(s.country)map[s.userId].country=s.country;}
       map[s.userId].triviaGameScore=s.score||0;
       map[s.userId].score+=s.score||0;
     }
