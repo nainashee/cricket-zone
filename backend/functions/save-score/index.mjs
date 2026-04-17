@@ -103,21 +103,12 @@ export const handler = async (event) => {
       }));
       existing = Item || null;
 
-      // Use cached country; only hit ipapi.co once per user lifetime
+      // Use cached country from #summary; if missing, accept validated client-provided code.
+      // Detection runs in the browser (Cloudflare cdn-cgi/trace) so no Lambda outbound call needed.
       country = existing?.country || null;
       if (!country) {
-        const sourceIp = event.requestContext?.http?.sourceIp;
-        if (sourceIp && !sourceIp.startsWith('::1') && sourceIp !== '127.0.0.1') {
-          try {
-            const geoRes = await fetch(`https://ipapi.co/${sourceIp}/country/`, {
-              signal: AbortSignal.timeout(2500)
-            });
-            if (geoRes.ok) {
-              const code = (await geoRes.text()).trim();
-              if (/^[A-Z]{2}$/.test(code)) country = code;
-            }
-          } catch { /* ignore timeout or network errors */ }
-        }
+        const clientCountry = typeof body.country === 'string' ? body.country.trim().toUpperCase() : '';
+        if (/^[A-Z]{2}$/.test(clientCountry)) country = clientCountry;
       }
     }
 

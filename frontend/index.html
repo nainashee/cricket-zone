@@ -926,6 +926,14 @@ video{width:100%;aspect-ratio:1/1;object-fit:cover;}
 // stored under the day the player experienced, not the UTC day on the server)
 function localDateStr(){const n=new Date();return`${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,'0')}-${String(n.getDate()).padStart(2,'0')}`;}
 function countryFlag(code){if(!code||code.length!==2)return'';return[...code.toUpperCase()].map(c=>String.fromCodePoint(0x1F1E6+c.charCodeAt(0)-65)).join('');}
+// Detect country once from Cloudflare edge (browser IP, no rate-limit, no API key)
+async function detectAndCacheCountry(){
+  if(localStorage.getItem('cz_country'))return;
+  try{
+    const r=await fetch('https://cloudflare.com/cdn-cgi/trace',{cache:'no-store'});
+    if(r.ok){const m=(await r.text()).match(/^loc=([A-Z]{2})$/m);if(m){localStorage.setItem('cz_country',m[1]);updateHeaderUser();}}
+  }catch(_){}
+}
 
 const BOWLERS=[
   {id:'malinga',name:'Lasith Malinga',nation:'Sri Lanka',era:'2004–2019',style:'Right-arm fast',clues:['Slingy round-arm action','Sri Lanka','2004–2019','Right-arm fast']},
@@ -974,6 +982,7 @@ let stats=JSON.parse(localStorage.getItem('cz3')||'{"games":0,"wins":0,"best":0,
 let statsReady=!!localStorage.getItem('cz3');
 
 async function boot(){
+  detectAndCacheCountry();
   fetch('assets/bowlers.json').then(r=>r.json()).then(d=>{allBowlers=d;}).catch(()=>{});
   fetch('assets/batters.json').then(r=>r.json()).then(d=>{allBatters=d;}).catch(()=>{});
   fetch('assets/trivia.json').then(r=>r.json()).then(d=>{allTrivia=d;}).catch(()=>{});
@@ -1995,7 +2004,7 @@ async function saveScore(){
     const res=await fetch(`${API}/score`,{
       method:'POST',
       headers:{'Content-Type':'application/json','Authorization':`Bearer ${idToken}`},
-      body:JSON.stringify({score:G.score,gameMode:G.mode,category:G.category,localDate:localDateStr(),pictureUrl:localStorage.getItem('cz_user_picture')||undefined})
+      body:JSON.stringify({score:G.score,gameMode:G.mode,category:G.category,localDate:localDateStr(),pictureUrl:localStorage.getItem('cz_user_picture')||undefined,country:localStorage.getItem('cz_country')||undefined})
     });
     if(!res.ok){
       const body=await res.text();
@@ -2311,7 +2320,7 @@ async function saveTriviaScore(){
     const trivRes=await fetch(`${API}/score`,{
       method:'POST',
       headers:{'Content-Type':'application/json','Authorization':`Bearer ${idToken}`},
-      body:JSON.stringify({score:G.triviaScore,gameMode:'trivia',category:'trivia',localDate:localDateStr(),pictureUrl:localStorage.getItem('cz_user_picture')||undefined})
+      body:JSON.stringify({score:G.triviaScore,gameMode:'trivia',category:'trivia',localDate:localDateStr(),pictureUrl:localStorage.getItem('cz_user_picture')||undefined,country:localStorage.getItem('cz_country')||undefined})
     });
     if(trivRes.ok){
       try{
