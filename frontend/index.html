@@ -3379,10 +3379,11 @@ async function loadTop5(){
   if(dateEl)dateEl.textContent=new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
   try{
     const noCache={cache:'no-store'};
+    const localDate=localDateStr();
     const [bowlRes,batRes,trivRes]=await Promise.all([
-      fetch(`${API}/leaderboard?category=bowling`,noCache),
-      fetch(`${API}/leaderboard?category=batting`,noCache),
-      fetch(`${API}/leaderboard?category=trivia`,noCache)
+      fetch(`${API}/leaderboard?category=bowling&date=${localDate}`,noCache),
+      fetch(`${API}/leaderboard?category=batting&date=${localDate}`,noCache),
+      fetch(`${API}/leaderboard?category=trivia&date=${localDate}`,noCache)
     ]);
     const [bowlData,batData,trivData]=await Promise.all([bowlRes.json(),batRes.json(),trivRes.json()]);
     _top5Cache.bowling=bowlData.leaderboard||[];
@@ -3410,7 +3411,7 @@ function renderTop5(tab){
   const currentUserId=getCurrentUserId();
   let scores=[];
   if(tab==='combined'){
-    const today=new Date().toISOString().split('T')[0];
+    const today=localDateStr();
     const map={};
     for(const s of(_top5Cache.bowling||[])){
       if(s.date&&s.date!==today)continue; // discard any record not from today

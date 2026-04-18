@@ -10,10 +10,17 @@ export const handler = async (event) => {
   const headers = { "Access-Control-Allow-Origin": "https://playhowzat.com" };
 
   try {
-    const category = event.queryStringParameters?.category || "bowling";
-    const alltime  = event.queryStringParameters?.alltime === "true";
-    const me       = event.queryStringParameters?.me === "true";
-    const date     = new Date().toISOString().split("T")[0];
+    const category   = event.queryStringParameters?.category || "bowling";
+    const alltime    = event.queryStringParameters?.alltime === "true";
+    const me         = event.queryStringParameters?.me === "true";
+    const serverUtc  = new Date().toISOString().split("T")[0];
+    const yesterday  = new Date(Date.now() - 86400000).toISOString().split("T")[0];
+    const clientDate = event.queryStringParameters?.date;
+    // Accept the client's local date if it falls within [yesterday_UTC, today_UTC] —
+    // same guard logic as save-score so users in UTC- timezones see their own day's scores.
+    const date = (clientDate && /^\d{4}-\d{2}-\d{2}$/.test(clientDate) &&
+                  clientDate >= yesterday && clientDate <= serverUtc)
+      ? clientDate : serverUtc;
 
     // ── GET /leaderboard?me=true — return the authenticated user's summary ──
     if (me) {
