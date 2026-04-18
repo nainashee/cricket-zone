@@ -1789,7 +1789,7 @@ async function boot(){
         // Returning user with valid token — sync stats + played-today from server
         const tok=getIdToken();
         syncSummaryStats(tok);
-        fetch(`${API}/played-today`,{headers:{Authorization:`Bearer ${tok}`}})
+        fetch(`${API}/played-today?date=${getTodayLocal()}`,{headers:{Authorization:`Bearer ${tok}`}})
           .then(r=>r.json())
           .then(d=>{
             if(d.bowlingPlayed||d.played)localStorage.setItem('howzat_last_played',getTodayLocal());
@@ -1810,7 +1810,8 @@ async function boot(){
 }
 
 function getTodayLocal() {
-  return new Date().toISOString().split("T")[0]; // UTC, matches backend
+  const n=new Date();
+  return`${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,'0')}-${String(n.getDate()).padStart(2,'0')}`;
 }
 function hasDailyPlayed(){return localStorage.getItem('howzat_last_played')===getTodayLocal();}
 function markDailyPlayed(){localStorage.setItem('howzat_last_played',getTodayLocal());}
@@ -2136,7 +2137,7 @@ async function storeAuth(idToken){
   try{
     const [,playedRes]=await Promise.all([
       syncSummaryStats(idToken),
-      fetch(`${API}/played-today`,{headers:{Authorization:`Bearer ${idToken}`}})
+      fetch(`${API}/played-today?date=${getTodayLocal()}`,{headers:{Authorization:`Bearer ${idToken}`}})
     ]);
     if(playedRes.ok){
       const d=await playedRes.json();
@@ -2883,10 +2884,10 @@ function getDailyTriviaQuestions(pool){
 function hasTriviaPlayed(){
   const last=localStorage.getItem(TRIVIA_LS_KEY);
   if(!last)return false;
-  return last===new Date().toISOString().split('T')[0];
+  return last===getTodayLocal();
 }
 function markTriviaPlayed(){
-  localStorage.setItem(TRIVIA_LS_KEY,new Date().toISOString().split('T')[0]);
+  localStorage.setItem(TRIVIA_LS_KEY,getTodayLocal());
 }
 function applyTriviaCardState(){
   const card=document.getElementById('triviaCard');

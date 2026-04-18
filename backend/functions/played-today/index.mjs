@@ -30,7 +30,12 @@ export const handler = async (event) => {
       };
     }
 
-    const date = new Date().toISOString().split("T")[0];
+    const serverUtc  = new Date().toISOString().split("T")[0];
+    const yesterday  = new Date(Date.now() - 86400000).toISOString().split("T")[0];
+    const clientDate = event.queryStringParameters?.date;
+    const date = (clientDate && /^\d{4}-\d{2}-\d{2}$/.test(clientDate) &&
+                  clientDate >= yesterday && clientDate <= serverUtc)
+      ? clientDate : serverUtc;
 
     // Query bowling, batting, and trivia in parallel
     // scoreId format: "<category>#<date>#<uuid>"; filter bowling/batting to daily mode only
