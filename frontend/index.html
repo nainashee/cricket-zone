@@ -2157,8 +2157,11 @@ async function storeAuth(idToken){
     if(playedRes.ok){
       const d=await playedRes.json();
       if(d.bowlingPlayed||d.played)localStorage.setItem('howzat_last_played',getTodayLocal());
+      else localStorage.removeItem('howzat_last_played');
       if(d.battingPlayed)localStorage.setItem('howzat_batting_last_played',getTodayLocal());
+      else localStorage.removeItem('howzat_batting_last_played');
       if(d.triviaPlayed)localStorage.setItem(TRIVIA_LS_KEY,getTodayLocal());
+      else localStorage.removeItem(TRIVIA_LS_KEY);
     }
   }catch(e){console.warn('Auth sync failed',e);}
   applyDailyCardState();
@@ -2205,7 +2208,8 @@ async function postPendingScore(idToken){
 
 function signOut(){
   // Clear app state
-  ['cz_id_token','cz_user_sub','cz_user_name','cz_user_email','cz_user_picture','cz_avatar_url','cz_name'].forEach(k=>localStorage.removeItem(k));
+  ['cz_id_token','cz_user_sub','cz_user_name','cz_user_email','cz_user_picture','cz_avatar_url','cz_name',
+   'howzat_last_played','howzat_batting_last_played',TRIVIA_LS_KEY].forEach(k=>localStorage.removeItem(k));
   Object.keys(localStorage).filter(k=>k.startsWith('CognitoIdentityServiceProvider.')).forEach(k=>localStorage.removeItem(k));
   Object.keys(sessionStorage).filter(k=>k.startsWith('CognitoIdentityServiceProvider.')).forEach(k=>sessionStorage.removeItem(k));
   // Revoke tokens server-side for SDK (email/password) users
