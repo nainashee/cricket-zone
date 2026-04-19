@@ -135,7 +135,6 @@ header{
   letter-spacing:0.04em;line-height:1;white-space:nowrap;
 }
 @media(max-width:520px){
-  .hname{display:none;}
   .hstats{gap:0.7rem;}
   .logo{font-size:1.35rem;letter-spacing:0.1em;}
 }
@@ -1138,13 +1137,9 @@ video{width:100%;aspect-ratio:1/1;object-fit:cover;display:block;}
 .havatar:active{transform:scale(0.94);}
 .havatar:hover{border-color:var(--accent);}
 .havatar img{width:100%;height:100%;object-fit:cover;display:block;}
-.hname{
-  font-size:var(--fs-sm);color:var(--text2);
-  font-family:'DM Mono',monospace;
-  max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
-  cursor:pointer;transition:color 0.15s;
-}
-.hname:hover{color:var(--text);}
+.hname{display:none;}
+.hflag{display:flex;align-items:center;cursor:pointer;flex-shrink:0;}
+@media(max-width:520px){.hflag{display:none;}}
 .hprofile-drop{
   position:absolute;top:calc(100% + 0.55rem);right:0;
   min-width:240px;background:var(--surface);
@@ -1364,6 +1359,7 @@ video{width:100%;aspect-ratio:1/1;object-fit:cover;display:block;}
   </div>
   <div class="hright" id="hUser" style="display:none;">
     <div class="havatar" id="hAvatarBtn" onclick="toggleProfileDropdown()"></div>
+    <span class="hflag" id="huFlag" onclick="toggleProfileDropdown()"></span>
     <span class="hname" id="huName" onclick="toggleProfileDropdown()"></span>
     <div class="hprofile-drop" id="hProfileDrop"></div>
   </div>
@@ -2283,11 +2279,12 @@ function updateHeaderUser(){
   const name=guest?(localStorage.getItem('cz_name')||'Guest'):getCurrentUserName();
   if(name||guest){
     el.style.display='flex';
-    if(nameEl){
-      const flag=(!guest)?countryFlag(localStorage.getItem('cz_country')||'',14):'';
-      if(flag){nameEl.innerHTML=flag+' '+escHtml(name||'');}
-      else{nameEl.textContent=name||'';}
+    const flagEl=document.getElementById('huFlag');
+    if(flagEl){
+      const flag=(!guest)?countryFlag(localStorage.getItem('cz_country')||'',18):'';
+      flagEl.innerHTML=flag;
     }
+    if(nameEl){nameEl.textContent='';}
     if(avatarEl){
       const src=getAvatarSrc(name||'Guest');
       const fb=makeInitialsAvatar(name||'Guest');
