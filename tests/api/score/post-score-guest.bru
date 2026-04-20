@@ -1,0 +1,32 @@
+meta {
+  name: POST /score - guest user
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{base_url}}/score
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "score": 75,
+    "category": "bowling",
+    "gameMode": "classic",
+    "playerName": "BrunoTester",
+    "userId": "guest_brunotest123",
+    "localDate": "{{date}}"
+  }
+}
+
+script:pre-request {
+  bru.setVar("date", new Date().toISOString().split("T")[0]);
+}
+
+assert {
+  res.status: eq 200
+  res.body.scoreId: isDefined
+  res.body.message: eq Score saved
+}

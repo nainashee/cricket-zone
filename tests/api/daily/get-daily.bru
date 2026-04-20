@@ -1,0 +1,18 @@
+meta {
+  name: GET /daily - bowling
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{base_url}}/daily?category=bowling
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+  res.body.category: eq bowling
+  res.body.bowler: isDefined
+  res.body.date: isDefined
+}

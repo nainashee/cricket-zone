@@ -1,0 +1,21 @@
+meta {
+  name: POST /score - missing required fields returns 400
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{base_url}}/score
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "score": 100
+  }
+}
+
+assert {
+  res.status: eq 400
+}

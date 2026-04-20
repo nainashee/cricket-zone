@@ -1,0 +1,21 @@
+meta {
+  name: POST /rename - no token returns 401
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{base_url}}/rename
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "newName": "TestName"
+  }
+}
+
+assert {
+  res.status: eq 401
+}

@@ -1,0 +1,15 @@
+meta {
+  name: GET /avatar/upload-url - no token returns 401 or 403
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{base_url}}/avatar/upload-url?contentType=image/jpeg
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: in [401, 403]
+}

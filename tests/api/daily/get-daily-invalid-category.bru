@@ -1,0 +1,15 @@
+meta {
+  name: GET /daily - invalid category returns 400
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{base_url}}/daily?category=batting
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 400
+}

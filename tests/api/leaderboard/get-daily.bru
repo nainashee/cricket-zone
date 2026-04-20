@@ -1,0 +1,16 @@
+meta {
+  name: GET /leaderboard - daily bowling
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{base_url}}/leaderboard?category=bowling
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+  res.body.leaderboard: isDefined
+}

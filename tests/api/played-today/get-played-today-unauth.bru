@@ -1,0 +1,15 @@
+meta {
+  name: GET /played-today - no token returns 401
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{base_url}}/played-today
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 401
+}
