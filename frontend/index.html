@@ -2126,9 +2126,11 @@ function getOrCreateGuestId(){
 function continueAsGuest(name){
   localStorage.setItem('cz_name',name);
   // Clear the full identity + display footprint of any prior authenticated session
-  // so the guest doesn't inherit the old user's avatar, stats, or leaderboard identity.
+  // so the guest doesn't inherit the old user's avatar, stats, leaderboard identity,
+  // or played-today locks that would block the daily challenges.
   ['cz_user_sub','cz_uid','cz_user_name','cz_user_email',
-   'cz_user_picture','cz_avatar_url','cz3'].forEach(k=>localStorage.removeItem(k));
+   'cz_user_picture','cz_avatar_url','cz3',
+   'howzat_last_played','howzat_batting_last_played',TRIVIA_LS_KEY].forEach(k=>localStorage.removeItem(k));
   stats={games:0,wins:0,best:0,streak:0};
   statsReady=true;
   getOrCreateGuestId(); // creates a fresh guest_* ID now that cz_uid is gone

@@ -22,6 +22,11 @@ async function enterGuestAfterExpiredSession(page: any) {
     localStorage.setItem('cz_user_name', 'Hussain Ashfaque');
     localStorage.setItem('cz_user_email', 'nain.ashee@gmail.com');
     localStorage.setItem('cz3', JSON.stringify({ games: 19, wins: 19, best: 200, streak: 6, total: 1740 }));
+    // Simulate the contaminated guest having already played today
+    const today = new Date().toISOString().split('T')[0];
+    localStorage.setItem('howzat_last_played', today);
+    localStorage.setItem('howzat_batting_last_played', today);
+    localStorage.setItem('howzat_trivia_last_played', today);
     // No cz_id_token → isTokenValid() false; no sessionStorage cz_guest → isGuest() false
   });
 
@@ -66,4 +71,19 @@ test('guest session gets a fresh guest ID, not the old authenticated user ID', a
   // cz_user_sub must be gone so the leaderboard won't mark the old user as "YOU"
   const sub = await page.evaluate(() => localStorage.getItem('cz_user_sub'));
   expect(sub).toBeNull();
+});
+
+test('guest session clears played-today flags so daily challenges are playable', async ({ page }) => {
+  await enterGuestAfterExpiredSession(page);
+
+  const [bowling, batting, trivia] = await page.evaluate(() => [
+    localStorage.getItem('howzat_last_played'),
+    localStorage.getItem('howzat_batting_last_played'),
+    localStorage.getItem('howzat_trivia_last_played'),
+  ]);
+
+  // All three flags must be null — the guest should be able to play all daily challenges
+  expect(bowling).toBeNull();
+  expect(batting).toBeNull();
+  expect(trivia).toBeNull();
 });
