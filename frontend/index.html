@@ -2125,6 +2125,9 @@ function getOrCreateGuestId(){
 
 function continueAsGuest(name){
   localStorage.setItem('cz_name',name);
+  // Clear any leftover authenticated-user picture so the guest doesn't inherit it
+  localStorage.removeItem('cz_user_picture');
+  localStorage.removeItem('cz_avatar_url');
   getOrCreateGuestId();
   sessionStorage.setItem('cz_guest','1');
   authDismiss();
