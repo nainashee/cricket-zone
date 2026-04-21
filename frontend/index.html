@@ -2128,10 +2128,15 @@ function continueAsGuest(name){
   // Clear any leftover authenticated-user picture so the guest doesn't inherit it
   localStorage.removeItem('cz_user_picture');
   localStorage.removeItem('cz_avatar_url');
+  // Reset stats so the guest doesn't see the previous authenticated user's streak/score
+  localStorage.removeItem('cz3');
+  stats={games:0,wins:0,best:0,streak:0};
+  statsReady=true;
   getOrCreateGuestId();
   sessionStorage.setItem('cz_guest','1');
   authDismiss();
   updateHeaderUser();
+  refreshH();
 }
 
 let _signUpCreds=null; // {email,pass} held briefly for auto sign-in after verify
