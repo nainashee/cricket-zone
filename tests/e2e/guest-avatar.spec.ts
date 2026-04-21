@@ -14,9 +14,14 @@ import { stubApiCalls } from './fixtures/auth';
 // then complete the guest flow. Returns after the landing screen is visible.
 async function enterGuestAfterExpiredSession(page: any) {
   await page.addInitScript(() => {
+    // Simulate a full expired Cognito session — all keys that storeAuth() would have set
     localStorage.setItem('cz_user_picture', 'https://lh3.googleusercontent.com/fake-google-photo');
-    localStorage.setItem('cz_avatar_url', 'https://fake-cdn.example.com/avatars/old-user-id');
-    localStorage.setItem('cz3', JSON.stringify({ games: 16, wins: 16, best: 200, streak: 6, total: 1740 }));
+    localStorage.setItem('cz_avatar_url', 'https://fake-cdn.example.com/avatars/old-user-sub');
+    localStorage.setItem('cz_user_sub', 'old-cognito-sub-123');
+    localStorage.setItem('cz_uid', 'old-cognito-sub-123');
+    localStorage.setItem('cz_user_name', 'Hussain Ashfaque');
+    localStorage.setItem('cz_user_email', 'nain.ashee@gmail.com');
+    localStorage.setItem('cz3', JSON.stringify({ games: 19, wins: 19, best: 200, streak: 6, total: 1740 }));
     // No cz_id_token → isTokenValid() false; no sessionStorage cz_guest → isGuest() false
   });
 
@@ -45,7 +50,20 @@ test('guest session does not show previous authenticated user avatar', async ({ 
 test('guest session does not show previous authenticated user streak and score', async ({ page }) => {
   await enterGuestAfterExpiredSession(page);
 
-  // Header streak and best score must be reset to 0 / empty, not the old account's values
+  // Header streak and best score must be reset, not the old account's values
   await expect(page.locator('#hStreak')).not.toHaveText('6');
   await expect(page.locator('#hBest')).not.toHaveText('1740');
+});
+
+test('guest session gets a fresh guest ID, not the old authenticated user ID', async ({ page }) => {
+  await enterGuestAfterExpiredSession(page);
+
+  // cz_uid must now be a guest_* prefixed ID, not the old Cognito sub
+  const uid = await page.evaluate(() => localStorage.getItem('cz_uid'));
+  expect(uid).toMatch(/^guest_/);
+  expect(uid).not.toBe('old-cognito-sub-123');
+
+  // cz_user_sub must be gone so the leaderboard won't mark the old user as "YOU"
+  const sub = await page.evaluate(() => localStorage.getItem('cz_user_sub'));
+  expect(sub).toBeNull();
 });

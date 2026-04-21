@@ -2125,14 +2125,13 @@ function getOrCreateGuestId(){
 
 function continueAsGuest(name){
   localStorage.setItem('cz_name',name);
-  // Clear any leftover authenticated-user picture so the guest doesn't inherit it
-  localStorage.removeItem('cz_user_picture');
-  localStorage.removeItem('cz_avatar_url');
-  // Reset stats so the guest doesn't see the previous authenticated user's streak/score
-  localStorage.removeItem('cz3');
+  // Clear the full identity + display footprint of any prior authenticated session
+  // so the guest doesn't inherit the old user's avatar, stats, or leaderboard identity.
+  ['cz_user_sub','cz_uid','cz_user_name','cz_user_email',
+   'cz_user_picture','cz_avatar_url','cz3'].forEach(k=>localStorage.removeItem(k));
   stats={games:0,wins:0,best:0,streak:0};
   statsReady=true;
-  getOrCreateGuestId();
+  getOrCreateGuestId(); // creates a fresh guest_* ID now that cz_uid is gone
   sessionStorage.setItem('cz_guest','1');
   authDismiss();
   updateHeaderUser();
