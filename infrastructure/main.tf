@@ -60,6 +60,27 @@ resource "aws_cloudfront_distribution" "frontend" {
     origin_access_control_id = aws_cloudfront_origin_access_control.frontend.id
   }
 
+  # Videos (bowling + batting) — 30-day default, 1-year max.
+  # Videos are immutable in practice; CI sets max-age=31536000 on batting.
+  # This behaviour is a belt-and-suspenders guarantee for manually-uploaded
+  # bowling files that may have been pushed without a Cache-Control header.
+  ordered_cache_behavior {
+    path_pattern           = "/content/*"
+    allowed_methods        = ["GET", "HEAD"]
+    cached_methods         = ["GET", "HEAD"]
+    target_origin_id       = "S3-cricket-zone"
+    viewer_protocol_policy = "redirect-to-https"
+
+    forwarded_values {
+      query_string = false
+      cookies { forward = "none" }
+    }
+
+    min_ttl     = 0
+    default_ttl = 2592000  # 30 days — used when S3 sends no Cache-Control header
+    max_ttl     = 31536000 # 1 year  — caps what S3 Cache-Control can request
+  }
+
   default_cache_behavior {
     allowed_methods        = ["GET", "HEAD"]
     cached_methods         = ["GET", "HEAD"]
@@ -72,6 +93,15 @@ resource "aws_cloudfront_distribution" "frontend" {
         forward = "none"
       }
     }
+
+    # Without explicit TTL values the Terraform AWS provider defaults all three
+    # to 0, which disables CloudFront caching entirely (every request hits S3).
+    # With min=0/default=86400/max=31536000, CloudFront honours S3 Cache-Control
+    # headers (no-cache for index.html; max-age for assets) and falls back to
+    # 1 day for any object uploaded without a Cache-Control header.
+    min_ttl     = 0
+    default_ttl = 86400    # 1 day fallback when S3 sends no Cache-Control header
+    max_ttl     = 31536000 # 1 year max — lets S3 headers be fully honoured
   }
 
   restrictions {
