@@ -91,7 +91,35 @@ jobs:
 
       - name: Sync frontend to S3
         run: |
-          aws s3 sync frontend/ s3://${{ secrets.S3_BUCKET }}/ --delete --exclude 'content/bowling/*'
+          # index.html — no-cache: always revalidate before serving.
+          # Contains injected prod config (API URL, Cognito IDs) that changes
+          # on every deploy; browsers and CDN must never serve a stale version.
+          aws s3 cp frontend/index.html s3://${{ secrets.S3_BUCKET }}/index.html \
+            --cache-control "no-cache" \
+            --content-type "text/html; charset=utf-8"
+
+          # Game data (JSON) — 1-hour cache.
+          # Invalidated immediately by the CloudFront /* invalidation that follows.
+          aws s3 sync frontend/assets/ s3://${{ secrets.S3_BUCKET }}/assets/ \
+            --cache-control "public, max-age=3600" \
+            --delete
+
+          # Batting videos — 1-year immutable cache.
+          # Large files (400–1500 KiB each) that never change; replace with a
+          # targeted CloudFront invalidation if a video is ever swapped out.
+          aws s3 sync frontend/content/batting/ s3://${{ secrets.S3_BUCKET }}/content/batting/ \
+            --cache-control "public, max-age=31536000, immutable" \
+            --delete
+
+          # Icons, PWA manifest, OG image — 1-week cache (functionally immutable).
+          # --delete here handles removal of any root-level orphaned objects.
+          aws s3 sync frontend/ s3://${{ secrets.S3_BUCKET }}/ \
+            --cache-control "public, max-age=604800" \
+            --exclude "index.html" \
+            --exclude "assets/*" \
+            --exclude "content/*" \
+            --exclude ".gitkeep" \
+            --delete
 
       - name: Invalidate CloudFront cache
         run: |
