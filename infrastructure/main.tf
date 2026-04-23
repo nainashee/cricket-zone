@@ -804,3 +804,108 @@ output "cognito_domain" {
   value       = "https://${aws_cognito_user_pool_domain.main.domain}.auth.us-east-1.amazoncognito.com"
   description = "Cognito hosted domain — used as the OAuth2 base URL for Google sign-in"
 }
+
+# ─────────────────────────────────────────
+# Monitoring — SNS topic + CloudWatch alarms
+# ─────────────────────────────────────────
+
+resource "aws_sns_topic" "alerts" {
+  name = "cricket-zone-alerts"
+}
+
+# Email delivery for all alarms. Terraform creates the subscription but AWS
+# sends a confirmation email — the subscription stays pending until confirmed.
+resource "aws_sns_topic_subscription" "email" {
+  topic_arn = aws_sns_topic.alerts.arn
+  protocol  = "email"
+  endpoint  = "nain.ashee@gmail.com"
+}
+
+# Lambda error alarms — one per deployed function.
+# Fires as soon as any error is recorded in a 5-minute window.
+locals {
+  lambda_function_names = [
+    aws_lambda_function.daily_challenge.function_name,
+    aws_lambda_function.save_score.function_name,
+    aws_lambda_function.leaderboard.function_name,
+    aws_lambda_function.played_today.function_name,
+    aws_lambda_function.avatar_upload.function_name,
+    aws_lambda_function.delete_account.function_name,
+    aws_lambda_function.rename_user.function_name,
+  ]
+}
+
+resource "aws_cloudwatch_metric_alarm" "lambda_errors" {
+  for_each = toset(local.lambda_function_names)
+
+  alarm_name          = "${each.key}-errors"
+  alarm_description   = "One or more errors recorded for Lambda function ${each.key}"
+  namespace           = "AWS/Lambda"
+  metric_name         = "Errors"
+  dimensions          = { FunctionName = each.key }
+  statistic           = "Sum"
+  period              = 300
+  evaluation_periods  = 1
+  threshold           = 0
+  comparison_operator = "GreaterThanThreshold"
+  treat_missing_data  = "notBreaching"
+
+  alarm_actions = [aws_sns_topic.alerts.arn]
+  ok_actions    = [aws_sns_topic.alerts.arn]
+}
+
+# API Gateway 5xx — server-side errors (Lambda crashes, timeouts, misconfig).
+# Threshold: >5 errors in 5 minutes avoids noise from isolated retries.
+resource "aws_cloudwatch_metric_alarm" "apigw_5xx" {
+  alarm_name          = "cricket-zone-apigw-5xx"
+  alarm_description   = "API Gateway 5XX errors exceeded 5 in 5 minutes"
+  namespace           = "AWS/ApiGateway"
+  metric_name         = "5XXError"
+  dimensions          = { ApiId = aws_apigatewayv2_api.main.id, Stage = "$default" }
+  statistic           = "Sum"
+  period              = 300
+  evaluation_periods  = 1
+  threshold           = 5
+  comparison_operator = "GreaterThanThreshold"
+  treat_missing_data  = "notBreaching"
+
+  alarm_actions = [aws_sns_topic.alerts.arn]
+  ok_actions    = [aws_sns_topic.alerts.arn]
+}
+
+# API Gateway 4xx — elevated rate can signal a broken client or abuse burst.
+# Threshold: >50 in 5 minutes (some 4xx from validation failures is normal).
+resource "aws_cloudwatch_metric_alarm" "apigw_4xx" {
+  alarm_name          = "cricket-zone-apigw-4xx"
+  alarm_description   = "API Gateway 4XX errors exceeded 50 in 5 minutes"
+  namespace           = "AWS/ApiGateway"
+  metric_name         = "4XXError"
+  dimensions          = { ApiId = aws_apigatewayv2_api.main.id, Stage = "$default" }
+  statistic           = "Sum"
+  period              = 300
+  evaluation_periods  = 1
+  threshold           = 50
+  comparison_operator = "GreaterThanThreshold"
+  treat_missing_data  = "notBreaching"
+
+  alarm_actions = [aws_sns_topic.alerts.arn]
+  ok_actions    = [aws_sns_topic.alerts.arn]
+}
+
+# CloudFront 5xx error rate — S3 or origin unreachable.
+# Threshold: >5% of requests returning 5xx over 5 minutes.
+resource "aws_cloudwatch_metric_alarm" "cloudfront_5xx" {
+  alarm_name          = "cricket-zone-cloudfront-5xx"
+  alarm_description   = "CloudFront 5xx error rate exceeded 5%"
+  namespace           = "AWS/CloudFront"
+  metric_name         = "5xxErrorRate"
+  dimensions          = { DistributionId = aws_cloudfront_distribution.frontend.id, Region = "Global" }
+  statistic           = "Average"
+  period              = 300
+  evaluation_periods  = 1
+  threshold           = 5
+  comparison_operator = "GreaterThanThreshold"
+  treat_missing_data  = "notBreaching"
+
+  alarm_actions = [aws_sns_topic.alerts.arn]
+}
