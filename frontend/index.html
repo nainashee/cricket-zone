@@ -3648,6 +3648,11 @@ document.addEventListener('click',e=>{
   if(!e.target.closest('#hUser'))closeProfileDropdown();
 });
 boot();
+
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js')
+    .catch(err => console.warn('[SW] Registration failed:', err));
+}
 </script>
 </body>
 </html>
