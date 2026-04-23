@@ -569,6 +569,23 @@ resource "aws_apigatewayv2_stage" "default" {
   api_id      = aws_apigatewayv2_api.main.id
   name        = "$default"
   auto_deploy = true
+
+  # Stage-wide ceiling — protects all routes from general abuse.
+  default_route_settings {
+    throttling_rate_limit  = 100
+    throttling_burst_limit = 200
+  }
+
+  # POST /score is the most expensive route: every call triggers a DynamoDB
+  # GetItem + 2x PutItem on a PAY_PER_REQUEST table. A tighter limit here
+  # caps worst-case write costs without affecting any real player.
+  # 20 req/s sustained is ~1.7 M requests/day — far beyond realistic traffic.
+  # Burst of 50 handles 50 players finishing a game at the same second.
+  route_settings {
+    route_key              = "POST /score"
+    throttling_rate_limit  = 20
+    throttling_burst_limit = 50
+  }
 }
 
 resource "aws_lambda_permission" "daily_challenge" {
