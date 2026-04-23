@@ -909,3 +909,217 @@ resource "aws_cloudwatch_metric_alarm" "cloudfront_5xx" {
 
   alarm_actions = [aws_sns_topic.alerts.arn]
 }
+
+# ─────────────────────────────────────────
+# CloudWatch Dashboard
+# ─────────────────────────────────────────
+
+resource "aws_cloudwatch_dashboard" "main" {
+  dashboard_name = "cricket-zone"
+
+  dashboard_body = jsonencode({
+    widgets = [
+
+      # ── Row 1 (y=0, h=3): Health Snapshot ─────────────────────────────
+      # Single alarm-status panel — all 10 alarms visible at once.
+      # Green/red at a glance; no need to drill into individual graphs
+      # to know if something is broken.
+      {
+        type   = "alarm"
+        x      = 0
+        y      = 0
+        width  = 24
+        height = 3
+        properties = {
+          title  = "🏏 System Health — All Alarms"
+          alarms = concat(
+            values(aws_cloudwatch_metric_alarm.lambda_errors)[*].arn,
+            [
+              aws_cloudwatch_metric_alarm.apigw_4xx.arn,
+              aws_cloudwatch_metric_alarm.apigw_5xx.arn,
+              aws_cloudwatch_metric_alarm.cloudfront_5xx.arn,
+            ]
+          )
+        }
+      },
+
+      # ── Row 2 (y=3, h=6): Lambda ──────────────────────────────────────
+      # Left: error sum — tells you which function is failing.
+      # Right: p95 duration — catches slow cold starts or DynamoDB timeouts.
+      {
+        type   = "metric"
+        x      = 0
+        y      = 3
+        width  = 12
+        height = 6
+        properties = {
+          title   = "Lambda — Errors (all functions)"
+          view    = "timeSeries"
+          stacked = false
+          region  = "us-east-1"
+          period  = 300
+          stat    = "Sum"
+          metrics = [for fn in local.lambda_function_names :
+            ["AWS/Lambda", "Errors", "FunctionName", fn]
+          ]
+          annotations = { horizontal = [] }
+        }
+      },
+      {
+        type   = "metric"
+        x      = 12
+        y      = 3
+        width  = 12
+        height = 6
+        properties = {
+          title   = "Lambda — Duration p95 (ms)"
+          view    = "timeSeries"
+          stacked = false
+          region  = "us-east-1"
+          period  = 300
+          stat    = "p95"
+          metrics = [for fn in local.lambda_function_names :
+            ["AWS/Lambda", "Duration", "FunctionName", fn]
+          ]
+          annotations = { horizontal = [] }
+        }
+      },
+
+      # ── Row 3 (y=9, h=6): API Gateway ─────────────────────────────────
+      # Threshold annotations mirror alarm settings so the graph makes
+      # the alarm boundary visible without duplicating alert logic.
+      {
+        type   = "metric"
+        x      = 0
+        y      = 9
+        width  = 8
+        height = 6
+        properties = {
+          title   = "API Gateway — 4xx Errors (alarm >50 / 5 min)"
+          view    = "timeSeries"
+          region  = "us-east-1"
+          period  = 300
+          stat    = "Sum"
+          metrics = [
+            ["AWS/ApiGateway", "4XXError",
+             "ApiId", aws_apigatewayv2_api.main.id,
+             "Stage", "$default"]
+          ]
+          annotations = {
+            horizontal = [{ value = 50, label = "Alarm threshold", color = "#ff6961" }]
+          }
+        }
+      },
+      {
+        type   = "metric"
+        x      = 8
+        y      = 9
+        width  = 8
+        height = 6
+        properties = {
+          title   = "API Gateway — 5xx Errors (alarm >5 / 5 min)"
+          view    = "timeSeries"
+          region  = "us-east-1"
+          period  = 300
+          stat    = "Sum"
+          metrics = [
+            ["AWS/ApiGateway", "5XXError",
+             "ApiId", aws_apigatewayv2_api.main.id,
+             "Stage", "$default"]
+          ]
+          annotations = {
+            horizontal = [{ value = 5, label = "Alarm threshold", color = "#ff6961" }]
+          }
+        }
+      },
+      {
+        type   = "metric"
+        x      = 16
+        y      = 9
+        width  = 8
+        height = 6
+        properties = {
+          title   = "API Gateway — Latency p95 (ms)"
+          view    = "timeSeries"
+          region  = "us-east-1"
+          period  = 300
+          stat    = "p95"
+          metrics = [
+            ["AWS/ApiGateway", "Latency",
+             "ApiId", aws_apigatewayv2_api.main.id,
+             "Stage", "$default"]
+          ]
+          annotations = { horizontal = [] }
+        }
+      },
+
+      # ── Row 4 (y=15, h=6): CloudFront ─────────────────────────────────
+      # Error rate and cache hit rate together validate that the caching
+      # work (TTL changes, ordered behaviors) is actually taking effect.
+      # Requests gives traffic baseline for interpreting the other two.
+      {
+        type   = "metric"
+        x      = 0
+        y      = 15
+        width  = 8
+        height = 6
+        properties = {
+          title   = "CloudFront — 5xx Error Rate % (alarm >5%)"
+          view    = "timeSeries"
+          region  = "us-east-1"
+          period  = 300
+          stat    = "Average"
+          metrics = [
+            ["AWS/CloudFront", "5xxErrorRate",
+             "DistributionId", aws_cloudfront_distribution.frontend.id,
+             "Region", "Global"]
+          ]
+          annotations = {
+            horizontal = [{ value = 5, label = "Alarm threshold", color = "#ff6961" }]
+          }
+        }
+      },
+      {
+        type   = "metric"
+        x      = 8
+        y      = 15
+        width  = 8
+        height = 6
+        properties = {
+          title   = "CloudFront — Cache Hit Rate %"
+          view    = "timeSeries"
+          region  = "us-east-1"
+          period  = 300
+          stat    = "Average"
+          metrics = [
+            ["AWS/CloudFront", "CacheHitRate",
+             "DistributionId", aws_cloudfront_distribution.frontend.id,
+             "Region", "Global"]
+          ]
+          annotations = { horizontal = [] }
+        }
+      },
+      {
+        type   = "metric"
+        x      = 16
+        y      = 15
+        width  = 8
+        height = 6
+        properties = {
+          title   = "CloudFront — Requests"
+          view    = "timeSeries"
+          region  = "us-east-1"
+          period  = 300
+          stat    = "Sum"
+          metrics = [
+            ["AWS/CloudFront", "Requests",
+             "DistributionId", aws_cloudfront_distribution.frontend.id,
+             "Region", "Global"]
+          ]
+          annotations = { horizontal = [] }
+        }
+      },
+
+    ]
+  })
+}
