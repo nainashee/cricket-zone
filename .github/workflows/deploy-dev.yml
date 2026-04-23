@@ -74,4 +74,20 @@ jobs:
 
       - name: Sync frontend to dev S3 bucket
         run: |
-          aws s3 sync frontend/ s3://${{ secrets.DEV_S3_BUCKET }}/ --delete --exclude 'content/bowling/*'
+          # sw.js — no-cache: browser relies on a byte-diff to detect SW updates.
+          # Must be uploaded before index.html so the SW file exists by the time
+          # any browser receives the registration snippet.
+          aws s3 cp frontend/sw.js s3://${{ secrets.DEV_S3_BUCKET }}/sw.js \
+            --cache-control "no-cache, no-store, must-revalidate" \
+            --content-type "application/javascript"
+
+          # index.html — no-cache: always revalidate before serving.
+          aws s3 cp frontend/index.html s3://${{ secrets.DEV_S3_BUCKET }}/index.html \
+            --cache-control "no-cache" \
+            --content-type "text/html; charset=utf-8"
+
+          aws s3 sync frontend/ s3://${{ secrets.DEV_S3_BUCKET }}/ \
+            --delete \
+            --exclude 'content/bowling/*' \
+            --exclude 'sw.js' \
+            --exclude 'index.html'
