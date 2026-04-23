@@ -1802,6 +1802,8 @@ async function boot(){
     if(!handled){
       if(isTokenValid()){
         // Returning user with valid token — sync stats + played-today from server
+        // Show loading dashes while the server sync is in flight, even if cz3 has stale data
+        statsReady=false;refreshH();
         const tok=getIdToken();
         syncSummaryStats(tok);
         fetch(`${API}/played-today?date=${getTodayLocal()}`,{headers:{Authorization:`Bearer ${tok}`}})
@@ -2218,7 +2220,8 @@ async function postPendingScore(idToken){
 function signOut(){
   // Clear app state
   ['cz_id_token','cz_user_sub','cz_user_name','cz_user_email','cz_user_picture','cz_avatar_url','cz_name',
-   'howzat_last_played','howzat_batting_last_played',TRIVIA_LS_KEY].forEach(k=>localStorage.removeItem(k));
+   'howzat_last_played','howzat_batting_last_played',TRIVIA_LS_KEY,'cz3'].forEach(k=>localStorage.removeItem(k));
+  stats={games:0,wins:0,best:0,streak:0};statsReady=false;
   Object.keys(localStorage).filter(k=>k.startsWith('CognitoIdentityServiceProvider.')).forEach(k=>localStorage.removeItem(k));
   Object.keys(sessionStorage).filter(k=>k.startsWith('CognitoIdentityServiceProvider.')).forEach(k=>sessionStorage.removeItem(k));
   // Revoke tokens server-side for SDK (email/password) users
@@ -3619,7 +3622,8 @@ async function loadAllTime(){
       cz3.best=Math.max(cz3.best||0,userRow.bestScore||0);
       cz3.games=userRow.gamesPlayed||cz3.games||0;
       localStorage.setItem('cz3',JSON.stringify(cz3));
-      stats={...stats,...cz3};
+      // Only apply the fields loadAllTime actually knows — don't spread stale streak/wins/total
+      stats.best=cz3.best;stats.games=cz3.games;
       refreshH();
     }
 
