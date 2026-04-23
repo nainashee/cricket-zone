@@ -7,54 +7,95 @@ A cricket challenge platform where players identify legendary cricketers from si
 
 ## The Game
 
-Three daily challenges — one resets at midnight, they're all gone for the day once played.
+The landing page shows four challenge cards. Three are fully playable daily — one is in development.
 
-### Silhouette Challenges (Bowling + Batting)
+| Card | Status | Resets |
+|------|--------|--------|
+| 🏃 Bowler Challenge | ✅ Live | Midnight UTC |
+| 🏏 Batter Challenge | ✅ Live | Midnight UTC |
+| 🧠 Cricket Trivia | ✅ Live | Midnight UTC |
+| 🎉 Guess the Celebration | 🔜 V4 · In Development | — |
 
-Guess the cricketer from their silhouette video. Three game modes, autocomplete from 300+ legend names.
+Once played, each daily challenge is locked until the next reset. All three can be played on the same day.
+
+---
+
+### 🏃 Bowler Challenge
+
+Identify the bowler from their silhouette video. Autocomplete from 300+ legendary bowler names. Three game modes:
 
 | Mode | Players | Rules |
 |------|---------|-------|
-| **Classic** | 4 bowlers · 6 batters | Up to 5 guesses each; a new clue (Action → Nation → Era → Style) unlocks on every wrong answer |
-| **Blitz** | 4 bowlers · 6 batters | 15-second timer per player, 1 guess only — pure instinct |
-| **Daily** | 1 per category | Same player for everyone worldwide, resets at midnight UTC |
+| **Classic** | 4 bowlers | Up to 5 guesses each; a new clue (Action → Nation → Era → Style) unlocks on every wrong answer |
+| **Blitz** | 4 bowlers | 15-second timer, 1 guess only — pure instinct |
+| **Daily** | 1 bowler | Same bowler for everyone worldwide, resets at midnight UTC |
 
-#### Scoring
+#### Scoring — Bowling
 
-| Guess | Bowling | Batting |
-|-------|---------|---------|
-| 1st correct | 100 pts | 200 pts |
-| 2nd correct | 75 pts | 150 pts |
-| 3rd correct | 50 pts | 100 pts |
-| 4th correct | 25 pts | 50 pts |
-| 5th correct | 15 pts | 25 pts |
+| Guess | Points |
+|-------|--------|
+| 1st correct | 100 pts |
+| 2nd correct | 75 pts |
+| 3rd correct | 50 pts |
+| 4th correct | 25 pts |
+| 5th correct | 15 pts |
 
-Blitz awards the same points as Classic but only allows 1 guess — score or score nothing.
+Blitz awards the same points as Classic but allows only 1 guess.
 
 #### Bowling Legends (15 total, 4 with video)
 Malinga · Bumrah · Warne · Muralitharan · Shoaib Akhtar · Wasim Akram · McGrath · Kumble · Starc · Steyn · Rabada · **Boult** · **Anderson** · **Harbhajan Singh** · Waqar Younis
 
 Video clips: **Akhtar** · **Anderson** · **Boult** · **Harbhajan Singh**
 
+---
+
+### 🏏 Batter Challenge
+
+Identify the batter from their silhouette video. **Double points** — batting scores 2× the bowling equivalent. Autocomplete from 277 legendary batter names. Same three game modes as bowling:
+
+| Mode | Players | Rules |
+|------|---------|-------|
+| **Classic** | 6 batters | Up to 5 guesses each; progressive clues unlock on each wrong answer |
+| **Blitz** | 6 batters | 15-second timer, 1 guess only |
+| **Daily** | 1 batter | Independent daily seed from bowling — different legend each day |
+
+#### Scoring — Batting
+
+| Guess | Points |
+|-------|--------|
+| 1st correct | 200 pts |
+| 2nd correct | 150 pts |
+| 3rd correct | 100 pts |
+| 4th correct | 50 pts |
+| 5th correct | 25 pts |
+
 #### Batting Legends (6 with video)
 **Babar Azam** · **Sachin Tendulkar** · **Kevin Pietersen** · **Brian Lara** · **Saeed Anwar** · **Don Bradman**
 
-### Cricket Trivia
+---
 
-Two trivia modes — a daily-gated standard round and an unlimited Rapid Fire mode.
+### 🧠 Cricket Trivia ⚡ Rapid Fire
+
+Two trivia modes — a daily-gated standard round and an unlimited Rapid Fire bonus round.
 
 #### Daily (Standard)
-5 questions, 20 seconds each, 20 points per correct answer — **max 100 pts/day**. Questions are drawn from a 360-question pool via a seeded Fisher-Yates shuffle keyed to the date, so every player worldwide gets the same 5 questions. Timer bar turns red in the final 6 seconds. Auto-advances on timeout. Locked once played — resets at midnight UTC.
+5 questions, 20 seconds each, 20 points per correct answer — **max 100 pts/day**. Questions drawn from a 360-question pool via a seeded Fisher-Yates shuffle keyed to the date — every player worldwide gets the same 5 questions each day. Timer bar turns red in the final 6 seconds. Auto-advances on timeout. Locked once played — resets at midnight UTC.
 
 #### Rapid Fire ⚡
-5 questions, 10 seconds each, 15 points per correct answer — **max 75 pts**. Unlocked at any time (no daily gate). Available from the trivia result screen after completing the daily round.
+5 questions, 10 seconds each, 15 points per correct answer — **max 75 pts**. No daily gate — can be replayed any time. Available from the trivia result screen after completing the daily round.
 
 #### Trivia Scoring
 
-| Mode | Questions | Time per Q | Pts per Q | Max score |
-|------|-----------|-----------|-----------|-----------|
-| Daily (Standard) | 5 | 20 s | 20 | 100 |
+| Mode | Questions | Time per Q | Pts per Q | Max |
+|------|-----------|-----------|-----------|-----|
+| Daily | 5 | 20 s | 20 | 100 |
 | Rapid Fire ⚡ | 5 | 10 s | 15 | 75 |
+
+---
+
+### 🎉 Guess the Celebration — Coming Soon (V4)
+
+Identify iconic wicket celebrations, century dances, and team moments. Currently visible on the landing page as a preview card — not yet playable.
 
 ---
 
