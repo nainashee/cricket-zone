@@ -45,68 +45,88 @@ Rapid-fire daily quiz. 5 questions, 20 seconds each, 20 points per correct answe
 
 ## AWS Architecture
 
+### Frontend Path (static assets)
+
 ```
-Browser (playhowzat.com)
-        │
-        ▼
-┌─────────────────┐
-│   CloudFront    │  CDN + HTTPS + custom domain
-│  Distribution   │
-└────────┬────────┘
-         │
-         ▼
-┌─────────────────┐
-│    S3 Bucket    │  Static frontend hosting (private, OAC)
-│  (index.html)   │  + user avatar storage
-└─────────────────┘
+Browser ──► CloudFront (playhowzat.com) ──► S3 (private, OAC-only)
+             CDN · HTTPS · ACM cert          index.html · assets · videos
+             per-asset Cache-Control TTLs    + avatar object storage
+             /content/* 30d–1yr TTL
+```
 
-Browser → API Gateway → Lambda → DynamoDB
+### API Path (game data)
 
-┌──────────────────────────────────┐
-│     API Gateway (HTTP API)       │  CORS enabled for playhowzat.com
-│  h3laal38ta.execute-api          │
-└──────────┬───────────────────────┘
-           │
-  ┌────────┼──────────┬────────────┬──────────────┬─────────────┬──────────┐
-  ▼        ▼          ▼            ▼              ▼             ▼          ▼
-GET      POST       GET          GET            GET          DELETE     POST
-/daily   /score   /leaderboard  /played-today  /avatar/    /account   /rename
-                                               upload-url
-  │        │          │            │              │             │          │
-  └────────┴──────────┴────────────┴──────────────┴─────────────┴──────────┘
-                               │
-                               ▼
-┌──────────────────────────────────────┐
-│           Lambda Functions           │
-│  cricket-zone-daily-challenge        │
-│  cricket-zone-save-score             │
-│  cricket-zone-leaderboard            │
-│  cricket-zone-played-today           │
-│  cricket-zone-avatar-upload          │
-│  cricket-zone-delete-account         │
-│  cricket-zone-rename-user            │
-│  Runtime: Node.js 20.x (ESM)         │
-└──────────────────┬───────────────────┘
-                   │
-                   ▼
-┌──────────────────────────────────────┐
-│              DynamoDB                │
-│  cricket-zone-scores                 │
-│  └─ GSI: category-date-index         │
-│  cricket-zone-content                │
-└──────────────────────────────────────┘
+API calls go **directly** from the browser to API Gateway — they do not pass through CloudFront.
+
+```
+Browser ──► API Gateway (HTTP API) ──► Lambda (Node.js 20.x ESM) ──► DynamoDB
+             h3laal38ta.execute-api       cricket-zone-scores
+             CORS · throttled                └─ GSI: category-date-index
+             100 req/s stage default
+             20 req/s on POST /score
+```
+
+| Route | Lambda | Auth |
+|---|---|---|
+| `GET /daily` | `daily-challenge` | None |
+| `POST /score` | `save-score` | Optional Bearer |
+| `GET /leaderboard` | `leaderboard` | Optional Bearer |
+| `GET /played-today` | `played-today` | Required Bearer |
+| `GET /avatar/upload-url` | `avatar-upload` | Required Bearer |
+| `DELETE /account` | `delete-account` | Required Bearer |
+| `POST /rename` | `rename-user` | Required Bearer |
+
+### Auth Path (Cognito)
+
+```
+Browser ──► Cognito Hosted UI ──► Google OAuth (federated)
+             email / password         │
+             email verification       │
+                    │                 │
+                    └────────┬────────┘
+                             ▼
+                        JWT (id token)
+                             │
+                    passed as Bearer header
+                             │
+                    API Gateway ──► Lambda (extracts claims: sub, name, email)
+```
+
+### Avatar Upload Path (presigned URL)
+
+The browser never sends avatar data through Lambda — it gets a presigned URL and PUTs directly to S3, keeping Lambda invocation time and cost near zero.
+
+```
+Browser ──► avatar-upload Lambda ──► returns presigned S3 PUT URL
+    │                                    (valid 60s, scoped to avatars/{userId})
+    └──────────────────────────────────► S3 (direct PUT, bypasses Lambda)
+                                              avatars/{userId} object stored
+```
+
+### Monitoring Path (CloudWatch)
+
+```
+Lambda   ──┐
+API GW   ──┼──► CloudWatch Metrics ──► 10 Alarms ──► SNS Topic ──► Email
+CloudFront ┘         │                                cricket-zone-alerts
+                      └──► Dashboard (cricket-zone)
+                            4-row operational view
 ```
 
 ### Services Used
-- **S3** — Static frontend hosting (private bucket, OAC) + user avatar storage
-- **CloudFront** — CDN with Origin Access Control, HTTPS, custom domain; per-asset TTLs: `no-cache` for `index.html`, 1-hour for JSON assets, 1-year immutable for videos, 1-week for static root files
-- **ACM** — SSL/TLS certificate for playhowzat.com
-- **API Gateway (HTTP API)** — Seven routes, CORS configured for production domain; throttled at 100 req/s (stage default) with a tighter 20 req/s override on `POST /score`
-- **Lambda** — Seven serverless functions on Node.js 20.x
-- **DynamoDB** — Two tables with PAY_PER_REQUEST billing, GSI for leaderboard queries, TTL for 90-day score expiry
-- **Cognito** — User pool with email/password auth and Google OAuth (federated sign-in), email verification enforced
-- **IAM** — Least-privilege role for Lambda with scoped DynamoDB + CloudWatch permissions
-- **CloudWatch** — 10 alarms (Lambda errors × 7, API GW 4xx/5xx, CloudFront 5xx), SNS email alerts, and an operational dashboard with health snapshot, Lambda, API Gateway, and CloudFront panels
+
+| Service | Role |
+|---|---|
+| **S3** | Static frontend hosting (private, OAC-only) + user avatar object storage |
+| **CloudFront** | CDN with OAC, HTTPS, custom domain; per-asset TTL policies; `/content/*` 30d–1yr for videos |
+| **ACM** | SSL/TLS certificate for `playhowzat.com` (us-east-1, required for CloudFront) |
+| **API Gateway (HTTP API)** | 7 routes, CORS for `playhowzat.com`; stage throttle 100 req/s, `POST /score` override 20 req/s |
+| **Lambda** | 7 functions, Node.js 20.x ESM, least-privilege IAM role |
+| **DynamoDB** | `cricket-zone-scores` (PAY_PER_REQUEST, GSI: `category-date-index`, 90-day TTL on game records) |
+| **Cognito** | User pool — email/password + Google OAuth federated sign-in; email verification enforced |
+| **IAM** | Single Lambda execution role scoped to DynamoDB + CloudWatch; S3 presigned URL via resource policy |
+| **CloudWatch** | 10 alarms (Lambda errors ×7, API GW 4xx/5xx, CF 5xx); `cricket-zone` dashboard |
+| **SNS** | `cricket-zone-alerts` topic — routes alarm state changes to email |
 
 ### Design Principles
 - **Category-extensible** — All data keyed by `category` parameter. Bowling is V1. Batting (V2), Trivia (V3), and Celebrations (V4) slot in with zero infrastructure changes.
