@@ -91,6 +91,13 @@ jobs:
 
       - name: Sync frontend to S3
         run: |
+          # sw.js — no-cache: browser relies on a byte-diff to detect SW updates.
+          # Must be uploaded before index.html so the SW file exists by the time
+          # any browser receives the registration snippet.
+          aws s3 cp frontend/sw.js s3://${{ secrets.S3_BUCKET }}/sw.js \
+            --cache-control "no-cache, no-store, must-revalidate" \
+            --content-type "application/javascript"
+
           # index.html — no-cache: always revalidate before serving.
           # Contains injected prod config (API URL, Cognito IDs) that changes
           # on every deploy; browsers and CDN must never serve a stale version.
@@ -112,10 +119,13 @@ jobs:
             --delete
 
           # Icons, PWA manifest, OG image — 1-week cache (functionally immutable).
+          # sw.js and index.html are excluded — both already uploaded above with
+          # explicit no-cache headers that this sync must not overwrite.
           # --delete here handles removal of any root-level orphaned objects.
           aws s3 sync frontend/ s3://${{ secrets.S3_BUCKET }}/ \
             --cache-control "public, max-age=604800" \
             --exclude "index.html" \
+            --exclude "sw.js" \
             --exclude "assets/*" \
             --exclude "content/*" \
             --exclude ".gitkeep" \
