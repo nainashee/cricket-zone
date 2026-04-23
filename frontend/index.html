@@ -2652,6 +2652,12 @@ function tryVid(){
   v.style.display='none';ph.style.display='flex';
   const src=`content/${G.category}/${G.bowler.id}.mp4`;
   v.oncanplay=()=>{v.style.display='block';ph.style.display='none';v.play();};
+  v.onerror=()=>{
+    const icon=ph.querySelector('.vid-ph-icon');
+    const txt=document.getElementById('vidPHText');
+    if(icon)icon.textContent='⚠️';
+    if(txt)txt.innerHTML='Video failed to load. <button onclick="tryVid()" style="background:none;border:none;color:var(--accent);font-family:\'DM Mono\',monospace;font-size:inherit;cursor:pointer;padding:0;text-decoration:underline;">Retry</button>';
+  };
   if(v.src!==src){v.src=src;}else{if(v.readyState>=3){v.style.display='block';ph.style.display='none';v.play();}else{v.play();}}
 }
 
@@ -3189,7 +3195,11 @@ async function saveTriviaScore(){
         <span style="font-family:'Bebas Neue',sans-serif;font-size:1.05rem;color:#a855f7;min-width:3rem;text-align:right;flex-shrink:0;">${s.score}</span>
       </div>`;
     }).join('');
-  }catch(e){console.error('Trivia leaderboard failed:',e);}
+  }catch(e){
+    console.error('Trivia leaderboard failed:',e);
+    const errEl=document.getElementById('trivLbInner');
+    if(errEl)errEl.innerHTML='<p style="color:var(--text3);font-size:0.78rem;font-family:\'DM Mono\',monospace;padding:0.9rem;">Could not load leaderboard.</p>';
+  }
 }
 
 async function loadLeaderboard(){
