@@ -99,14 +99,14 @@ GET      POST       GET          GET            GET          DELETE     POST
 
 ### Services Used
 - **S3** — Static frontend hosting (private bucket, OAC) + user avatar storage
-- **CloudFront** — CDN with Origin Access Control, HTTPS, custom domain
+- **CloudFront** — CDN with Origin Access Control, HTTPS, custom domain; per-asset TTLs: `no-cache` for `index.html`, 1-hour for JSON assets, 1-year immutable for videos, 1-week for static root files
 - **ACM** — SSL/TLS certificate for playhowzat.com
-- **API Gateway (HTTP API)** — Seven routes, CORS configured for production domain
+- **API Gateway (HTTP API)** — Seven routes, CORS configured for production domain; throttled at 100 req/s (stage default) with a tighter 20 req/s override on `POST /score`
 - **Lambda** — Seven serverless functions on Node.js 20.x
 - **DynamoDB** — Two tables with PAY_PER_REQUEST billing, GSI for leaderboard queries, TTL for 90-day score expiry
 - **Cognito** — User pool with email/password auth and Google OAuth (federated sign-in), email verification enforced
 - **IAM** — Least-privilege role for Lambda with scoped DynamoDB + CloudWatch permissions
-- **CloudWatch** — Lambda execution logging
+- **CloudWatch** — 10 alarms (Lambda errors × 7, API GW 4xx/5xx, CloudFront 5xx), SNS email alerts, and an operational dashboard with health snapshot, Lambda, API Gateway, and CloudFront panels
 
 ### Design Principles
 - **Category-extensible** — All data keyed by `category` parameter. Bowling is V1. Batting (V2), Trivia (V3), and Celebrations (V4) slot in with zero infrastructure changes.
@@ -315,8 +315,12 @@ Every push to `main` triggers GitHub Actions:
 1. **Unit tests** — 58 Jest tests must pass (deploy blocked if any fail)
 2. **Lambda deploys** — all seven functions updated via `aws lambda update-function-code`
 3. **Config injection** — API URL and Cognito IDs injected into `frontend/index.html` via `sed`
-4. **S3 sync** — `frontend/` synced to S3 bucket
-5. **CloudFront invalidation** — cache cleared; live at playhowzat.com within ~60 seconds
+4. **S3 sync** — four targeted upload commands with per-asset `Cache-Control` headers:
+   - `index.html` → `no-cache` (injected prod config must always revalidate)
+   - `assets/*.json` → `public, max-age=3600` (invalidated by CloudFront `/*` invalidation on each deploy)
+   - `content/batting/` → `public, max-age=31536000, immutable` (large video files that never change)
+   - Root icons / PWA manifest → `public, max-age=604800`
+5. **CloudFront invalidation** — `/*` invalidation; live at playhowzat.com within ~60 seconds
 
 Required GitHub secrets: `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `S3_BUCKET`, `CF_DISTRIBUTION_ID`, `PROD_API_URL`, `PROD_COGNITO_USER_POOL_ID`, `PROD_COGNITO_CLIENT_ID`, `PROD_COGNITO_DOMAIN`.
 
@@ -333,7 +337,8 @@ Required GitHub secrets: `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `S3_BUCKE
 - [x] **Phase 7 (V2)** — Guess the Batter (independent daily seed, dual leaderboard, 6 video batters)
 - [x] **Phase 8 (V3)** — Cricket Trivia (360-question pool, seeded shuffle, daily 5-question limit)
 - [x] **Phase 9** — 3-layer testing pyramid (Jest 58 tests, Bruno API collection, Playwright E2E)
-- [ ] **Phase 10 (V4)** — Guess the Celebration category
+- [x] **Phase 10** — Infrastructure hardening: API Gateway throttling, CloudFront caching fixed, per-asset Cache-Control headers, strict Lambda input validation, CloudWatch alarms + dashboard
+- [ ] **Phase 11 (V4)** — Guess the Celebration category
 
 ---
 
@@ -358,4 +363,4 @@ Required GitHub secrets: `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `S3_BUCKE
 ---
 
 *Built by Hussain Ashfaque — AWS Solutions Architect Associate | Cloud Engineering Portfolio Project*
-*Live at [playhowzat.com](https://playhowzat.com) · [CHANGELOG](CHANGELOG.md) · v1.4.0*
+*Live at [playhowzat.com](https://playhowzat.com) · [CHANGELOG](CHANGELOG.md) · v1.5.0*

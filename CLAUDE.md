@@ -271,7 +271,20 @@ When adding new player videos:
 
 ## Infrastructure (`/infrastructure/main.tf`)
 
-Single Terraform file (~758 lines) defines all AWS resources: S3 bucket (private + CORS for avatar PUT), CloudFront distribution (OAC), API Gateway (HTTP API, 7 routes), 7 Lambda functions + IAM role, 2 DynamoDB tables, Cognito user pool. Region: `us-east-1`.
+Single Terraform file defines all AWS resources: S3 bucket (private + CORS for avatar PUT), CloudFront distribution (OAC), API Gateway (HTTP API, 7 routes), 7 Lambda functions + IAM role, 2 DynamoDB tables, Cognito user pool, SNS alert topic, 10 CloudWatch alarms, CloudWatch dashboard. Region: `us-east-1`.
+
+### API Gateway Throttling
+- Stage default: 100 req/s, burst 200
+- `POST /score` override: 20 req/s, burst 50 (each call makes 3 DynamoDB writes on PAY_PER_REQUEST)
+
+### CloudFront Cache Behaviors
+- **`/content/*`** (ordered behavior) — `default_ttl=2592000` (30d), `max_ttl=31536000` (1yr); belt-and-suspenders for bowling videos uploaded without Cache-Control headers
+- **Default behavior** — `default_ttl=86400` (1d fallback), `max_ttl=31536000` (1yr cap); honors S3 Cache-Control headers up to the cap
+
+### Monitoring
+- **SNS topic** `cricket-zone-alerts` → email `nain.ashee@gmail.com` (must confirm subscription)
+- **10 CloudWatch alarms**: Lambda Errors (×7, threshold >0), API GW 4xx (>50/5min), API GW 5xx (>5/5min), CloudFront 5xxErrorRate (>5%)
+- **Dashboard** `cricket-zone`: Row 1 all-alarm health snapshot, Row 2 Lambda errors + duration p95, Row 3 API GW 4xx/5xx/latency p95, Row 4 CF 5xx rate/cache hit rate/requests
 
 ## CI/CD (`.github/workflows/`)
 
@@ -279,8 +292,12 @@ Single Terraform file (~758 lines) defines all AWS resources: S3 bucket (private
 1. Run Jest unit tests (`tests/unit`) — deploy blocked on failure
 2. Deploy all 7 Lambda functions via `aws lambda update-function-code`
 3. Inject prod config placeholders into `frontend/index.html`
-4. Sync `frontend/` to S3 (excluding `content/bowling/*` which is deployed separately)
-5. Invalidate CloudFront cache
+4. Sync `frontend/` to S3 with per-asset `Cache-Control` headers:
+   - `index.html` → `no-cache`
+   - `assets/` → `public, max-age=3600`
+   - `content/batting/` → `public, max-age=31536000, immutable`
+   - Root files → `public, max-age=604800`
+5. Invalidate CloudFront cache (`/*`)
 
 **`deploy-dev.yml`** — triggers on push to `dev`, same steps but uses `DEV_*` secrets and `-dev` Lambda suffixes.
 
@@ -289,7 +306,7 @@ Single Terraform file (~758 lines) defines all AWS resources: S3 bucket (private
 ## Design Patterns
 
 - **Category-extensible** — All data keyed by `category`. New categories need only frontend data + video assets; zero infrastructure changes.
-- **Deterministic daily challenge** — Date-based hash selects today's player; all users worldwide see the same one without shared state writes.
+- **Deterministic daily challenge** — Date-based hash selects today's player; all users worldwide see the same one without shared state writes. Selection is done entirely client-side; the `GET /daily` Lambda exists but is not called by the frontend.
 - **Score deduplication** — Leaderboard Lambda deduplicates on `userId` after querying GSI, keeping highest score per user per day.
 - **UTC- timezone tolerance** — Client date accepted within `[yesterday_UTC, today_UTC]` window to avoid bleed-through at midnight for users behind UTC.
 - **#summary record** — Authenticated users have a `userId + '#summary'` DynamoDB record tracking cumulative stats (totalScore, streak, wins, gamesPlayed, bestScore). The leaderboard all-time mode reads this as the source of truth instead of re-aggregating GSI results.

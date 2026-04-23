@@ -6,6 +6,44 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [1.5.0] - 2026-04-23
+
+### Added
+
+- **CloudWatch dashboard** — `cricket-zone` dashboard with 4 rows: health snapshot (all alarms), Lambda errors + duration p95, API Gateway 4xx/5xx/latency p95, CloudFront 5xx rate/cache hit rate/requests; alarm threshold lines drawn directly on the graphs
+- **CloudWatch alarms** — 10 alarms routed to SNS topic `cricket-zone-alerts` with email delivery: one per Lambda function (7 total, fires on any error), API Gateway 4xx (>50/5min), API Gateway 5xx (>5/5min), CloudFront 5xx error rate (>5%)
+- **API Gateway throttling** — `POST /score` limited to 20 req/s burst 50; stage-wide default 100 req/s burst 200; prevents DynamoDB cost spikes from uncapped bursts
+- **CloudFront `/content/*` cache behavior** — ordered behavior added for video assets with 30-day default TTL and 1-year max TTL; guarantees long caching even for bowling videos uploaded without an explicit `Cache-Control` header
+
+### Fixed
+
+- **CloudFront caching was completely disabled** — `DefaultTTL=0` and `MaxTTL=0` in the distribution's default cache behavior caused every request to pass through to S3, making CloudFront decorative; corrected to `default_ttl=86400` (1-day fallback) and `max_ttl=31536000` (1-year cap)
+- **CI/CD: no Cache-Control headers on S3 sync** — single `aws s3 sync` command had no cache settings; replaced with four targeted upload commands with per-asset policies: `index.html` → `no-cache`, `assets/*.json` → 1-hour, `content/batting/` → 1-year immutable, root static files → 1-week
+- **Game video stuck on loading placeholder** — `tryVid()` had no `onerror` handler; if the video failed to load the placeholder stayed forever with no feedback; now shows ⚠️ icon and a clickable Retry link
+- **Trivia leaderboard silent failure** — `catch` block was `console.error` only; inner container stayed stuck on "Loading..." on any network failure; now renders "Could not load leaderboard." consistent with all other leaderboard error states
+
+### Security
+
+- **Save-score strict input validation** — all fields now validated at the Lambda boundary: `score` must be a finite number in `[0, 2500]`; `category` and `gameMode` checked against allowlists; guest `playerName` validated to `1–30` chars, letters/numbers/spaces/underscores/hyphens only; guest `userId` must start with `guest_` and be ≤60 chars; `pictureUrl` accepted only if `https://` and ≤2048 chars; `triviaScore` clamped to `[0, 300]`
+
+---
+
+## [1.4.0] - 2026-04-20
+
+### Added
+
+- **3-layer testing pyramid** — Jest unit tests (58 tests across 5 suites), Bruno API collection (integration tests against live dev endpoints), Playwright E2E (full browser automation with localStorage injection and API stubbing)
+- **Playwright regression test** — spec covering guest avatar inheritance bug: verifies that signing in after a guest session does not bleed the guest's avatar into the authenticated user's header
+
+### Fixed
+
+- **Guest avatar inheritance** — after signing out and back in, the guest's `cz_user_picture` / `cz_avatar_url` keys were not cleared, causing the authenticated user's header to show the previous guest's avatar
+- **Stale stats after sign-out and login** — `cz3` was not reset when a new user signed in while stale data from a previous session remained in localStorage; header now shows backend-authoritative stats after sync
+- **Guest entry clears played-today flags** — entering guest mode no longer inherits the previous user's `howzat_last_played`, `howzat_batting_last_played`, and `howzat_trivia_last_played` keys; daily challenges are always fully playable in a fresh guest session
+- **Full auth identity cleared on guest entry** — `cz_uid`, `cz_user_sub`, `cz_user_name`, `cz_user_email`, and related picture keys are now explicitly cleared when entering guest mode, preventing any session bleed from a previously authenticated user
+
+---
+
 ## [1.3.0] - 2026-04-16
 
 ### Added
