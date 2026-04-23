@@ -430,16 +430,18 @@ A single dashboard provides the full operational picture in one view. Layout is 
 | Layer | Technology |
 |-------|-----------|
 | Frontend | Vanilla HTML/CSS/JS (single file) |
-| Hosting | AWS S3 + CloudFront |
+| Hosting | AWS S3 (static assets + avatar storage) + CloudFront (CDN, OAC) |
 | Auth | AWS Cognito + Google OAuth |
 | API | AWS API Gateway (HTTP API) |
 | Backend | AWS Lambda (Node.js 20.x ESM) |
 | Database | AWS DynamoDB |
+| Monitoring | AWS CloudWatch (alarms + dashboard) + SNS (email alerts) |
 | IaC | Terraform |
 | CI/CD | GitHub Actions |
 | Unit Tests | Jest (ESM, `--experimental-vm-modules`) |
 | API Tests | Bruno |
 | E2E Tests | Playwright |
+| Video Processing | ffmpeg (H.264, CRF 28, 720×720, compressed to 400–1500 KiB) |
 | DNS | Cloudflare |
 | SSL | AWS ACM |
 
