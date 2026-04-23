@@ -326,6 +326,89 @@ Required GitHub secrets: `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `S3_BUCKE
 
 ---
 
+## Monitoring & Observability
+
+All monitoring is provisioned via Terraform (`infrastructure/main.tf`) and is fully version-controlled. No manual console configuration.
+
+### Alert Delivery — SNS
+
+An SNS topic (`cricket-zone-alerts`) routes all alarm state changes to `nain.ashee@gmail.com`. Every alarm sends both `ALARM` (fires) and `OK` (recovers) notifications so recoveries are visible without logging into the console.
+
+### CloudWatch Alarms — 10 Total
+
+All alarms use a 5-minute evaluation window and `treat_missing_data = notBreaching` to avoid false positives during quiet periods.
+
+#### Lambda — 7 Alarms (one per function)
+
+| Alarm | Metric | Threshold | Fires when… |
+|---|---|---|---|
+| `cricket-zone-save-score-errors` | `Errors` Sum | > 0 | Any save-score crash |
+| `cricket-zone-leaderboard-errors` | `Errors` Sum | > 0 | Any leaderboard crash |
+| `cricket-zone-daily-challenge-errors` | `Errors` Sum | > 0 | Any daily-challenge crash |
+| `cricket-zone-played-today-errors` | `Errors` Sum | > 0 | Any played-today crash |
+| `cricket-zone-avatar-upload-errors` | `Errors` Sum | > 0 | Any avatar-upload crash |
+| `cricket-zone-delete-account-errors` | `Errors` Sum | > 0 | Any delete-account crash |
+| `cricket-zone-rename-user-errors` | `Errors` Sum | > 0 | Any rename-user crash |
+
+Threshold is `> 0` because any Lambda error in production warrants attention — there is no expected error rate.
+
+#### API Gateway — 2 Alarms
+
+| Alarm | Metric | Threshold | Fires when… |
+|---|---|---|---|
+| `cricket-zone-apigw-5xx` | `5XXError` Sum | > 5 / 5 min | Server errors (Lambda crashes, timeouts, misconfiguration) |
+| `cricket-zone-apigw-4xx` | `4XXError` Sum | > 50 / 5 min | Abnormal client error volume — abuse burst or broken client |
+
+The 4xx threshold is set at 50 rather than 0 because a small rate of 400 responses is normal (validation rejections from legitimate clients). The 5xx threshold is set at 5 to absorb isolated cold-start timeouts without paging.
+
+#### CloudFront — 1 Alarm
+
+| Alarm | Metric | Threshold | Fires when… |
+|---|---|---|---|
+| `cricket-zone-cloudfront-5xx` | `5xxErrorRate` Average | > 5% | S3 origin unreachable or distribution misconfigured |
+
+### CloudWatch Dashboard — `cricket-zone`
+
+A single dashboard provides the full operational picture in one view. Layout is top-to-bottom by urgency: critical state first, drill-down detail below.
+
+```
+┌──────────────────────────────────────────────────────────────────┐
+│  ROW 1 — Health Snapshot                          (full width)   │
+│  All 10 alarms as colored status boxes                           │
+│  Green = OK · Red = ALARM · Grey = no data yet                   │
+└──────────────────────────────────────────────────────────────────┘
+┌─────────────────────────────┬────────────────────────────────────┐
+│  ROW 2 — Lambda             │                                    │
+│  Left: Errors (all 7 fns)   │  Right: Duration p95 (all 7 fns)  │
+│  Which function is failing? │  Cold starts / DynamoDB timeouts?  │
+└─────────────────────────────┴────────────────────────────────────┘
+┌──────────────────┬──────────────────┬──────────────────────────┐
+│  ROW 3 — API GW  │                  │                          │
+│  4xx Errors      │  5xx Errors      │  Latency p95             │
+│  (alarm line 50) │  (alarm line 5)  │                          │
+└──────────────────┴──────────────────┴──────────────────────────┘
+┌──────────────────┬──────────────────┬──────────────────────────┐
+│  ROW 4 — CF      │                  │                          │
+│  5xx Error Rate  │  Cache Hit Rate  │  Requests                │
+│  (alarm line 5%) │  (validate TTLs) │  (traffic baseline)      │
+└──────────────────┴──────────────────┴──────────────────────────┘
+```
+
+**Why each panel exists:**
+
+- **Health Snapshot** — one glance answers "is anything broken right now?" without reading a single graph
+- **Lambda Errors** — pinpoints which function is failing; p95 duration catches DynamoDB slowdowns and cold-start spikes before they breach timeouts
+- **API Gateway 4xx/5xx** — alarm threshold lines are drawn directly on the graphs, so you can see how close a metric is to firing without opening alarm config; latency p95 is the end-to-end request time from the client's perspective
+- **CloudFront Cache Hit Rate** — directly validates that the caching work (fixed TTLs, `/content/*` behavior) is actually taking effect; a rate near 0% means every request is hitting S3 and CloudFront is doing nothing useful; a rate of 80–95% confirms the CDN is serving the load
+
+### How to Access
+
+- **Console:** AWS Console → CloudWatch → Dashboards → `cricket-zone`
+- **Alarms:** AWS Console → CloudWatch → Alarms → filter `cricket-zone`
+- **Direct link:** `https://console.aws.amazon.com/cloudwatch/home?region=us-east-1#dashboards:name=cricket-zone`
+
+---
+
 ## Roadmap
 
 - [x] **Phase 1** — Frontend game (Classic, Blitz, Daily modes)
