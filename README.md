@@ -15,8 +15,8 @@ Guess the cricketer from their silhouette video. Three game modes, autocomplete 
 
 | Mode | Players | Rules |
 |------|---------|-------|
-| **Classic** | 3 per category | 5 guesses each, progressive clues unlock on each wrong answer |
-| **Blitz** | 3 per category | 15 second timer per player, pure instinct |
+| **Classic** | 4 bowlers · 6 batters | Up to 5 guesses each; a new clue (Action → Nation → Era → Style) unlocks on every wrong answer |
+| **Blitz** | 4 bowlers · 6 batters | 15-second timer per player, 1 guess only — pure instinct |
 | **Daily** | 1 per category | Same player for everyone worldwide, resets at midnight UTC |
 
 #### Scoring
@@ -29,17 +29,32 @@ Guess the cricketer from their silhouette video. Three game modes, autocomplete 
 | 4th correct | 25 pts | 50 pts |
 | 5th correct | 15 pts | 25 pts |
 
+Blitz awards the same points as Classic but only allows 1 guess — score or score nothing.
+
 #### Bowling Legends (15 total, 4 with video)
 Malinga · Bumrah · Warne · Muralitharan · Shoaib Akhtar · Wasim Akram · McGrath · Kumble · Starc · Steyn · Rabada · **Boult** · **Anderson** · **Harbhajan Singh** · Waqar Younis
 
-Video clips: Akhtar · Anderson · Boult · Harbhajan Singh
+Video clips: **Akhtar** · **Anderson** · **Boult** · **Harbhajan Singh**
 
 #### Batting Legends (6 with video)
 **Babar Azam** · **Sachin Tendulkar** · **Kevin Pietersen** · **Brian Lara** · **Saeed Anwar** · **Don Bradman**
 
 ### Cricket Trivia
 
-Rapid-fire daily quiz. 5 questions, 20 seconds each, 20 points per correct answer (max 100/day). Questions drawn from a 360-question pool covering rules, records, history, and legends. Questions are selected via a seeded Fisher-Yates shuffle keyed to the date — every player worldwide gets the same 5 questions each day, distributed across the full pool. Timer bar turns red in the final 6 seconds. Auto-advances on timeout.
+Two trivia modes — a daily-gated standard round and an unlimited Rapid Fire mode.
+
+#### Daily (Standard)
+5 questions, 20 seconds each, 20 points per correct answer — **max 100 pts/day**. Questions are drawn from a 360-question pool via a seeded Fisher-Yates shuffle keyed to the date, so every player worldwide gets the same 5 questions. Timer bar turns red in the final 6 seconds. Auto-advances on timeout. Locked once played — resets at midnight UTC.
+
+#### Rapid Fire ⚡
+5 questions, 10 seconds each, 15 points per correct answer — **max 75 pts**. Unlocked at any time (no daily gate). Available from the trivia result screen after completing the daily round.
+
+#### Trivia Scoring
+
+| Mode | Questions | Time per Q | Pts per Q | Max score |
+|------|-----------|-----------|-----------|-----------|
+| Daily (Standard) | 5 | 20 s | 20 | 100 |
+| Rapid Fire ⚡ | 5 | 10 s | 15 | 75 |
 
 ---
 
