@@ -13,10 +13,15 @@ const SHELL_ASSETS = ['/'];
 // ─── Lifecycle ────────────────────────────────────────────────────────────────
 
 self.addEventListener('install', event => {
+  // skipWaiting unconditionally — SW must activate regardless of whether
+  // pre-caching succeeds. If cache.addAll fails (network hiccup, CDN issue),
+  // the SW still installs and the shell gets cached lazily on first fetch.
+  self.skipWaiting();
+
   event.waitUntil(
     caches.open(SHELL_CACHE)
       .then(cache => cache.addAll(SHELL_ASSETS))
-      .then(() => self.skipWaiting())
+      .catch(() => {}) // pre-caching is best-effort; never fail the install
   );
 });
 
