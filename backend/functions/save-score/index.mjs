@@ -7,24 +7,58 @@ const db = DynamoDBDocumentClient.from(client);
 
 const SCORES_TABLE = process.env.SCORES_TABLE || "cricket-zone-scores";
 
+const VALID_CATEGORIES = new Set(['bowling', 'batting', 'trivia']);
+const VALID_GAME_MODES = new Set(['classic', 'blitz', 'daily']);
+
 export const handler = async (event) => {
   const headers = { "Access-Control-Allow-Origin": "*" };
 
   try {
-    const body = JSON.parse(event.body);
+    // ── Body parsing ──────────────────────────────────────────────────────
+    if (!event.body) {
+      return { statusCode: 400, headers, body: JSON.stringify({ error: "Request body is required" }) };
+    }
+    let body;
+    try {
+      body = JSON.parse(event.body);
+    } catch {
+      return { statusCode: 400, headers, body: JSON.stringify({ error: "Invalid JSON" }) };
+    }
+
     const { score, category, gameMode } = body;
-    const triviaScore = (typeof body.triviaScore === 'number' && body.triviaScore >= 0 && body.triviaScore <= 300)
+
+    // ── Required field presence ───────────────────────────────────────────
+    if (score === undefined || !category || !gameMode) {
+      return { statusCode: 400, headers, body: JSON.stringify({ error: "Missing required fields" }) };
+    }
+
+    // ── score: finite number in [0, 2500] — applies to all callers ───────
+    if (typeof score !== 'number' || !Number.isFinite(score) || score < 0 || score > 2500) {
+      return { statusCode: 400, headers, body: JSON.stringify({ error: "score must be a number between 0 and 2500" }) };
+    }
+    const safeScore = Math.round(score);
+
+    // ── category: must be a known value ──────────────────────────────────
+    if (!VALID_CATEGORIES.has(category)) {
+      return { statusCode: 400, headers, body: JSON.stringify({ error: "Invalid category" }) };
+    }
+
+    // ── gameMode: must be a known value ───────────────────────────────────
+    if (!VALID_GAME_MODES.has(gameMode)) {
+      return { statusCode: 400, headers, body: JSON.stringify({ error: "Invalid gameMode" }) };
+    }
+
+    // ── triviaScore: optional finite number in [0, 300] ──────────────────
+    const triviaScore = (typeof body.triviaScore === 'number' && Number.isFinite(body.triviaScore) && body.triviaScore >= 0 && body.triviaScore <= 300)
       ? Math.round(body.triviaScore)
       : 0;
 
-    if (score === undefined || !category || !gameMode) {
-      return {
-        statusCode: 400,
-        headers,
-        body: JSON.stringify({ error: "Missing required fields" })
-      };
-    }
+    // ── pictureUrl: optional, https:// only ──────────────────────────────
+    const rawPicture = body.pictureUrl;
+    const pictureUrl = typeof rawPicture === 'string' && rawPicture.startsWith('https://') && rawPicture.length <= 2048
+      ? rawPicture : undefined;
 
+    // ── Auth token extraction ─────────────────────────────────────────────
     // Prefer claims injected by an API Gateway JWT authorizer; fall back to
     // manually decoding the Authorization header when no authorizer is attached.
     let claims = event.requestContext?.authorizer?.jwt?.claims;
@@ -38,9 +72,6 @@ export const handler = async (event) => {
       }
     }
 
-    const pictureUrl = typeof body.pictureUrl === 'string' && body.pictureUrl.length <= 2048
-      ? body.pictureUrl : undefined;
-
     let userId, playerName;
 
     if (claims?.sub) {
@@ -49,31 +80,17 @@ export const handler = async (event) => {
       playerName = claims.name || claims.email || userId;
     } else {
       // ── Guest path ────────────────────────────────────────────────────
-      const guestName = typeof body.playerName === "string" ? body.playerName.trim() : "";
-      const guestId   = typeof body.userId     === "string" ? body.userId.trim()     : "";
+      const guestName = typeof body.playerName === 'string' ? body.playerName.trim() : '';
+      const guestId   = typeof body.userId     === 'string' ? body.userId.trim()     : '';
 
-      if (!guestName || guestName.length > 30) {
-        return {
-          statusCode: 400,
-          headers,
-          body: JSON.stringify({ error: "playerName must be 1–30 characters" })
-        };
+      // Letters, numbers, spaces, underscores, hyphens — matches frontend confirmGuestName regex
+      if (!guestName || guestName.length > 30 || !/^[a-zA-Z0-9 _-]+$/.test(guestName)) {
+        return { statusCode: 400, headers, body: JSON.stringify({ error: "playerName must be 1–30 characters (letters, numbers, spaces, _ -)" }) };
       }
 
-      if (typeof score !== "number" || score < 0 || score > 2500) {
-        return {
-          statusCode: 400,
-          headers,
-          body: JSON.stringify({ error: "score must be a number between 0 and 2500" })
-        };
-      }
-
-      if (!guestId.startsWith("guest_")) {
-        return {
-          statusCode: 400,
-          headers,
-          body: JSON.stringify({ error: "Invalid guest userId" })
-        };
+      // guest_ prefix + UUID (36 chars) = 42 chars max from legitimate clients; cap at 60
+      if (!guestId.startsWith('guest_') || guestId.length > 60) {
+        return { statusCode: 400, headers, body: JSON.stringify({ error: "Invalid guest userId" }) };
       }
 
       userId     = guestId;
@@ -81,18 +98,18 @@ export const handler = async (event) => {
     }
 
     const isGuest   = !claims?.sub;
-    const serverUtc = new Date().toISOString().split("T")[0];           // today UTC
-    const yesterday = new Date(Date.now() - 86400000).toISOString().split("T")[0]; // yesterday UTC
+    const serverUtc = new Date().toISOString().split("T")[0];
+    const yesterday = new Date(Date.now() - 86400000).toISOString().split("T")[0];
     // Accept the client's local date only if it falls within [yesterday_UTC, today_UTC].
     // This corrects the UTC-midnight bleed-through for users in UTC- timezones while
     // preventing anyone from claiming a future date to appear on tomorrow's leaderboard.
     const clientDate = typeof body.localDate === "string" && /^\d{4}-\d{2}-\d{2}$/.test(body.localDate)
       ? body.localDate : serverUtc;
-    const date = (clientDate >= yesterday && clientDate <= serverUtc) ? clientDate : serverUtc;
-    const scoreId  = `${category}#${date}#${randomUUID()}`;
-    const ttl      = Math.floor(Date.now() / 1000) + (90 * 24 * 60 * 60);
+    const date    = (clientDate >= yesterday && clientDate <= serverUtc) ? clientDate : serverUtc;
+    const scoreId = `${category}#${date}#${randomUUID()}`;
+    const ttl     = Math.floor(Date.now() / 1000) + (90 * 24 * 60 * 60);
 
-    // ── For authenticated users: fetch summary first so we have country ─
+    // ── For authenticated users: fetch summary first so we have country ───
     let existing = null;
     let country  = null;
 
@@ -112,14 +129,14 @@ export const handler = async (event) => {
       }
     }
 
-    // ── Write the game record ─────────────────────────────────────────
+    // ── Write the game record ─────────────────────────────────────────────
     await db.send(new PutCommand({
       TableName: SCORES_TABLE,
       Item: {
         userId,
         scoreId,
         playerName,
-        score,
+        score: safeScore,
         ...(triviaScore > 0 && { triviaScore }),
         category,
         gameMode,
@@ -131,9 +148,9 @@ export const handler = async (event) => {
       }
     }));
 
-    // ── Upsert user summary record (authenticated users only) ─────────
+    // ── Upsert user summary record (authenticated users only) ─────────────
     if (!isGuest) {
-      const isWin   = score > 0;
+      const isWin   = safeScore > 0;
       const today2  = new Date().toISOString().split("T")[0];
       const yest2   = new Date(Date.now() - 86400000).toISOString().split("T")[0];
       const lastDate = existing?.lastPlayed ? existing.lastPlayed.split("T")[0] : null;
@@ -155,11 +172,11 @@ export const handler = async (event) => {
       const summary = {
         userId,
         scoreId:          '#summary',
-        totalScore:       (existing?.totalScore       || 0) + score,
+        totalScore:       (existing?.totalScore       || 0) + safeScore,
         totalTriviaScore: (existing?.totalTriviaScore || 0) + triviaScore,
         gamesPlayed:      (existing?.gamesPlayed      || 0) + 1,
         wins:             (existing?.wins             || 0) + (isWin ? 1 : 0),
-        bestScore:        Math.max(existing?.bestScore || 0, score),
+        bestScore:        Math.max(existing?.bestScore || 0, safeScore),
         streak:           newStreak,
         lastPlayed:       new Date().toISOString(),
         playerName,

@@ -58,8 +58,23 @@ describe('save-score — guest path', () => {
     expect(res.statusCode).toBe(400);
   });
 
+  it('returns 400 when playerName contains invalid characters', async () => {
+    const res = await handler(guestEvent({ playerName: '<script>alert(1)</script>' }));
+    expect(res.statusCode).toBe(400);
+  });
+
+  it('accepts playerName with letters, numbers, spaces, underscores, hyphens', async () => {
+    const res = await handler(guestEvent({ playerName: 'Cool_Player-1' }));
+    expect(res.statusCode).toBe(200);
+  });
+
   it('returns 400 when userId does not start with guest_', async () => {
     const res = await handler(guestEvent({ userId: 'hacker_123' }));
+    expect(res.statusCode).toBe(400);
+  });
+
+  it('returns 400 when userId exceeds 60 characters', async () => {
+    const res = await handler(guestEvent({ userId: 'guest_' + 'a'.repeat(55) }));
     expect(res.statusCode).toBe(400);
   });
 
@@ -90,6 +105,112 @@ describe('save-score — missing required fields', () => {
   it('returns 400 when gameMode is missing', async () => {
     const res = await handler(guestEvent({ gameMode: undefined }));
     expect(res.statusCode).toBe(400);
+  });
+
+  it('returns 400 when body is missing entirely', async () => {
+    const res = await handler(makeEvent({ body: null }));
+    expect(res.statusCode).toBe(400);
+  });
+
+  it('returns 400 when body is not valid JSON', async () => {
+    const res = await handler(makeEvent({ body: 'not-json' }));
+    expect(res.statusCode).toBe(400);
+  });
+});
+
+describe('save-score — score validation', () => {
+  beforeEach(() => mockSend.mockResolvedValue({}));
+
+  it('returns 400 when score is a string', async () => {
+    const res = await handler(guestEvent({ score: '100' }));
+    expect(res.statusCode).toBe(400);
+  });
+
+  it('returns 400 when score is NaN', async () => {
+    const res = await handler(guestEvent({ score: NaN }));
+    expect(res.statusCode).toBe(400);
+  });
+
+  it('returns 400 when score is Infinity', async () => {
+    const res = await handler(guestEvent({ score: Infinity }));
+    expect(res.statusCode).toBe(400);
+  });
+
+  it('returns 400 when authenticated score is negative', async () => {
+    const claims = { sub: 'user-123', name: 'Hussain' };
+    mockSend.mockResolvedValue({ Item: null });
+    const res = await handler(authEvent(claims, { score: -50 }));
+    expect(res.statusCode).toBe(400);
+  });
+
+  it('returns 400 when authenticated score exceeds 2500', async () => {
+    const claims = { sub: 'user-123', name: 'Hussain' };
+    mockSend.mockResolvedValue({ Item: null });
+    const res = await handler(authEvent(claims, { score: 9999 }));
+    expect(res.statusCode).toBe(400);
+  });
+
+  it('accepts score of 0', async () => {
+    mockSend
+      .mockResolvedValueOnce({ Item: null })
+      .mockResolvedValueOnce({})
+      .mockResolvedValueOnce({});
+    const claims = { sub: 'user-123', name: 'Hussain' };
+    const res = await handler(authEvent(claims, { score: 0 }));
+    expect(res.statusCode).toBe(200);
+  });
+});
+
+describe('save-score — category and gameMode validation', () => {
+  beforeEach(() => mockSend.mockResolvedValue({}));
+
+  it('returns 400 for unknown category', async () => {
+    const res = await handler(guestEvent({ category: 'football' }));
+    expect(res.statusCode).toBe(400);
+  });
+
+  it('returns 400 for unknown gameMode', async () => {
+    const res = await handler(guestEvent({ gameMode: 'tournament' }));
+    expect(res.statusCode).toBe(400);
+  });
+
+  it('accepts category=batting', async () => {
+    const res = await handler(guestEvent({ category: 'batting' }));
+    expect(res.statusCode).toBe(200);
+  });
+
+  it('accepts category=trivia', async () => {
+    const res = await handler(guestEvent({ category: 'trivia' }));
+    expect(res.statusCode).toBe(200);
+  });
+
+  it('accepts gameMode=daily', async () => {
+    const res = await handler(guestEvent({ gameMode: 'daily' }));
+    expect(res.statusCode).toBe(200);
+  });
+
+  it('accepts gameMode=blitz', async () => {
+    const res = await handler(guestEvent({ gameMode: 'blitz' }));
+    expect(res.statusCode).toBe(200);
+  });
+});
+
+describe('save-score — pictureUrl validation', () => {
+  beforeEach(() => mockSend.mockResolvedValue({}));
+
+  it('accepts a valid https:// pictureUrl', async () => {
+    const res = await handler(guestEvent({ pictureUrl: 'https://example.com/pic.jpg' }));
+    expect(res.statusCode).toBe(200);
+  });
+
+  it('silently drops an http:// pictureUrl (not stored)', async () => {
+    const res = await handler(guestEvent({ pictureUrl: 'http://example.com/pic.jpg' }));
+    expect(res.statusCode).toBe(200);
+  });
+
+  it('silently drops a javascript: pictureUrl', async () => {
+    const res = await handler(guestEvent({ pictureUrl: 'javascript:alert(1)' }));
+    expect(res.statusCode).toBe(200);
   });
 });
 
@@ -161,6 +282,11 @@ describe('save-score — triviaScore validation', () => {
 
   it('accepts valid triviaScore within range', async () => {
     const res = await handler(guestEvent({ triviaScore: 60 }));
+    expect(res.statusCode).toBe(200);
+  });
+
+  it('ignores non-finite triviaScore', async () => {
+    const res = await handler(guestEvent({ triviaScore: Infinity }));
     expect(res.statusCode).toBe(200);
   });
 });
