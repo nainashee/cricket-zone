@@ -2391,9 +2391,8 @@ function authDismiss(){
 
 function googleSignIn(){
   // identity_provider=Google bypasses the Cognito hosted UI and goes directly
-  // to Google's sign-in page. prompt=select_account is forwarded by Cognito
-  // to Google when the IdP is configured as OIDC type (see infrastructure/main.tf).
-  const url=`${COGNITO_DOMAIN}/oauth2/authorize?identity_provider=Google&response_type=code&client_id=${COGNITO_CLIENT_ID}&redirect_uri=${encodeURIComponent(window.location.origin)}&scope=email+openid+profile&prompt=select_account`;
+  // to Google's sign-in page.
+  const url=`${COGNITO_DOMAIN}/oauth2/authorize?identity_provider=Google&response_type=code&client_id=${COGNITO_CLIENT_ID}&redirect_uri=${encodeURIComponent(window.location.origin)}&scope=email+openid+profile`;
   window.location.href=url;
 }
 
