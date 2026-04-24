@@ -8,7 +8,7 @@ const db = DynamoDBDocumentClient.from(client);
 const SCORES_TABLE = process.env.SCORES_TABLE || "cricket-zone-scores";
 
 const VALID_CATEGORIES = new Set(['bowling', 'batting', 'trivia']);
-const VALID_GAME_MODES = new Set(['classic', 'blitz', 'daily']);
+const VALID_GAME_MODES = new Set(['classic', 'blitz', 'daily', 'trivia']);
 
 export const handler = async (event) => {
   const headers = { "Access-Control-Allow-Origin": "*" };
