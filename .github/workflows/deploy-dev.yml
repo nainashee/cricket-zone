@@ -86,8 +86,13 @@ jobs:
             --cache-control "no-cache" \
             --content-type "text/html; charset=utf-8"
 
+          # Bowling videos — 1-year immutable cache.
+          aws s3 sync frontend/content/bowling/ s3://${{ secrets.DEV_S3_BUCKET }}/content/bowling/ \
+            --cache-control "public, max-age=31536000, immutable" \
+            --delete
+
           aws s3 sync frontend/ s3://${{ secrets.DEV_S3_BUCKET }}/ \
             --delete \
-            --exclude 'content/bowling/*' \
+            --exclude 'content/*' \
             --exclude 'sw.js' \
             --exclude 'index.html'

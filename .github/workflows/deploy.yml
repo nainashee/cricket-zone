@@ -111,6 +111,13 @@ jobs:
             --cache-control "public, max-age=3600" \
             --delete
 
+          # Bowling videos — 1-year immutable cache.
+          # All repo copies are already compressed (412K–1.2M). Safe to sync on
+          # every deploy; the original 534 MB exclusion is no longer needed.
+          aws s3 sync frontend/content/bowling/ s3://${{ secrets.S3_BUCKET }}/content/bowling/ \
+            --cache-control "public, max-age=31536000, immutable" \
+            --delete
+
           # Batting videos — 1-year immutable cache.
           # Large files (400–1500 KiB each) that never change; replace with a
           # targeted CloudFront invalidation if a video is ever swapped out.

@@ -60,6 +60,30 @@ resource "aws_cloudfront_distribution" "frontend" {
     origin_access_control_id = aws_cloudfront_origin_access_control.frontend.id
   }
 
+  # Service worker — never cache at the CDN layer.
+  # Browsers detect SW updates via a byte-diff of the SW file on every page load.
+  # If CloudFront caches sw.js, an updated SW will not be seen by browsers until
+  # the CDN TTL expires — potentially blocking updates for the full max_ttl window.
+  # min/default/max all set to 0 so CloudFront always revalidates with S3,
+  # regardless of what Cache-Control header the S3 object carries.
+  # Must be the first ordered_cache_behavior (evaluated before /content/*).
+  ordered_cache_behavior {
+    path_pattern           = "/sw.js"
+    allowed_methods        = ["GET", "HEAD"]
+    cached_methods         = ["GET", "HEAD"]
+    target_origin_id       = "S3-cricket-zone"
+    viewer_protocol_policy = "redirect-to-https"
+
+    forwarded_values {
+      query_string = false
+      cookies { forward = "none" }
+    }
+
+    min_ttl     = 0
+    default_ttl = 0
+    max_ttl     = 0
+  }
+
   # Videos (bowling + batting) — 30-day default, 1-year max.
   # Videos are immutable in practice; CI sets max-age=31536000 on batting.
   # This behaviour is a belt-and-suspenders guarantee for manually-uploaded
