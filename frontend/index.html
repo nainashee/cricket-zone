@@ -1110,17 +1110,6 @@ video{width:100%;aspect-ratio:1/1;object-fit:cover;display:block;}
 }
 .auth-divider::before,.auth-divider::after{content:'';flex:1;height:1px;background:var(--border2);}
 .auth-err{font-size:0.75rem;color:var(--red);margin-top:-0.25rem;margin-bottom:0.45rem;font-family:'DM Mono',monospace;text-align:left;min-height:1rem;}
-.auth-guest{
-  width:100%;background:transparent;color:var(--text3);
-  border:none;padding:0.8rem;font-size:0.78rem;
-  font-family:'DM Mono',monospace;cursor:pointer;margin-top:0.4rem;
-  transition:color 0.2s;letter-spacing:0.04em;min-height:var(--tap);
-}
-.auth-guest:active{color:var(--text);}
-.auth-guest:hover{color:var(--text2);}
-
-/* ── GUEST SAVE PROMPT ── */
-.gsp-score{font-family:'Bebas Neue',sans-serif;font-size:2.6rem;color:var(--accent);letter-spacing:0.05em;line-height:1;}
 
 /* ── HEADER PROFILE ── */
 .hright{
@@ -1796,32 +1785,26 @@ async function boot(){
   loadTop5();
   loadAllTime();
   const handled=await handleOAuthCallback();
-  if(!handled&&!isTokenValid()&&!isGuest()){
+  if(!handled&&!isTokenValid()){
     showAuthModal();
   }else{
     updateHeaderUser();
-    if(!handled){
-      if(isTokenValid()){
-        // Returning user with valid token — sync stats + played-today from server
-        // Show loading dashes while the server sync is in flight, even if cz3 has stale data
-        statsReady=false;refreshH();
-        const tok=getIdToken();
-        syncSummaryStats(tok);
-        fetch(`${API}/played-today?date=${getTodayLocal()}`,{headers:{Authorization:`Bearer ${tok}`}})
-          .then(r=>r.json())
-          .then(d=>{
-            if(d.bowlingPlayed||d.played)localStorage.setItem('howzat_last_played',getTodayLocal());
-            if(d.battingPlayed)localStorage.setItem('howzat_batting_last_played',getTodayLocal());
-            if(d.triviaPlayed)localStorage.setItem(TRIVIA_LS_KEY,getTodayLocal());
-            applyDailyCardState();
-            applyBattingCardState();
-            applyTriviaCardState();
-          }).catch(()=>{});
-      }else{
-        // Guest — no server stats, show whatever is cached locally
-        statsReady=true;
-        refreshH();
-      }
+    if(!handled&&isTokenValid()){
+      // Returning user with valid token — sync stats + played-today from server
+      // Show loading dashes while the server sync is in flight, even if cz3 has stale data
+      statsReady=false;refreshH();
+      const tok=getIdToken();
+      syncSummaryStats(tok);
+      fetch(`${API}/played-today?date=${getTodayLocal()}`,{headers:{Authorization:`Bearer ${tok}`}})
+        .then(r=>r.json())
+        .then(d=>{
+          if(d.bowlingPlayed||d.played)localStorage.setItem('howzat_last_played',getTodayLocal());
+          if(d.battingPlayed)localStorage.setItem('howzat_batting_last_played',getTodayLocal());
+          if(d.triviaPlayed)localStorage.setItem(TRIVIA_LS_KEY,getTodayLocal());
+          applyDailyCardState();
+          applyBattingCardState();
+          applyTriviaCardState();
+        }).catch(()=>{});
     }
     // handled=true: storeAuth() is already running and will call syncSummaryStats()
   }
@@ -2092,56 +2075,6 @@ function getIdToken(){ return localStorage.getItem('cz_id_token'); }
 function getCurrentUserId(){ return localStorage.getItem('cz_user_sub'); }
 function getCurrentUserName(){ return localStorage.getItem('cz_user_name'); }
 
-// ─── Guest session (sessionStorage — lost on tab close) ───
-function isGuest(){ return sessionStorage.getItem('cz_guest')==='1'; }
-
-function showGuestNameInput(){
-  document.getElementById('authTabs').style.display='none';
-  document.getElementById('authGuestBtn').style.display='none';
-  document.getElementById('authSub').textContent='Choose a display name';
-  document.getElementById('authForm').innerHTML=`
-    <input class="auth-field" id="afGuestName" type="text" placeholder="Enter your display name" maxlength="20" autocomplete="off" onkeydown="if(event.key==='Enter')confirmGuestName()"/>
-    <div class="auth-err" id="afErr"></div>
-    <button class="auth-btn" onclick="confirmGuestName()">Continue →</button>`;
-  setTimeout(()=>document.getElementById('afGuestName')?.focus(),80);
-}
-
-function confirmGuestName(){
-  const val=document.getElementById('afGuestName')?.value.trim();
-  const errEl=document.getElementById('afErr');
-  const setErr=msg=>{if(errEl)errEl.textContent=msg;};
-  if(!val){setErr('Please enter a display name.');return;}
-  if(!/^[a-zA-Z0-9 ]+$/.test(val)){setErr('Letters, numbers and spaces only.');return;}
-  continueAsGuest(val);
-}
-
-function generateUUID(){
-  if(typeof crypto!=='undefined'&&typeof crypto.randomUUID==='function')return crypto.randomUUID();
-  return'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,c=>{const r=Math.random()*16|0;return(c==='x'?r:r&0x3|0x8).toString(16);});
-}
-
-function getOrCreateGuestId(){
-  let id=localStorage.getItem('cz_uid');
-  if(!id){id='guest_'+generateUUID();localStorage.setItem('cz_uid',id);}
-  return id;
-}
-
-function continueAsGuest(name){
-  localStorage.setItem('cz_name',name);
-  // Clear the full identity + display footprint of any prior authenticated session
-  // so the guest doesn't inherit the old user's avatar, stats, leaderboard identity,
-  // or played-today locks that would block the daily challenges.
-  ['cz_user_sub','cz_uid','cz_user_name','cz_user_email',
-   'cz_user_picture','cz_avatar_url','cz3',
-   'howzat_last_played','howzat_batting_last_played',TRIVIA_LS_KEY].forEach(k=>localStorage.removeItem(k));
-  stats={games:0,wins:0,best:0,streak:0};
-  statsReady=true;
-  getOrCreateGuestId(); // creates a fresh guest_* ID now that cz_uid is gone
-  sessionStorage.setItem('cz_guest','1');
-  authDismiss();
-  updateHeaderUser();
-  refreshH();
-}
 
 let _signUpCreds=null; // {email,pass} held briefly for auto sign-in after verify
 
@@ -2157,7 +2090,6 @@ async function storeAuth(idToken){
   if(claims.sub && localStorage.getItem(`cz_has_avatar_${claims.sub}`)){
     localStorage.setItem('cz_avatar_url',`${AVATAR_BASE}/avatars/${claims.sub}`);
   }
-  sessionStorage.removeItem('cz_guest');
   updateHeaderUser();
   postPendingScore(idToken);
   // Sync summary record: stats + playerName + played-today in parallel
@@ -2292,20 +2224,15 @@ function updateHeaderUser(){
   const nameEl=document.getElementById('huName');
   const avatarEl=document.getElementById('hAvatarBtn');
   if(!el)return;
-  const guest=isGuest();
-  const name=guest?(localStorage.getItem('cz_name')||'Guest'):getCurrentUserName();
-  if(name||guest){
+  const name=getCurrentUserName();
+  if(name){
     el.style.display='flex';
     const flagEl=document.getElementById('huFlag');
-    if(flagEl){
-      const flag=(!guest)?countryFlag(localStorage.getItem('cz_country')||'',18):'';
-      flagEl.innerHTML=flag;
-    }
-    if(nameEl){nameEl.textContent='';}
+    if(flagEl)flagEl.innerHTML=countryFlag(localStorage.getItem('cz_country')||'',18);
+    if(nameEl)nameEl.textContent='';
     if(avatarEl){
-      const src=getAvatarSrc(name||'Guest');
-      const fb=makeInitialsAvatar(name||'Guest');
-      avatarEl.innerHTML=`<img src="${src}" width="32" height="32" onerror="onAvatarError(this,'${(name||'Guest').replace(/'/g,"\\'")}')" alt="">`;
+      const src=getAvatarSrc(name);
+      avatarEl.innerHTML=`<img src="${src}" width="32" height="32" onerror="onAvatarError(this,'${name.replace(/'/g,"\\'")}')" alt="">`;
     }
   }else{
     el.style.display='none';
@@ -2327,46 +2254,25 @@ function closeProfileDropdown(){
 function renderProfileDropdown(){
   const drop=document.getElementById('hProfileDrop');
   if(!drop)return;
-  const guest=isGuest();
-  const name=guest?(localStorage.getItem('cz_name')||'Guest'):getCurrentUserName()||'';
+  const name=getCurrentUserName()||'';
   const email=localStorage.getItem('cz_user_email')||'';
   const src=getAvatarSrc(name);
-  const fb=makeInitialsAvatar(name||'Guest',56);
-  if(guest){
-    drop.innerHTML=`
-      <div class="drop-avatar-wrap">
-        <div class="drop-avatar-lg" style="cursor:default;">
-          <img src="${src}" width="56" height="56" style="width:56px;height:56px;object-fit:cover;border-radius:50%;display:block;" onerror="onAvatarError(this,'${name.replace(/'/g,"\\'")}')" alt="">
-        </div>
-        <div class="drop-info">
-          <div class="drop-info-name">${name}</div>
-          <div class="drop-info-sub">Guest</div>
-        </div>
+  const dropFlag=countryFlag(localStorage.getItem('cz_country')||'',20);
+  drop.innerHTML=`
+    <div class="drop-avatar-wrap">
+      <div class="drop-avatar-lg" style="position:relative;">
+        <img src="${src}" width="56" height="56" style="width:56px;height:56px;object-fit:cover;border-radius:50%;display:block;" onerror="onAvatarError(this,'${name.replace(/'/g,"\\'")}')" alt="" id="dropAvImg">
+        <div class="drop-av-edit">EDIT<input type="file" accept="image/*" onchange="uploadAvatar(this.files[0])" style="position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;pointer-events:auto;"></div>
+        ${dropFlag?`<span style="position:absolute;bottom:-4px;right:-6px;line-height:1;pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.6));">${dropFlag}</span>`:''}
       </div>
-      <div class="drop-divider"></div>
-      <div class="drop-item locked">📷 Change Photo<span class="drop-lock">🔒</span></div>
-      <div class="drop-item locked">🚪 Sign Out<span class="drop-lock">🔒</span></div>
-      <div class="drop-item locked danger">🗑 Delete Account<span class="drop-lock">🔒</span></div>
-      <div class="drop-divider"></div>
-      <button class="drop-create" onclick="closeProfileDropdown();showAuthModal();setTimeout(()=>authTab('register'),50);">Create Free Account</button>`;
-  }else{
-    const dropFlag=countryFlag(localStorage.getItem('cz_country')||'',20);
-    drop.innerHTML=`
-      <div class="drop-avatar-wrap">
-        <div class="drop-avatar-lg" style="position:relative;">
-          <img src="${src}" width="56" height="56" style="width:56px;height:56px;object-fit:cover;border-radius:50%;display:block;" onerror="onAvatarError(this,'${name.replace(/'/g,"\\'")}')" alt="" id="dropAvImg">
-          <div class="drop-av-edit">EDIT<input type="file" accept="image/*" onchange="uploadAvatar(this.files[0])" style="position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;pointer-events:auto;"></div>
-          ${dropFlag?`<span style="position:absolute;bottom:-4px;right:-6px;line-height:1;pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.6));">${dropFlag}</span>`:''}
-        </div>
-        <div class="drop-info">
-          <div class="drop-info-name">${name}</div>
-          ${email?`<div class="drop-info-sub">${email}</div>`:''}
-        </div>
+      <div class="drop-info">
+        <div class="drop-info-name">${name}</div>
+        ${email?`<div class="drop-info-sub">${email}</div>`:''}
       </div>
-      <div class="drop-divider"></div>
-      <button class="drop-item" onclick="showAccount()">👤 Account</button>
-      <button class="drop-item" onclick="signOut()">🚪 Sign Out</button>`;
-  }
+    </div>
+    <div class="drop-divider"></div>
+    <button class="drop-item" onclick="showAccount()">👤 Account</button>
+    <button class="drop-item" onclick="signOut()">🚪 Sign Out</button>`;
 }
 
 function confirmDeleteAccount(){
@@ -2467,7 +2373,6 @@ function showAuthModal(){
       <button class="auth-tab" id="atReg" onclick="authTab('register')">Register</button>
     </div>
     <div id="authForm"></div>
-    <button class="auth-guest" id="authGuestBtn" onclick="showGuestNameInput()">Continue as Guest</button>
   </div>`;
   document.body.appendChild(overlay);
   renderAuthLogin();
@@ -2560,7 +2465,6 @@ function doSignIn(){
       if(err.code==='UserNotConfirmedException'){
         // Account exists but email not verified — go straight to verify screen
         document.getElementById('authTabs').style.display='none';
-        document.getElementById('authGuestBtn').style.display='none';
         renderAuthVerify(email);
         return;
       }
@@ -2875,27 +2779,6 @@ async function saveScore(){
   }
 }
 
-async function saveScoreAsGuest(){
-  const btn=document.getElementById('guestSaveBtn');
-  if(btn){btn.disabled=true;btn.textContent='Saving…';}
-  try{
-    const playerName=localStorage.getItem('cz_name')||'Guest';
-    const userId=getOrCreateGuestId();
-    const res=await fetch(`${API}/score`,{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({score:G.score,gameMode:G.mode,category:G.category,localDate:localDateStr(),playerName,userId})
-    });
-    if(!res.ok)throw new Error(await res.text());
-    guestPromptDismiss();
-    toast('Score saved!','ok');
-    loadLeaderboard();
-  }catch(err){
-    console.error('Guest score save failed:',err);
-    if(btn){btn.disabled=false;btn.textContent='Save as Guest';}
-    toast('Save failed, try again','');
-  }
-}
 
 // ── Trivia ────────────────────────────────────────────────────────────────
 
@@ -3299,12 +3182,6 @@ async function loadLeaderboard(){
       html+=`<p class="top5-section-lbl">⚡ Combined Today</p>`;
       html+=combined.map((s,i)=>renderRow(s,i,s.userId===currentUserId)).join('');
     }
-    if(isGuest()){
-      html+=`<div style="padding:0.65rem 0.9rem;border-top:1px solid var(--border2);display:flex;align-items:center;justify-content:space-between;">
-        <span style="font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--text3);">Sign up to appear on the leaderboard</span>
-        <button onclick="closeProfileDropdown();showAuthModal();setTimeout(()=>authTab('register'),50);" style="font-family:'DM Mono',monospace;font-size:0.62rem;color:var(--accent);background:none;border:none;cursor:pointer;padding:0;letter-spacing:0.04em;">Create account →</button>
-      </div>`;
-    }
     el.innerHTML=html;
   }catch(err){
     console.error('Leaderboard fetch failed:',err);
@@ -3337,35 +3214,8 @@ async function revealFinal(){
   // Brief delay to allow DynamoDB GSI eventual consistency before querying leaderboard
   setTimeout(loadLeaderboard,2000);
   if(G.correct===G.queue.length)confetti();
-  if(isGuest())setTimeout(showGuestSavePrompt,1400);
 }
 
-function showGuestSavePrompt(){
-  const overlay=document.createElement('div');
-  overlay.id='guestPromptOverlay';
-  overlay.className='auth-overlay';
-  overlay.innerHTML=`<div class="auth-modal" style="max-width:340px;text-align:center;">
-    <div style="font-size:1.8rem;margin-bottom:0.5rem;">🏏</div>
-    <div class="gsp-score">${G.score}</div>
-    <div style="font-size:0.72rem;color:var(--text3);font-family:'DM Mono',monospace;letter-spacing:0.08em;margin-bottom:1rem;">POINTS</div>
-    <div style="font-size:0.82rem;color:var(--text2);line-height:1.6;margin-bottom:1.6rem;">The leaderboard is for registered players.<br>Create a free account to save your score and compete.</div>
-    <button class="auth-google" onclick="guestPromptSignUp()">Create Free Account</button>
-    <button class="auth-guest" onclick="guestPromptDismiss()">Maybe Later</button>
-  </div>`;
-  document.body.appendChild(overlay);
-}
-
-function guestPromptDismiss(){
-  const el=document.getElementById('guestPromptOverlay');
-  if(el){el.style.opacity='0';el.style.transition='opacity 0.2s';setTimeout(()=>el.remove(),200);}
-}
-
-function guestPromptSignUp(){
-  sessionStorage.setItem('cz_pending_score',JSON.stringify({score:G.score,gameMode:G.mode,category:'bowling',pictureUrl:localStorage.getItem('cz_user_picture')||undefined,...(()=>{try{const st=JSON.parse(localStorage.getItem('cz3')||'{}');return{streak:st.streak,wins:st.wins,gamesPlayed:st.games};}catch{return{};}})()}));
-  sessionStorage.removeItem('cz_guest');
-  guestPromptDismiss();
-  setTimeout(()=>{showAuthModal();setTimeout(()=>authTab('register'),50);},260);
-}
 
 function buildDailyShareCardHTML(){
   const r=G.results[0];
