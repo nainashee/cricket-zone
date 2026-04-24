@@ -2485,14 +2485,13 @@ function authDismiss(){
 }
 
 function googleSignIn(){
-  // Cognito does not forward prompt=select_account to Google when using the
-  // identity_provider shortcut. To ensure the account chooser always appears
-  // (critical for iOS PWA where the Google session persists in WKWebView),
-  // route through Google's AccountChooser first. AccountChooser shows all
-  // signed-in accounts and lets the user add a new one, then continues to
-  // the Cognito authorize URL which completes the OAuth flow normally.
-  const cognitoUrl=`${COGNITO_DOMAIN}/oauth2/authorize?identity_provider=Google&response_type=code&client_id=${COGNITO_CLIENT_ID}&redirect_uri=${encodeURIComponent(window.location.origin)}&scope=email+openid+profile`;
-  const url=`https://accounts.google.com/AccountChooser?continue=${encodeURIComponent(cognitoUrl)}`;
+  // Do not pass identity_provider=Google — that shortcut bypasses the Cognito
+  // hosted UI and Cognito does not forward prompt=select_account to Google in
+  // that path, causing silent re-authentication on iOS PWA. Without the
+  // shortcut, the user sees the Cognito hosted UI and clicks Google there;
+  // Cognito then forwards prompt=select_account so Google shows the account
+  // chooser, letting the user pick or add a different account.
+  const url=`${COGNITO_DOMAIN}/oauth2/authorize?response_type=code&client_id=${COGNITO_CLIENT_ID}&redirect_uri=${encodeURIComponent(window.location.origin)}&scope=email+openid+profile&prompt=select_account`;
   window.location.href=url;
 }
 
