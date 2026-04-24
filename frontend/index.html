@@ -2390,13 +2390,10 @@ function authDismiss(){
 }
 
 function googleSignIn(){
-  // Do not pass identity_provider=Google — that shortcut bypasses the Cognito
-  // hosted UI and Cognito does not forward prompt=select_account to Google in
-  // that path, causing silent re-authentication on iOS PWA. Without the
-  // shortcut, the user sees the Cognito hosted UI and clicks Google there;
-  // Cognito then forwards prompt=select_account so Google shows the account
-  // chooser, letting the user pick or add a different account.
-  const url=`${COGNITO_DOMAIN}/oauth2/authorize?response_type=code&client_id=${COGNITO_CLIENT_ID}&redirect_uri=${encodeURIComponent(window.location.origin)}&scope=email+openid+profile&prompt=select_account`;
+  // identity_provider=Google bypasses the Cognito hosted UI and goes directly
+  // to Google's sign-in page. prompt=select_account is forwarded by Cognito
+  // to Google when the IdP is configured as OIDC type (see infrastructure/main.tf).
+  const url=`${COGNITO_DOMAIN}/oauth2/authorize?identity_provider=Google&response_type=code&client_id=${COGNITO_CLIENT_ID}&redirect_uri=${encodeURIComponent(window.location.origin)}&scope=email+openid+profile&prompt=select_account`;
   window.location.href=url;
 }
 
