@@ -1750,7 +1750,7 @@ const BOWLERS=[
 ];
 
 // Only bowlers that have a video clip — used to build game queues
-const VIDEO_BOWLERS=BOWLERS.filter(b=>['anderson','boult','akhtar','harbhajan'].includes(b.id));
+const VIDEO_BOWLERS=BOWLERS.filter(b=>['anderson','boult','akhtar','harbhajan','bumrah'].includes(b.id));
 
 const BATTERS=[
   {id:'azam',name:'Babar Azam',nation:'Pakistan',era:'2010–present',style:'Right-hand bat',clues:['Elegant cover drive specialist','Pakistan','Top-ranked ODI batter','Current Pakistan captain']},
@@ -1759,8 +1759,9 @@ const BATTERS=[
   {id:'lara',name:'Brian Lara',nation:'West Indies',era:'1990–2007',style:'Left-hand bat',clues:['World record 400* in Tests','West Indies','Left-handed batting genius','Trinidad & Tobago legend']},
   {id:'anwar',name:'Saeed Anwar',nation:'Pakistan',era:'1989–2001',style:'Left-hand bat',clues:['ODI record 194 runs','Pakistan','Left-handed opener','One of Pakistan\'s greatest batters']},
   {id:'bradman',name:'Don Bradman',nation:'Australia',era:'1928–1948',style:'Right-hand bat',clues:['Test average of 99.94','Australia','The Don','Greatest batter of all time']},
+  {id:'ponting',name:'Ricky Ponting',nation:'Australia',era:'1995–2012',style:'Right-hand bat',clues:['Australia\'s most successful captain','Two consecutive World Cup wins','412 international matches','Punter']},
 ];
-const VIDEO_BATTERS=BATTERS.filter(b=>['azam','tendulkar','pietersen','lara','anwar','bradman'].includes(b.id));
+const VIDEO_BATTERS=BATTERS.filter(b=>['azam','tendulkar','pietersen','lara','anwar','bradman','ponting'].includes(b.id));
 
 const MAX_G=5,BLITZ_T=15,PTS=[100,75,50,25,15],PTS_BAT=[200,150,100,50,25];
 const TRIVIA_Q_COUNT=3;

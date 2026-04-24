@@ -1,7 +1,7 @@
 // Howzat — Service Worker
 // Phase 4: video caching — pre-cache all player videos on install,
 //          reconstruct 206 range responses from cached full bodies.
-const SW_VERSION = 'v4';
+const SW_VERSION = 'v6';
 
 const SHELL_CACHE = `shell-${SW_VERSION}`;
 const API_CACHE   = `api-${SW_VERSION}`;
@@ -19,10 +19,12 @@ const VIDEO_ASSETS = [
   '/content/batting/anwar.mp4',
   '/content/batting/azam.mp4',
   '/content/batting/bradman.mp4',
+  '/content/batting/ponting.mp4',
   '/content/batting/lara.mp4',
   '/content/batting/pietersen.mp4',
   '/content/batting/tendulkar.mp4',
   '/content/bowling/akhtar.mp4',
+  '/content/bowling/bumrah.mp4',
   '/content/bowling/anderson.mp4',
   '/content/bowling/boult.mp4',
   '/content/bowling/harbhajan.mp4',
