@@ -89,10 +89,29 @@ describe('leaderboard — all-time mode', () => {
   it('uses summary totalScore when available', async () => {
     mockSend
       .mockResolvedValueOnce({ Items: [makeRow({ score: 100 })], Count: 1 })
-      .mockResolvedValueOnce({ Item: { totalScore: 9999, totalTriviaScore: 0, gamesPlayed: 50, wins: 40, bestScore: 500, streak: 10 } });
+      .mockResolvedValueOnce({ Item: { totalScore: 9999, totalTriviaScore: 0, gamesPlayed: 50, wins: 40, bestScore: 500, streak: 10, lastPlayed: `${TODAY}T10:00:00.000Z` } });
 
     const res = await handler(makeEvent({ queryStringParameters: { category: 'bowling', alltime: 'true' } }));
     expect(JSON.parse(res.body).leaderboard[0].score).toBe(9999);
+  });
+
+  it('shows streak when lastPlayed is today', async () => {
+    mockSend
+      .mockResolvedValueOnce({ Items: [makeRow()], Count: 1 })
+      .mockResolvedValueOnce({ Item: { totalScore: 100, gamesPlayed: 1, wins: 1, bestScore: 100, streak: 5, lastPlayed: `${TODAY}T10:00:00.000Z` } });
+
+    const res = await handler(makeEvent({ queryStringParameters: { category: 'bowling', alltime: 'true' } }));
+    expect(JSON.parse(res.body).leaderboard[0].streak).toBe(5);
+  });
+
+  it('shows streak 0 when lastPlayed is stale (missed days)', async () => {
+    const twoDaysAgo = new Date(Date.now() - 2 * 86400000).toISOString().split('T')[0];
+    mockSend
+      .mockResolvedValueOnce({ Items: [makeRow()], Count: 1 })
+      .mockResolvedValueOnce({ Item: { totalScore: 100, gamesPlayed: 5, wins: 5, bestScore: 200, streak: 7, lastPlayed: `${twoDaysAgo}T10:00:00.000Z` } });
+
+    const res = await handler(makeEvent({ queryStringParameters: { category: 'bowling', alltime: 'true' } }));
+    expect(JSON.parse(res.body).leaderboard[0].streak).toBe(0);
   });
 });
 

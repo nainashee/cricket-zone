@@ -106,7 +106,14 @@ export const handler = async (event) => {
           }));
           if (summary) {
             if (summary.wins             !== undefined) userMap[uid].wins             = summary.wins;
-            if (summary.streak           !== undefined) userMap[uid].streak           = summary.streak;
+            if (summary.streak !== undefined) {
+              // Only show an active streak if the user played today or yesterday.
+              // A stale summary record (e.g. last played weeks ago) would otherwise
+              // show a non-zero streak forever since streaks are only updated on play.
+              const lastPlayedDate = summary.lastPlayed ? summary.lastPlayed.split('T')[0] : null;
+              const streakActive = lastPlayedDate === serverUtc || lastPlayedDate === yesterday;
+              userMap[uid].streak = streakActive ? summary.streak : 0;
+            }
             // Use summary as source of truth for cross-category totals — the GSI query
             // only covers one category so its running sum would be incomplete.
             if (summary.totalScore       !== undefined) userMap[uid].totalScore       = summary.totalScore;
