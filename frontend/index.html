@@ -1506,7 +1506,7 @@ body.on-intro header{display:none;}
 
   <div class="intro-how">
     <div class="intro-how-card">
-      <span class="intro-how-icon" style="background:rgba(58,125,68,0.15);color:var(--accent);">🎳</span>
+      <span class="intro-how-icon" style="background:rgba(58,125,68,0.15);color:var(--accent);">🏃</span>
       <div>
         <strong>Guess the Bowler</strong>
         <p>Watch a silhouette video of a legendary bowler's action. Use clues to narrow it down. Score points for every correct guess.</p>
@@ -2052,15 +2052,21 @@ function loadCardPreviews(){
   if(batCardVid&&batter){batCardVid.src=`content/batting/${batter.id}.mp4`;batCardVid.load();}
 }
 
+function isStreakActive(){
+  const today=getTodayLocal();
+  const d=new Date();d.setDate(d.getDate()-1);
+  const yest=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  return['howzat_last_played','howzat_batting_last_played',TRIVIA_LS_KEY].some(k=>{const v=localStorage.getItem(k);return v===today||v===yest;});
+}
 function refreshH(){
   if(!statsReady){document.getElementById('hStreak').textContent='–';document.getElementById('hBest').textContent='–';return;}
-  document.getElementById('hStreak').textContent=stats.streak;
+  document.getElementById('hStreak').textContent=isStreakActive()?stats.streak:0;
   document.getElementById('hBest').textContent=stats.total||'—';
 }
 function refreshLS(){
   document.getElementById('lsG').textContent=stats.games;
   document.getElementById('lsB').textContent=stats.best||'—';
-  document.getElementById('lsS').textContent=stats.streak;
+  document.getElementById('lsS').textContent=isStreakActive()?stats.streak:0;
   document.getElementById('lsW').textContent=stats.games?Math.round(stats.wins/stats.games*100)+'%':'—';
 }
 
