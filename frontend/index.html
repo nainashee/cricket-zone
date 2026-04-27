@@ -1302,6 +1302,89 @@ video{width:100%;aspect-ratio:1/1;object-fit:cover;display:block;}
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:0.01ms!important;animation-iteration-count:1!important;transition-duration:0.01ms!important;}
 }
+
+/* ── INTRO SCREEN ─────────────────────────────────── */
+#introScreen{
+  min-height:100vh;
+  flex-direction:column;align-items:center;justify-content:center;
+  padding:2rem 1.5rem calc(2rem + var(--safe-bot));
+  text-align:center;position:relative;z-index:1;
+}
+#introScreen.active{display:flex!important;}
+.intro-logo-wrap{
+  display:flex;flex-direction:column;align-items:center;gap:0.75rem;
+  margin-bottom:2rem;
+  opacity:0;animation:fadeUp 0.5s ease 0.05s forwards;
+}
+.intro-logo-mark{
+  width:72px;height:72px;border-radius:18px;background:var(--accent);
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 8px 32px rgba(58,125,68,0.35),inset 0 1px 0 rgba(255,255,255,0.14);
+}
+.intro-wordmark{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:2.2rem;letter-spacing:0.18em;
+  line-height:1;
+}
+.intro-wordmark .hw{color:#c9a84c;}
+.intro-wordmark .zt{color:var(--accent);}
+.intro-headline{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(2.8rem,12vw,5.2rem);
+  line-height:0.9;letter-spacing:0.02em;
+  margin-bottom:1rem;
+  background:linear-gradient(170deg,var(--text) 40%,var(--accent-hi));
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+  opacity:0;animation:fadeUp 0.5s ease 0.15s forwards;
+}
+.intro-sub{
+  font-size:0.95rem;color:var(--text2);line-height:1.7;
+  max-width:32ch;margin:0 auto 1.75rem;font-weight:300;
+  opacity:0;animation:fadeUp 0.5s ease 0.25s forwards;
+}
+.intro-pills{
+  display:flex;align-items:center;justify-content:center;
+  gap:0.5rem;flex-wrap:wrap;
+  margin-bottom:2.25rem;
+  opacity:0;animation:fadeUp 0.5s ease 0.3s forwards;
+}
+.intro-pill{
+  display:flex;align-items:center;gap:0.4rem;
+  padding:0.35rem 0.85rem;border-radius:100px;
+  font-size:0.75rem;font-weight:500;letter-spacing:0.02em;
+  border:1px solid var(--border2);background:var(--surface);
+  color:var(--text2);white-space:nowrap;
+}
+.intro-pill-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.intro-cta-wrap{
+  display:flex;flex-direction:column;align-items:center;gap:0.85rem;width:100%;max-width:320px;
+  opacity:0;animation:fadeUp 0.5s ease 0.38s forwards;
+}
+.intro-google-btn{
+  width:100%;display:flex;align-items:center;justify-content:center;gap:0.65rem;
+  padding:0.95rem 1.5rem;border-radius:14px;
+  background:var(--accent);color:var(--bg);
+  font-size:0.95rem;font-weight:600;font-family:'DM Sans',sans-serif;
+  border:none;cursor:pointer;letter-spacing:0.01em;
+  transition:transform 0.15s,box-shadow 0.2s,background 0.2s;
+  box-shadow:0 6px 20px rgba(58,125,68,0.3);
+}
+.intro-google-btn:hover{background:var(--accent-hi);box-shadow:0 10px 28px rgba(58,125,68,0.4);}
+.intro-google-btn:active{transform:scale(0.97);}
+.intro-email-link{
+  font-size:0.8rem;color:var(--text3);cursor:pointer;
+  background:none;border:none;padding:0.25rem;
+  text-decoration:underline;text-underline-offset:3px;
+  transition:color 0.15s;font-family:'DM Sans',sans-serif;
+}
+.intro-email-link:hover{color:var(--text2);}
+.intro-footer{
+  margin-top:2.5rem;
+  font-family:'DM Mono',monospace;font-size:0.62rem;
+  letter-spacing:0.16em;text-transform:uppercase;color:var(--text4);
+  opacity:0;animation:fadeUp 0.5s ease 0.48s forwards;
+}
 </style>
 </head>
 <body>
@@ -1358,8 +1441,62 @@ video{width:100%;aspect-ratio:1/1;object-fit:cover;display:block;}
 
 <main>
 
+<!-- ══ INTRO ══ -->
+<div class="screen active" id="introScreen">
+  <div class="intro-logo-wrap">
+    <div class="intro-logo-mark">
+      <svg viewBox="0 0 26 26" width="46" height="46" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="iwg" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%"   stop-color="#c8a96e"/>
+            <stop offset="40%"  stop-color="#e8cc8a"/>
+            <stop offset="100%" stop-color="#b8954e"/>
+          </linearGradient>
+          <linearGradient id="ibg" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%"   stop-color="#e84040"/>
+            <stop offset="100%" stop-color="#9b1a1a"/>
+          </linearGradient>
+        </defs>
+        <rect x="5"    y="8"  width="2.4" height="13" rx="0.9" fill="url(#iwg)"/>
+        <rect x="11.8" y="7"  width="2.4" height="14" rx="0.9" fill="url(#iwg)"/>
+        <rect x="18.6" y="8"  width="2.4" height="13" rx="0.9" fill="url(#iwg)"/>
+        <rect x="6.8"  y="8"  width="0.5" height="13" rx="0.3" fill="rgba(0,0,0,0.18)"/>
+        <rect x="13.6" y="7"  width="0.5" height="14" rx="0.3" fill="rgba(0,0,0,0.18)"/>
+        <rect x="20.4" y="8"  width="0.5" height="13" rx="0.3" fill="rgba(0,0,0,0.18)"/>
+        <rect x="3"   y="6"   width="6.5" height="1.6" rx="0.7" fill="url(#iwg)" transform="rotate(-22 6 6.8)"/>
+        <rect x="14.8" y="5"  width="6.5" height="1.6" rx="0.7" fill="url(#iwg)" transform="rotate(18 18 5.8)"/>
+        <circle cx="20.5" cy="18" r="4" fill="url(#ibg)"/>
+        <path d="M17.8 16.2 Q20.5 14.6 23.2 16.2" stroke="rgba(255,220,220,0.6)" stroke-width="0.6" fill="none" stroke-linecap="round"/>
+        <path d="M17.5 18   Q20.5 19.8 23.5 18"   stroke="rgba(255,220,220,0.6)" stroke-width="0.6" fill="none" stroke-linecap="round"/>
+        <circle cx="18.8" cy="15.8" r="0.9" fill="rgba(255,255,255,0.22)"/>
+      </svg>
+    </div>
+    <div class="intro-wordmark"><span class="hw">HOW</span><span class="zt">ZAT</span></div>
+  </div>
+
+  <h1 class="intro-headline">KNOW YOUR<br>LEGENDS</h1>
+
+  <p class="intro-sub">Identify cricket's greatest players from their silhouette alone. Three daily challenges. Can you keep the streak alive?</p>
+
+  <div class="intro-pills">
+    <span class="intro-pill"><span class="intro-pill-dot" style="background:var(--accent);"></span>Guess the Bowler</span>
+    <span class="intro-pill"><span class="intro-pill-dot" style="background:var(--bat);"></span>Guess the Batter</span>
+    <span class="intro-pill"><span class="intro-pill-dot" style="background:var(--triv);"></span>Cricket Trivia</span>
+  </div>
+
+  <div class="intro-cta-wrap">
+    <button class="intro-google-btn" onclick="googleSignIn()">
+      <svg width="20" height="20" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg"><path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/><path d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332C2.438 15.983 5.482 18 9 18z" fill="#34A853"/><path d="M3.964 10.707c-.18-.54-.282-1.117-.282-1.707s.102-1.167.282-1.707V4.961H.957C.347 6.175 0 7.55 0 9s.348 2.825.957 4.039l3.007-2.332z" fill="#FBBC05"/><path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.961L3.964 7.293C4.672 5.163 6.656 3.58 9 3.58z" fill="#EA4335"/></svg>
+      Continue with Google
+    </button>
+    <button class="intro-email-link" onclick="showAuthModal()">Sign in with email / password</button>
+  </div>
+
+  <p class="intro-footer">Free · No ads · New challenge every day</p>
+</div>
+
 <!-- ══ LANDING ══ -->
-<div class="screen active" id="landingScreen">
+<div class="screen" id="landingScreen">
 <div style="max-width:1100px;margin:0 auto;padding:0 1.5rem 5rem;">
 
   <div class="hero">
@@ -1786,8 +1923,9 @@ async function boot(){
   loadAllTime();
   const handled=await handleOAuthCallback();
   if(!handled&&!isTokenValid()){
-    showAuthModal();
+    showScreen('introScreen');
   }else{
+    showScreen('landingScreen');
     updateHeaderUser();
     if(!handled&&isTokenValid()){
       // Returning user with valid token — sync stats + played-today from server
@@ -2111,6 +2249,7 @@ async function storeAuth(idToken){
   applyDailyCardState();
   applyBattingCardState();
   applyTriviaCardState();
+  showLanding();
 }
 
 async function syncSummaryStats(idToken){
