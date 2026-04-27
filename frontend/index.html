@@ -1303,11 +1303,14 @@ video{width:100%;aspect-ratio:1/1;object-fit:cover;display:block;}
   *,*::before,*::after{animation-duration:0.01ms!important;animation-iteration-count:1!important;transition-duration:0.01ms!important;}
 }
 
+/* ── HIDE HEADER ON INTRO ────────────────────────── */
+body.on-intro header{display:none;}
+
 /* ── INTRO SCREEN ─────────────────────────────────── */
 #introScreen{
   min-height:100vh;
-  flex-direction:column;align-items:center;justify-content:center;
-  padding:2rem 1.5rem calc(2rem + var(--safe-bot));
+  flex-direction:column;align-items:center;justify-content:flex-start;
+  padding:3.5rem 1.5rem calc(3.5rem + var(--safe-bot));
   text-align:center;position:relative;z-index:1;
 }
 #introScreen.active{display:flex!important;}
@@ -1359,7 +1362,7 @@ video{width:100%;aspect-ratio:1/1;object-fit:cover;display:block;}
 .intro-pill-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
 .intro-cta-wrap{
   display:flex;flex-direction:column;align-items:center;gap:0.85rem;width:100%;max-width:320px;
-  opacity:0;animation:fadeUp 0.5s ease 0.38s forwards;
+  opacity:0;animation:fadeUp 0.5s ease 0.45s forwards;
 }
 .intro-google-btn{
   width:100%;display:flex;align-items:center;justify-content:center;gap:0.65rem;
@@ -1379,15 +1382,38 @@ video{width:100%;aspect-ratio:1/1;object-fit:cover;display:block;}
   transition:color 0.15s;font-family:'DM Sans',sans-serif;
 }
 .intro-email-link:hover{color:var(--text2);}
+.intro-how{
+  width:100%;max-width:480px;
+  display:flex;flex-direction:column;gap:0.75rem;
+  margin-bottom:2.5rem;text-align:left;
+  opacity:0;animation:fadeUp 0.5s ease 0.35s forwards;
+}
+.intro-how-card{
+  display:flex;align-items:flex-start;gap:0.9rem;
+  background:var(--surface);border:1px solid var(--border2);
+  border-radius:var(--radius);padding:0.9rem 1rem;
+}
+.intro-how-icon{
+  font-size:1.3rem;width:42px;height:42px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  border-radius:10px;
+}
+.intro-how-card strong{
+  display:block;font-size:0.88rem;font-weight:600;
+  color:var(--text);margin-bottom:0.25rem;
+}
+.intro-how-card p{
+  font-size:0.78rem;color:var(--text2);line-height:1.55;margin:0;font-weight:300;
+}
 .intro-footer{
   margin-top:2.5rem;
   font-family:'DM Mono',monospace;font-size:0.62rem;
   letter-spacing:0.16em;text-transform:uppercase;color:var(--text4);
-  opacity:0;animation:fadeUp 0.5s ease 0.48s forwards;
+  opacity:0;animation:fadeUp 0.5s ease 0.55s forwards;
 }
 </style>
 </head>
-<body>
+<body class="on-intro">
 
 <header>
   <div class="logo" onclick="showLanding()" style="cursor:pointer;" title="Back to home">
@@ -1476,12 +1502,37 @@ video{width:100%;aspect-ratio:1/1;object-fit:cover;display:block;}
 
   <h1 class="intro-headline">KNOW YOUR<br>LEGENDS</h1>
 
-  <p class="intro-sub">Identify cricket's greatest players from their silhouette alone. Three daily challenges. Can you keep the streak alive?</p>
+  <p class="intro-sub">The daily cricket challenge. Watch the silhouette, identify the legend — bowler, batter, or trivia. One shot. New legends every day.</p>
 
-  <div class="intro-pills">
-    <span class="intro-pill"><span class="intro-pill-dot" style="background:var(--accent);"></span>Guess the Bowler</span>
-    <span class="intro-pill"><span class="intro-pill-dot" style="background:var(--bat);"></span>Guess the Batter</span>
-    <span class="intro-pill"><span class="intro-pill-dot" style="background:var(--triv);"></span>Cricket Trivia</span>
+  <div class="intro-how">
+    <div class="intro-how-card">
+      <span class="intro-how-icon" style="background:rgba(58,125,68,0.15);color:var(--accent);">🎳</span>
+      <div>
+        <strong>Guess the Bowler</strong>
+        <p>Watch a silhouette video of a legendary bowler's action. Use clues to narrow it down. Score points for every correct guess.</p>
+      </div>
+    </div>
+    <div class="intro-how-card">
+      <span class="intro-how-icon" style="background:rgba(77,184,255,0.12);color:var(--bat);">🏏</span>
+      <div>
+        <strong>Guess the Batter</strong>
+        <p>Same idea — iconic batting stances silhouetted. Double the points. Identify the legend before the clues run out.</p>
+      </div>
+    </div>
+    <div class="intro-how-card">
+      <span class="intro-how-icon" style="background:rgba(168,85,247,0.12);color:var(--triv);">🧠</span>
+      <div>
+        <strong>Cricket Trivia</strong>
+        <p>Five daily questions on records, history, and legendary moments. Answer fast — the timer is ticking.</p>
+      </div>
+    </div>
+    <div class="intro-how-card">
+      <span class="intro-how-icon" style="background:rgba(251,191,36,0.12);color:var(--rapid);">🔥</span>
+      <div>
+        <strong>Keep the Streak</strong>
+        <p>New challenges reset every midnight. Sign in to track your streak, climb the leaderboard, and prove you know the game.</p>
+      </div>
+    </div>
   </div>
 
   <div class="intro-cta-wrap">
@@ -2013,7 +2064,7 @@ function refreshLS(){
   document.getElementById('lsW').textContent=stats.games?Math.round(stats.wins/stats.games*100)+'%':'—';
 }
 
-function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo({top:0,behavior:'smooth'});}
+function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');document.body.classList.toggle('on-intro',id==='introScreen');window.scrollTo({top:0,behavior:'smooth'});}
 function showLanding(){stopTimer();stopTriviaTimer();refreshLS();showScreen('landingScreen');loadTop5();loadAllTime();}
 function showAccount(){closeProfileDropdown();showScreen('accountScreen');loadAccountStats();}
 async function loadAccountStats(){
